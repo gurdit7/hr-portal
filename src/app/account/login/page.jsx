@@ -21,7 +21,7 @@ The way to get started is to quit talking and begin doing.
   <Wrapper classname='flex-1 login-bg relative min-h-[100vh]'>
     <Wrapper classname='relative z-[1] flex flex-col items-center p-[60px]'>
     <Image src={Logo.src} alt={Logo.alt} width={Logo.width} height={Logo.height}/>
-      <H1 tag={true} classname='text-white max-w-[450px] text-center'>
+      <H1 tag={true} classname='text-white max-w-[450px] text-center mt-[176px] mb-[15px]'>
       Welcome to Fabcode’s HR Hub
       </H1>
       <LoginForm/>
