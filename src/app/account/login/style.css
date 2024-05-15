@@ -1,3 +1,4 @@
 .login-bg{
-    background: url(../../assets//images/account/bg.png) no-repeat;    
+    background: url(../../assets//images/account/bg.png) no-repeat;   
+    background-size: cover; 
 }

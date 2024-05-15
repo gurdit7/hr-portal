@@ -4,8 +4,9 @@ import Text from '@/app/components/Ui/Text/Text';
 import Wrapper from '@/app/components/Ui/Wrapper/Wrapper';
 import React from 'react';
 import Link from 'next/link'
-import IconDashboard from '@/app/components/Icons/Dashboard/IconDashboard';
+import IconDashboard from '@/app/components/Icons/IconDashboard';
 import { usePathname } from 'next/navigation';
+import IconProfile from '@/app/components/Icons/IconProfile';
 const Sidebar = () => {
   const path = usePathname();
   return (
@@ -18,10 +19,13 @@ const Sidebar = () => {
         <Text className='text-lg font-poppins font-semibold text-center text-white mt-[10px]'>
           User Name Here
         </Text>
-        <Wrapper classname='mt-[35px] pl-12'>
+        <Wrapper className='mt-[35px] pl-12'>
           <ul className='list-none p-0 mt-0'>
             <DashboardLink href={'/dashboard'} label='Dashboard' active={path === '/dashboard'}>
                 <IconDashboard size={'24px'} color={path === '/dashboard' ? 'fill-dark-blue' : 'fill-white'}/>
+            </DashboardLink>
+            <DashboardLink href={'/dashboard/profile'} label='Profile' active={path === '/dashboard/profile'}>
+                <IconProfile size={'24px'} color={path === '/dashboard/profile' ? 'fill-dark-blue' : '#fff'}/>
             </DashboardLink>
           </ul>
         </Wrapper>

@@ -15,7 +15,4 @@ function Text({children , className}) {
 Text.propTypes={
     className: PropTypes.string
 }
-Text.defaultProps = {
-    className: ''
-  };
 export default Text;
