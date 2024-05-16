@@ -10,30 +10,29 @@ export const POST = async (request) => {
       .then(async (userExist) => {
         if (userExist) {
           const password = await bcrypt.compare(
-            payload?.otp,
-            userExist?.otpToken
+            payload?.password,
+            userExist?.password
           );
-          const toCompare = new Date(userExist?.otpTokenExpire);
+          const toCompare = new Date(userExist?.passwordTokenExpire);
           const date = new Date();
           let result;
           if (password) {
+            result = { error: "This is your current password.", status: 403 };         
+          }
+           else {
             if (toCompare < date) {
-              result = { error: "OTP Expired.", status: 410 };
+              result = { error: "Session Expired.", status: 440  };
             } else {
-              const date = new Date();
-              const minutesWithFive = date.getMinutes() + 30;        
-              const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)}-${date.getDate()} ${date.getHours()}:${minutesWithFive}:${date.getSeconds()}`;
-              const theTime = new Date(formattedDate); 
               const updateData = await Users.updateOne(
                 { email: payload?.email },
-                { passwordToken: await bcrypt.hash(payload?.otp, 10),
-                  passwordTokenExpire:theTime
+                { password: await bcrypt.hash(payload?.password, 10)
                  }
               );
-              result = { status: 202 };
+              console.log(updateData)
+              if(updateData?.acknowledged === true){
+              result = { status: 200 };
+              }
             }
-          } else {
-            result = { error: "OTP Not Matched.", status: 401 };
           }
           return result;
         } else {

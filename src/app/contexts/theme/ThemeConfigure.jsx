@@ -9,6 +9,7 @@ export function useThemeConfig() {
 export const ThemeConfiger =  ({children}) => {
   const [pagetitle, setPagetitle] = useState('Home');
   const [headerStyle, setHeaderStyle] = useState('light');
+  const [sidebarCollapse, setSidebarCollapse] = useState(false);
   const [activePage, setActivePage] = useState('home');
   const [themeMode, setThemeMode] = useState('light');
   const getPageTitle = (title) => {
@@ -28,7 +29,9 @@ export const ThemeConfiger =  ({children}) => {
     themeMode,
     setThemeMode,
     headerStyle,
-    setHeaderStyle
+    setHeaderStyle,
+    sidebarCollapse,
+    setSidebarCollapse    
   };
 
   return (

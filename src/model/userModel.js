@@ -11,10 +11,19 @@ const userSchema = new Schema({
             type:String,
             required:true
         },
+        otpTokenExpire:{
+            type:String
+        },
+        otpToken:{
+            type:String
+        },
         passwordTokenExpire:{
             type:String
         },
         passwordToken:{
+            type:String
+        },
+        userID:{
             type:String
         }
 

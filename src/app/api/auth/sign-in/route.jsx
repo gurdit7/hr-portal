@@ -20,15 +20,15 @@ export const POST = async (request)=>{
           const session = await encrypt({ user });   
           const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
           cookies().set("session", session, { httpOnly: true,expires: expiresAt });
-          return userExist;
+          return {userExist:userExist,status:200};
         }
         else{
-            return {error:'Password not Match'}
+            return {error:'Password not Match', status:403}
         }
 
        }
        else{
-        return {error:'User Not Found'}
+        return {error:'User Not Found', status:404}
        }
      })
      .then((res) => {

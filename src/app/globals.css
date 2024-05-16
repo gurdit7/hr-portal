@@ -167,5 +167,8 @@
 
 }
 *{
-    @apply font-poppins;
+    @apply font-poppins box-border transition-all duration-200;
+}
+body{
+    @apply bg-bg;
 }

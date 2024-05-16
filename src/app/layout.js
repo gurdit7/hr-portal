@@ -4,6 +4,8 @@ import { ThemeConfiger } from "./contexts/theme/ThemeConfigure";
 import { GetSession } from "./api/auth/sign-in/route";
 import GetUserData from "./components/auth/GetUser";
 import { AuthProvider } from "./contexts/Auth/auth";
+import Sidebar from "./layouts/Sidebar/Sidebar";
+import Header from "./layouts/Header/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,8 +22,10 @@ export default async function RootLayout({ children }) {
       <ThemeConfiger>        
       <AuthProvider>
       <GetUserData session={JSON.stringify(session)}></GetUserData>
+        <Sidebar/>
+        <Header/>
         {children}
-        </AuthProvider>
+       </AuthProvider>
       </ThemeConfiger>
       </body>
     </html>

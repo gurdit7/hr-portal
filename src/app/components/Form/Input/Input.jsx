@@ -8,14 +8,16 @@ const Input = ({
   setData,
   value,
   name,  
-  children
+  children,
+  className,
+  onClick
 }) => {
   let classes = "flex flex-col-reverse flex-1 relative w-full";
   return (
     <>
       <div className={classes}>
-        <label className="pointer-events-none absolute top-[15px] left-[25px]">{children}</label>
-        <input
+        <label className="pointer-events-none absolute top-[17px] left-[25px]">{children}</label>
+      {onClick && ( <input
           name={name}
           type={type}
           autoComplete={type}
@@ -25,8 +27,24 @@ const Input = ({
           onChange={(e) => {
             setData(e);
           }}
-          className="py-[15px] pl-[61px] pr-[25px] rounded-[80px] w-full placeholder-#C2C3CB"
-        />
+          onClick={(e) => {
+            onClick(e);
+          }}
+          className={`py-[15px] pl-[61px] pr-[25px] rounded-[80px] w-full placeholder-light-600 ${className || ''} `}
+        />)}
+  {!onClick && (
+<input
+          name={name}
+          type={type}
+          autoComplete={type}
+          placeholder={placeholder}
+          required={required}
+          value={value}
+          onChange={(e) => {
+            setData(e);
+          }}
+          className={`py-[15px] pl-[61px] pr-[25px] rounded-[80px] w-full placeholder-light-600 ${className || ''} `}
+        /> )}
       </div>
     </>
   );

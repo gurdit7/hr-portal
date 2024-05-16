@@ -20,10 +20,11 @@ module.exports = {
           100:'#FDFCFD',
           200:'#F4F4F8',
           400:'#BCBCBC',
-          500:'#EBE9F8'
+          500:'#EBE9F8',
+          600:'#C2C3CB'
         },
         'accent':'#B2A6FF',
-        'text-dark':'#212121'
+        'text-dark':'#212121'        
       },
       fontFamily:{
         'poppins':['Poppins','sans-serif']
