@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 const FormButton = ({ children, type, btnType, label, loading, loadingText, event, additionalCss}) => {
     let classes = `${additionalCss || ''}   ${loading ? ' opacity-50' : '' }`;
-    btnType === 'solid' ? classes += ' bg-accent w-full rounded-[60px] text-base font-poppins font-medium py-[15px] text-white' : '';
-    btnType === 'outlined' ? classes += ' border border-accent w-full text-accent px-12 rounded-[60px] text-base font-poppins font-medium py-[10px]' : '';
+    btnType === 'solid' ? classes += ' bg-accent w-full rounded-[60px] text-base font-poppins font-medium py-[15px] text-white hover:bg-dark-blue' : '';
+    btnType === 'outlined' ? classes += ' hover:bg-accent hover:text-white border border-accent w-full text-accent px-12 rounded-[60px] text-base font-poppins font-medium py-[10px]' : '';
     btnType === 'link' ? classes += ' text-accent text-sm font-poppins font-medium' : '';
     btnType === 'button' ? classes += classes : '';
     return (

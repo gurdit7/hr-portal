@@ -5,12 +5,31 @@ import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
 import useAuth from "@/app/contexts/Auth/auth";
 import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
     const {sidebarCollapse,setSidebarCollapse} = useThemeConfig();
-    const {userLoggedIn} = useAuth();
+    const {userLoggedIn,setUserLoggedIn,setUserData,setPermissions} = useAuth();
+    const router = useRouter();
     const collapse = ()=>{
         setSidebarCollapse(prevState => !prevState);        
+    }
+    const logout = ()=>{        
+        fetch("/api/auth/logout", {
+            method: "POST"
+          })
+            .then(function (res) {
+              return res.json();
+            })
+            .then(function (data) {
+                if(data?.success == true){
+                router.push('/account/login');
+                setUserLoggedIn('')
+                setUserData('')
+                setPermissions('')
+                }                
+            });
+
     }
   return (
     <>
@@ -29,7 +48,7 @@ const Header = () => {
         <Link href='/dashboard/notifications' className="w-[44px] min-w-[44px] h-[44px] flex justify-center items-center">
         <IconNotification size='24px' color='fill-accent'/>
         </Link>
-        <FormButton btnType="outlined" label="Logout" type="button"/>
+        <FormButton btnType="outlined" label="Logout" type="button" event={logout}/>
     </Wrapper>
 </header>
     )}

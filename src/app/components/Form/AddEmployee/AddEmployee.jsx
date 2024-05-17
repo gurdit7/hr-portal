@@ -1,30 +1,27 @@
 "use client";
-import Date from "@/app/components/Form/Date/Date";
 import DropDown from "@/app/components/Form/DropDown/select";
 import FormButton from "@/app/components/Form/FormButton/FormButton";
 import Input from "@/app/components/Form/Input/Input";
 import IconCategory from "@/app/components/Icons/IconCategory";
-import IconClock from "@/app/components/Icons/IconClock";
 import IconDate from "@/app/components/Icons/IconDate";
 import IconDesignation from "@/app/components/Icons/IconDesignation";
 import IconGender from "@/app/components/Icons/IconGender";
 import IconMail from "@/app/components/Icons/IconMail";
 import IconProfile from "@/app/components/Icons/IconProfile";
 import IconUserType from "@/app/components/Icons/IconUserType";
-import H1 from "@/app/components/Ui/H1/H1";
 import H2 from "@/app/components/Ui/H2/H2";
 import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
 import Notification from "@/app/components/Ui/notification/success/Notification";
-import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
-import { gender, userType } from "@/app/data/default";
+import { designation, gender, userType } from "@/app/data/default";
 import { useState } from "react";
 import ErrorNotification from "../../Ui/notification/loader/LoaderNotification";
+import sendEmail from "@/app/mailer/mailer";
+import useAuth from "@/app/contexts/Auth/auth";
 
 const AddEmployee = () => {
-  const { sidebarCollapse } = useThemeConfig();
   const [formData, setFromData] = useState({});
   const [loading, setLoading] = useState(false);
-  const [updateValue, setUpdateValue] = useState('');
+  const {userPermissions} = useAuth();
   const [success, setSuccess] = useState({
     active: false,
     animation: false,
@@ -41,27 +38,10 @@ const AddEmployee = () => {
       [e.target.name]: e.target.value,
     });
   };
-  const joinDateSet = (e) => {
-    setFromData({
-      ...formData,
-      joinDate: e,
-    });
-  };
-  const DOBDateSet = (e) => {
-    setFromData({
-      ...formData,
-      DOB: e,
-    });
-  };
-  const incrmentDateSet = (e) => {
-    setFromData({
-      ...formData,
-      incrementDate: e,
-    });
-  };
   const items = ["HI"];
 
   const submitForm = (e) => {
+    setLoading(true);
     e.preventDefault();
     fetch("/api/auth/sign-up", {
       method: "POST",
@@ -70,30 +50,36 @@ const AddEmployee = () => {
       .then(function (res) {
         return res.json();
       })
-      .then(function (data) {
-        if(data?.email){
-            setSuccess({
-                active: true,
-                animation: true,
-                message: "User added successfully!",
-              });
+      .then(async function (data) {
+        if (data?.email) {
+          await sendEmail(
+            data?.email,
+            "HR Portal - You are registerd.",
+            `<h2 style='text-align:center;font-size: 200%;line-height: 1;margin: 0;'>Your are registered to the The fabcode's HR Portal.</h2>
+            <p style="text-align:center;">Your Password is : <strong>fc@123456</strong>.</p>
+            <p style="text-align:center;">To change you password please forgot password.</p>
+            `
+          ).then(function (data) {});
+          setSuccess({
+            active: true,
+            animation: true,
+            message: "User added successfully!",
+          });
+        } else if (data?.status === 403) {
+          setError({
+            active: true,
+            animation: true,
+            message: "User Already Registerd.",
+          });
+        } else {
+          setError({
+            active: true,
+            animation: true,
+            message: "Something when wrong! Try again later.",
+          });
         }
-        else if (data?.status === 403) {
-            setError({
-                active: true,
-                animation: true,
-                message: "User Already Registerd.",
-              });
-        }
-        else{
-            setError({
-                active: true,
-                animation: true,
-                message: "Something when wrong! Try again later.",
-              });
-        }
-        setFromData('');
-        setUpdateValue('');
+        setLoading(false);
+        setFromData("");  
         setTimeout(() => {
           setError({
             active: false,
@@ -109,15 +95,9 @@ const AddEmployee = () => {
       });
   };
   return (
-    <Wrapper
-      className={`py-[10px] px-[25px] ${
-        sidebarCollapse ? "ml-[100px]" : "ml-[300px]"
-      }`}
-    >
-      <H1>Employees</H1>
-      <Wrapper className="mt-[15px]">
-        <Wrapper>
-          <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px]">
+<>
+{userPermissions && userPermissions.includes('add-employee') && (
+          <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full max-w-[550px]">
             <H2>Add Employee</H2>
             <form className="flex flex-col gap-[15px]" onSubmit={submitForm}>
               <Wrapper className="flex gap-[15px]">
@@ -156,32 +136,37 @@ const AddEmployee = () => {
                   className="border-light-600 border"
                 >
                   <IconProfile size="24px" color="stroke-light-400" />
-                </Input>
-                <Date
-                  updateValue={updateValue}
-                  setUpdateValue={setUpdateValue}
-                  label="Join Date"
-                  placeholder="Join Date"
-                  getDate={joinDateSet}
-                  addItemForm={addItemForm}
-                  name="joinDate"
-                >
-                  <IconClock size="24px" color="stroke-light-400" />
-                </Date>
+                </Input>            
+                <Wrapper className="relative w-full flex-1">
+                  <Input
+                    label="Join Date"
+                    placeholder="Join Date"
+                    setData={addItemForm}
+                    type="date"
+                    required={true}
+                    value={formData?.joinDate || ""}
+                    name="joinDate"
+                    className="border-light-600 border"
+                  >
+                    <IconDate size="24px" color="stroke-light-400" />
+                  </Input>
+                  <label className={`absolute left-[61px] top-[17px] pointer-events-none text-light-600 ${formData?.joinDate ? 'text-text-dark' : 'text-light-600'}`}>
+                    {formData?.joinDate || "Join Date"}
+                  </label>
+                </Wrapper>
               </Wrapper>
-              <Wrapper className="flex gap-[15px]">            
-                <Input
-                  label="Designation"
-                  placeholder="Designation"
-                  setData={addItemForm}
-                  type="text"
+              <Wrapper className="flex gap-[15px]">
+              <DropDown
+                  items={designation}
                   required={true}
+                  setData={addItemForm}
                   value={formData?.designation || ""}
                   name="designation"
-                  className="border-light-600 border"
+                  placeholder={"Designation"}
+                  className='max-w-[247.5px]'
                 >
-                  <IconDesignation size="24px" color="stroke-light-400" />
-                </Input>      
+                                 <IconDesignation size="24px" color="stroke-light-400" />
+                </DropDown>     
                 <DropDown
                   items={items}
                   required={true}
@@ -216,40 +201,51 @@ const AddEmployee = () => {
                 </DropDown>
               </Wrapper>
               <Wrapper className="flex gap-[15px]">
-                <Date
-                  updateValue={updateValue}
-                  setUpdateValue={setUpdateValue}
-                  label="DOB"
-                  placeholder="DOB"
-                  getDate={DOBDateSet}
-                  addItemForm={addItemForm}
-                  name="DOB"
-                >
-                  <IconDate size="24px" color="stroke-light-400" />
-                </Date>
-                <Date
-                  updateValue={updateValue}
-                  setUpdateValue={setUpdateValue}
-                  label="Increment Date"
-                  placeholder="Increment Date"
-                  getDate={incrmentDateSet}
-                  addItemForm={addItemForm}
-                  name='incrementDate'
-                >
-                  <IconDate size="24px" color="stroke-light-400" />
-                </Date>
+                <Wrapper className="relative w-full flex-1">
+                  <Input
+                    label="DOB"
+                    placeholder="DOB"
+                    setData={addItemForm}
+                    type="date"
+                    required={true}
+                    value={formData?.DOB || ""}
+                    name="DOB"
+                    className="border-light-600 border"
+                  >
+                    <IconDate size="24px" color="stroke-light-400" />
+                  </Input>
+                  <label className={`absolute left-[61px] top-[17px] pointer-events-none ${formData?.DOB ? 'text-text-dark' : 'text-light-600'}`}>
+                    {formData?.DOB || "DOB"}
+                  </label>
+                </Wrapper>
+                <Wrapper className="relative w-full flex-1">
+                  <Input
+                    label="Increment Date"
+                    placeholder="Increment Date"
+                    setData={addItemForm}
+                    type="date"
+                    required={true}
+                    value={formData?.incrementDate || ""}
+                    name="incrementDate"
+                    className="border-light-600 border"
+                  >
+                    <IconDate size="24px" color="stroke-light-400" />
+                  </Input>
+                  <label className={`absolute left-[61px] top-[17px] pointer-events-none text-light-600 ${formData?.incrementDate ? 'text-text-dark' : 'text-light-600'}`}>
+                    {formData?.incrementDate || "Increment Date"}
+                  </label>
+                </Wrapper>
               </Wrapper>
               <FormButton
                 type="submit"
-                loadingText="Submiting..."
+                loadingText="Adding..."
                 loading={loading}
-                label="Submit"
+                label="Add"
                 btnType="solid"
               ></FormButton>
             </form>
           </Wrapper>
-        </Wrapper>
-      </Wrapper>
+  )}
       {success?.active && (
         <Notification
           active={success?.animation}
@@ -262,7 +258,8 @@ const AddEmployee = () => {
           message={error?.message}
         ></ErrorNotification>
       )}
-    </Wrapper>    
+      
+</>
   );
 };
 

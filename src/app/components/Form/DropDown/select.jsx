@@ -10,20 +10,21 @@ const DropDown = ({
   required,
   setData,
   value,
-  children
+  children,
+  className
 }) => {
   return (
-    <Wrapper className="flex flex-col-reverse flex-1 relative">
+    <Wrapper className={ ( className || '' ) + " flex flex-col-reverse flex-1 relative" }>
       <select
-        value={value || placeholder}
+      defaultValue={value}
         onChange={(e) => {
           setData(e);
         }}
         required={required}
         name={name}
-        className="text-base placeholder:text-c-gray-400 pl-[61px] border border-light-600 rounded-[60px]  font-medium text-light-600 p-4 max-sm:p-2 dark:bg-transparent"
+        className={`text-base  bg-white placeholder:text-c-gray-400 pl-[61px] pr-[60px]  border border-light-600 rounded-[60px]  font-medium  p-4 max-sm:p-2 ${value ? 'text-text-dark' : 'text-light-600' }`}
       >
-        <option disabled data-index="0" value={placeholder}>
+        <option disabled data-index="0" value=''>
           {placeholder}
         </option>
         {items.map((item, index) => (

@@ -1,4 +1,8 @@
+import AllEmployees from "@/app/components/Dashboard/Employees/AllEmployees";
 import AddEmployee from "@/app/components/Form/AddEmployee/AddEmployee";
+import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
+import Container from "@/app/components/Ui/DashboardContainer/Container";
+import AccessDenied from "@/app/components/Ui/AccessDenied/AccessDenied";
 
 export const metadata = {
   title: "Employee Data - Hr Portal",
@@ -8,7 +12,13 @@ export const metadata = {
 const page = () => {
   return (
  <>
- <AddEmployee/>
+ <Container>
+  <Wrapper className='flex justify-between gap-[15px]'>
+  <AllEmployees/>
+  <AddEmployee/>
+  <AccessDenied permission='view-employee' message='View Employees'/>
+ </Wrapper>
+ </Container>
  </>
   );
 };

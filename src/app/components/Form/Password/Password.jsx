@@ -27,6 +27,7 @@ const Password = ({
           type={`${view ? 'text' : 'password'}`}
           required={required}
           value={value}
+          autoComplete=""
           onChange={onChange}
           className="py-[15px] pl-[61px] pr-[25px] rounded-[80px] w-full placeholder-#C2C3CB"
         />

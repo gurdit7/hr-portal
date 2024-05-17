@@ -44,6 +44,7 @@ export const POST = async (request) => {
         department: payload?.department,
         DOB: payload?.DOB,
         incrementDate: payload?.incrementDate,
+        status:"active"
       });
       await userDataPerson.save();    
       }

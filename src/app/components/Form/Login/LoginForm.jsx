@@ -25,7 +25,7 @@ const LoginForm = () => {
     animation: false,
     message: "",
   });
-  const { setUserData, setUserLoggedIn } = useAuth();
+  const { setUserData, setUserLoggedIn, setPermissions } = useAuth();
   const setFormValues = (e) => {
     setFormData({
       ...formData,
@@ -43,13 +43,14 @@ const LoginForm = () => {
       })
       .then(function (data) {
         if (data?.status === 200) {
+          setUserLoggedIn(true);
+          setUserData({email:data?.user?.email,userId:data?.user?.userID});
+          setPermissions(data?.permissions);
           setSuccess({
             active: true,
             animation: true,
             message: "Login Successfully",
           });
-          setUserLoggedIn(true);
-          setUserData({email:data?.email,userId:data?.userID});
           route.push('/')
         } else if (data?.status === 403) {
           setError({

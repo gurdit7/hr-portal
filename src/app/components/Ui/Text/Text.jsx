@@ -1,13 +1,12 @@
 import PropTypes from 'prop-types';
 function Text({children , className}) {
+   className =  'text-sm font-medium font-poppins text-text-dark ' + (className || '')
   return (
     <>
-    {className === "" && (<p className={''}>
+<p className={className}>
         {children}
-     </p>     )}
-     {className !== "" && (<p className={className}>
-        {children}
-     </p>     )}
+     </p>  
+
      </>
   );
 }

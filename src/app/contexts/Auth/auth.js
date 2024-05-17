@@ -11,11 +11,14 @@ export default function useAuth (){
 export function AuthProvider({ children }) {    
     const [userLoggedIn, setUserLoggedIn] = useState(false);
     const [userData, setUserData] = useState('');
+    const [userPermissions, setPermissions] = useState([]);
     const value = {
         setUserLoggedIn,
         userLoggedIn,
         userData,
-        setUserData
+        setUserData,
+        setPermissions,
+        userPermissions
       };
     return (
         <AuthContext.Provider value={value}>

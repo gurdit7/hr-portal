@@ -10,9 +10,10 @@ const Input = ({
   name,  
   children,
   className,
-  onClick
+  onClick,
+  wrapperClassName
 }) => {
-  let classes = "flex flex-col-reverse flex-1 relative w-full";
+  let classes = `flex flex-col-reverse flex-1 relative w-full ${wrapperClassName || ''}`;
   return (
     <>
       <div className={classes}>

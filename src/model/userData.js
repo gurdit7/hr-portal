@@ -7,12 +7,10 @@ const userSchema = new Schema({
             required:true
         },
         userID:{
-            type:String,
-            required:true
+            type:String
         },        
         email:{
-            type:String,
-            required:true
+            type:String
         },
         name:{
             type:String,
@@ -45,6 +43,9 @@ const userSchema = new Schema({
         incrementDate:{
             type:String,
             required:true
+        },
+        status:{
+            type:String
         }
 },{timestamps:true})
 

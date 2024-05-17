@@ -4,13 +4,24 @@ import { useRouter,usePathname } from "next/navigation";
 import useAuth from "@/app/contexts/Auth/auth";
 
 const GetUserData = (session) => {
-    const {setUserData, setUserLoggedIn} = useAuth();
+    const {setUserData, setUserLoggedIn, setPermissions} = useAuth();
     const router = useRouter();
     const location = usePathname();
     useEffect(()=>{
         if(session.session !== "null"){
         const user = JSON.parse(session.session);
-        setUserData({email:user?.email,userId:user?.userID});
+
+        fetch("/api/dashboard/user-data", {
+          method: "POST",
+          body: JSON.stringify({userID:user?.userID}),
+        })
+          .then(function (res) {
+            return res.json();
+          })
+          .then(async function (data) {
+            setUserData(data?.user);
+            setPermissions(data?.permissions);
+          });
         setTimeout(() => {
           setUserLoggedIn(true)
         }, 2000);
