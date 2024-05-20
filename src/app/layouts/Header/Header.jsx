@@ -22,11 +22,13 @@ const Header = () => {
               return res.json();
             })
             .then(function (data) {
-                if(data?.success == true){
-                router.push('/account/login');
+                if(data?.success == true){                
                 setUserLoggedIn('')
                 setUserData('')
                 setPermissions('')
+                setTimeout(() => {
+                    router.push('/account/login');
+                }, 200);
                 }                
             });
 

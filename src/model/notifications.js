@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const { Schema} = mongoose;
 
 const userSchema = new Schema({
@@ -7,25 +6,19 @@ const userSchema = new Schema({
             type:String,
             required:true
         },
-        password:{
+        subject:{
             type:String,
             required:true
         },
-        otpTokenExpire:{
+        attachment:{
+            type:String            
+        },
+        description:{
             type:String
         },
-        otpToken:{
+        sendDate:{
             type:String
-        },
-        passwordTokenExpire:{
-            type:String
-        },
-        passwordToken:{
-            type:String
-        },
-        userID:{
-            type:String
-        }       
+        }
 },{timestamps:true})
 
-export default  mongoose.models.Users || mongoose.model('Users', userSchema);
+export default  mongoose.models.Notifications || mongoose.model('Notifications', userSchema);

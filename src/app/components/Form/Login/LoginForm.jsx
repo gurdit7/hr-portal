@@ -43,15 +43,19 @@ const LoginForm = () => {
       })
       .then(function (data) {
         if (data?.status === 200) {
-          setUserLoggedIn(true);
-          setUserData({email:data?.user?.email,userId:data?.user?.userID});
-          setPermissions(data?.permissions);
           setSuccess({
             active: true,
             animation: true,
             message: "Login Successfully",
-          });
-          route.push('/')
+          });          
+
+          setTimeout(() => {
+            setUserLoggedIn(true);
+            setUserData({email:data?.user?.email,userId:data?.user?.userID});
+            setPermissions(data?.permissions);
+          }, 500);
+
+          route.push('/');
         } else if (data?.status === 403) {
           setError({
             active: true,

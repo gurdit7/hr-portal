@@ -32,6 +32,10 @@ export const POST = async (request) => {
     } else {
       const result = await person.save();
       if(result){
+      const totalLeaves = 12;
+      const currentMonth = new Date().getMonth();
+      const totalLeave = totalLeaves - currentMonth;
+      const balancedSandwichLeaves = Math.ceil(totalLeaves / 3) ;
       const userDataPerson = new UsersData({
         email: payload?.email,
         userType: payload?.userType,
@@ -44,6 +48,10 @@ export const POST = async (request) => {
         department: payload?.department,
         DOB: payload?.DOB,
         incrementDate: payload?.incrementDate,
+        totalLeaveTaken:0,
+        balancedLeaves:totalLeave,
+        balancedSandwichLeaves:balancedSandwichLeaves,
+        balancedSandwichLeavesTaken:0,
         status:"active"
       });
       await userDataPerson.save();    

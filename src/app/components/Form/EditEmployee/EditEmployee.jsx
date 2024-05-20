@@ -9,13 +9,15 @@ import IconGender from "@/app/components/Icons/IconGender";
 import IconProfile from "@/app/components/Icons/IconProfile";
 import IconUserType from "@/app/components/Icons/IconUserType";
 import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
-import { designation, gender, userStatus, userType } from "@/app/data/default";
+import { department, designation, gender, userStatus, userType } from "@/app/data/default";
 import { useState } from "react";
 import Notification from "../../Ui/notification/success/Notification";
+import useAuth from "@/app/contexts/Auth/auth";
 const EditEmployee = ({user,closePopup}) => {
     const [formData, setFromData] = useState({});
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
+    const {userRoles} = useAuth();
     const submitForm = (e) => {
         setLoading(true);
         e.preventDefault();
@@ -124,7 +126,7 @@ fetch('/api/dashboard/edit-employee',{
                        <IconDesignation size="24px" color="stroke-light-400" />
       </DropDown>     
       <DropDown
-        items={items}
+        items={userRoles}
         required={true}
         setData={addItemForm}
         value={formData?.role || user?.role}
@@ -136,7 +138,7 @@ fetch('/api/dashboard/edit-employee',{
     </Wrapper>
     <Wrapper className="flex gap-[15px]">
       <DropDown
-        items={items}
+        items={department}
         required={true}
         setData={addItemForm}
         value={formData?.department ||  user?.department}

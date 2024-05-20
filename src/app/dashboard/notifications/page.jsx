@@ -1,8 +1,10 @@
-import AllEmployees from "@/app/components/Dashboard/Employees/AllEmployees";
-import AddEmployee from "@/app/components/Form/AddEmployee/AddEmployee";
+import './style.css'
 import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
 import Container from "@/app/components/Ui/DashboardContainer/Container";
-import AccessDenied from "@/app/components/Ui/AccessDenied/AccessDenied";
+import RecentNotifications from "@/app/components/Dashboard/Notifications/RecentNotifications";
+import AddNotification from "@/app/components/Dashboard/Notifications/AddNotification";
+
+
 
 export const metadata = {
   title: "Employee Data - Hr Portal",
@@ -12,11 +14,10 @@ export const metadata = {
 const page = () => {
   return (
  <>
- <Container heading='Employees'>
+ <Container heading='Notifications'>
   <Wrapper className='flex justify-between gap-[15px]'>
-  <AllEmployees/>
-  <AddEmployee/>
-  <AccessDenied permission='view-employee' message='View Employees'/>
+  <RecentNotifications/>
+  <AddNotification/>
  </Wrapper>
  </Container>
  </>

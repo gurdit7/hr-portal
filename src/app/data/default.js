@@ -1,4 +1,8 @@
-export const gender = ["Male", "Female", "Others"];
-export const userType = ["Permanent", "Trainee"];
-export const designation = ['HR',  'Manager', 'Team Lead', 'Graphic Designer', 'Web designer', 'Web Developer', 'Software Tester', 'Manual Tester', 'Mern Stack Developer', 'Full Stack Developer', 'Frontend Developer', 'Node Developer', 'PHP Developer'];
+export const gender = ["male", "female", "others"];
+export const userType = ["all", "permanent", "trainee"];
+export const designation = ['hr',  'manager', 'team lead', 'graphic designer', 'web designer', 'web developer', 'software tester', 'manual tester', 
+'mern stack developer', 'full stack developer', 'frontend developer', 'node developer', 'php developer'];
 export const userStatus = ['active', 'archive'];
+export const department = ['seo', 'node', 'web development'];
+export const leaveSort = ['pending', 'approved', 'not approved'];
+export const duration = ['Full Day', 'Halft Day', 'Short Leave', 'Other'];

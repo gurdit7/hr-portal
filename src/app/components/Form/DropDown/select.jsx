@@ -22,7 +22,7 @@ const DropDown = ({
         }}
         required={required}
         name={name}
-        className={`text-base  bg-white placeholder:text-c-gray-400 pl-[61px] pr-[60px]  border border-light-600 rounded-[60px]  font-medium  p-4 max-sm:p-2 ${value ? 'text-text-dark' : 'text-light-600' }`}
+        className={`text-base  bg-white capitalize placeholder:text-c-gray-400 pl-[20px] indent-8 pr-[20px]  border border-light-600 rounded-[60px]  font-medium  p-4 max-sm:p-2 ${value ? 'text-text-dark' : 'text-light-600' }`}
       >
         <option disabled data-index="0" value=''>
           {placeholder}

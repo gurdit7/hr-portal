@@ -46,6 +46,18 @@ const userSchema = new Schema({
         },
         status:{
             type:String
+        },
+        totalLeaveTaken:{
+            type:String
+        },
+        balancedLeaves:{
+            type:String
+        },
+        balancedSandwichLeaves:{
+            type:String
+        },
+        balancedSandwichLeavesTaken:{
+            type:String
         }
 },{timestamps:true})
 

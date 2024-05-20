@@ -12,7 +12,7 @@ import IconUserType from "@/app/components/Icons/IconUserType";
 import H2 from "@/app/components/Ui/H2/H2";
 import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
 import Notification from "@/app/components/Ui/notification/success/Notification";
-import { designation, gender, userType } from "@/app/data/default";
+import { department, designation, gender, userType } from "@/app/data/default";
 import { useState } from "react";
 import ErrorNotification from "../../Ui/notification/loader/LoaderNotification";
 import sendEmail from "@/app/mailer/mailer";
@@ -21,7 +21,7 @@ import useAuth from "@/app/contexts/Auth/auth";
 const AddEmployee = () => {
   const [formData, setFromData] = useState({});
   const [loading, setLoading] = useState(false);
-  const {userPermissions} = useAuth();
+  const {userPermissions,userRoles, setAddEmployee} = useAuth();
   const [success, setSuccess] = useState({
     active: false,
     animation: false,
@@ -59,7 +59,9 @@ const AddEmployee = () => {
             <p style="text-align:center;">Your Password is : <strong>fc@123456</strong>.</p>
             <p style="text-align:center;">To change you password please forgot password.</p>
             `
-          ).then(function (data) {});
+          ).then(function (data) {
+            setAddEmployee(true);
+          });
           setSuccess({
             active: true,
             animation: true,
@@ -168,7 +170,7 @@ const AddEmployee = () => {
                                  <IconDesignation size="24px" color="stroke-light-400" />
                 </DropDown>     
                 <DropDown
-                  items={items}
+                  items={userRoles}
                   required={true}
                   setData={addItemForm}
                   value={formData?.role || ""}
@@ -180,7 +182,7 @@ const AddEmployee = () => {
               </Wrapper>
               <Wrapper className="flex gap-[15px]">
                 <DropDown
-                  items={items}
+                  items={department}
                   required={true}
                   setData={addItemForm}
                   value={formData?.department || ""}

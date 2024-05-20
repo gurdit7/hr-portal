@@ -4,7 +4,7 @@ import { useRouter,usePathname } from "next/navigation";
 import useAuth from "@/app/contexts/Auth/auth";
 
 const GetUserData = (session) => {
-    const {setUserData, setUserLoggedIn, setPermissions} = useAuth();
+    const {setUserData, setUserLoggedIn, setPermissions, getUserRoles, getUserNotifications, getUsers, getLeaves} = useAuth();
     const router = useRouter();
     const location = usePathname();
     useEffect(()=>{
@@ -19,6 +19,10 @@ const GetUserData = (session) => {
             return res.json();
           })
           .then(async function (data) {
+            getUsers();
+            getUserRoles();
+            getUserNotifications();
+            getLeaves(data?.user?.userID)
             setUserData(data?.user);
             setPermissions(data?.permissions);
           });

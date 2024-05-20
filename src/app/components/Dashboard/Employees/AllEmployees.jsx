@@ -15,59 +15,90 @@ import Modal from "../../Ui/Modal/Modal";
 import Text from "../../Ui/Text/Text";
 import EditEmployee from "../../Form/EditEmployee/EditEmployee";
 import Pagination from "../../Ui/Pagination/Pagination";
+import { formatDate } from "@/app/utils/DateFormat";
 
 const AllEmployees = () => {
   const [sortby, setSortBy] = useState("");
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState([]);
-  const { userPermissions } = useAuth();
+  const { userPermissions, addEmployee, setAddEmployee } = useAuth();
   const [view, setView] = useState(false);
   const [editEmployee, setEditEmployee] = useState(false);
-  const [index,setIndex] = useState(0);
-  const [count,setCount] = useState('');
+  const [index, setIndex] = useState(0);
+  const [count, setCount] = useState("");
+  const [error, setError] = useState(false);
   useEffect(() => {
-    fetch("/api/dashboard/all-employee",{
-      method:'POST',
-      body:JSON.stringify({index:index,limit:10})
+    fetch("/api/dashboard/all-employee", {
+      method: "POST",
+      body: JSON.stringify({ index: index, limit: 10 }),
     })
       .then(function (res) {
         return res.json();
       })
-      .then(async function (data) {  
-        setCount(data?.count);      
+      .then(async function (data) {
+        setCount(data?.count);
         setUsers(data?.data);
+
+        if (data?.data.length === 0) {
+          setError(true);
+        } else {
+          setError(false);
+        }
+        setAddEmployee(false)
       });
-  }, [editEmployee,index]);
+  }, [editEmployee, index, addEmployee]);
 
   const getSortBy = (e) => {
-    setSortBy(e.target.value);
+    setSortBy(e.target.value)
+    fetch("/api/dashboard/filter-employee", {
+      method: "POST",
+      body: JSON.stringify({
+        userType: e.target.value,
+        index: index,
+        sort:true,
+        limit: 10,
+      }),
+    })
+      .then(function (res) {
+        return res.json();
+      })
+      .then(async function (data) {
+        setCount(data?.count);
+        setUsers(data?.data);
+        if (data?.data.length === 0) {
+          setError(true);
+        } else {
+          setError(false);
+        }
+      });
   };
   const getSearch = (e) => {
     setSearch(e.target.value);
+    fetch("/api/dashboard/filter-employee", {
+      method: "POST",
+      body: JSON.stringify({
+        search: e.target.value,
+        index: index,
+        sort:false,
+        limit: 10,
+      }),
+    })
+      .then(function (res) {
+        return res.json();
+      })
+      .then(async function (data) {
+        setCount(data?.count);
+        setUsers(data?.data);
+        if (data?.data.length === 0) {
+          setError(true);
+        } else {
+          setError(false);
+        }
+      });
   };
 
-  const formatDate = (dateString) => {
-    const monthName = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-    const date = new Date(dateString);
-    const month = date.getMonth();
-    const day = date.getDate();
-    const year = date.getFullYear();
-    return `${day}, ${monthName[month]} ${year}`;
-  };
+
   const closeViewModal = (e) => {
     setView(e);
   };
@@ -82,22 +113,22 @@ const AllEmployees = () => {
   const closeEditModal = (e) => {
     setEditEmployee(e);
   };
-  const getIndex = (e)=> {
-    setIndex(e)
-  }
+  const getIndex = (e) => {
+    setIndex(e);
+  };
   return (
     <>
       {userPermissions && userPermissions?.includes("view-employee") && (
         <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full">
           <Wrapper className="flex justify-between items-center">
-            <H2>Employees</H2>
+            <H2>All Employees</H2>
             <DropDown
               items={userType}
               setData={getSortBy}
               value={sortby}
               placeholder="Sort By"
               name="Sort By"
-              className="!flex-none"
+              className="!flex-none max-w-[195px] w-full"
             >
               <IconSort size="24px" color="fill-light-400" />
             </DropDown>
@@ -144,19 +175,19 @@ const AllEmployees = () => {
                       index > 0 ? "border-t border-light-500" : ""
                     }`}
                   >
-                    <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark">
+                    <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
                       {index + 1}
                     </Wrapper>
-                    <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark">
+                    <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
                       {user.name}
                     </Wrapper>
-                    <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark">
+                    <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
                       {user.department}
                     </Wrapper>
-                    <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark">
+                    <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
                       {user.designation}
                     </Wrapper>
-                    <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark">
+                    <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
                       {formatDate(user.incrementDate)}
                     </Wrapper>
                     <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark flex gap-[2px]">
@@ -176,10 +207,10 @@ const AllEmployees = () => {
                   </Wrapper>
                 ))}
             </Wrapper>
+            {error && <Text className="text-center my-4">No Record Found.</Text>}
             {count > 0 && (
-        <div></div>
-      )}
-      <Pagination count={5} getIndex={getIndex} index={index} />
+              <Pagination count={5} getIndex={getIndex} index={index} />
+            )}
           </Wrapper>
         </Wrapper>
       )}
@@ -193,43 +224,43 @@ const AllEmployees = () => {
           <Wrapper className="bg-white rounded-[10px] p-5 max-w-[895px] w-full m-auto">
             <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
               <Text className="!text-light-400"> Name</Text>
-              <Text> {user?.name}</Text>
+              <Text className="capitalize"> {user?.name}</Text>
             </Wrapper>
             <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
               <Text className="!text-light-400"> Email Address</Text>
-              <Text> {user?.email}</Text>
+              <Text className=""> {user?.email}</Text>
             </Wrapper>
             <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
               <Text className="!text-light-400"> Join Date</Text>
-              <Text> {formatDate(user?.joinDate)}</Text>
+              <Text className="capitalize"> {formatDate(user?.joinDate)}</Text>
             </Wrapper>
             <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
               <Text className="!text-light-400"> Role</Text>
-              <Text> {user?.role}</Text>
+              <Text className="capitalize"> {user?.role}</Text>
             </Wrapper>
             <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
               <Text className="!text-light-400"> Department</Text>
-              <Text> {user?.department}</Text>
+              <Text className="capitalize"> {user?.department}</Text>
             </Wrapper>
             <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
               <Text className="!text-light-400"> DOB</Text>
-              <Text> {user?.DOB}</Text>
+              <Text className="capitalize"> {user?.DOB}</Text>
             </Wrapper>
             <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
               <Text className="!text-light-400"> Gender</Text>
-              <Text> {user?.gender}</Text>
+              <Text className="capitalize"> {user?.gender}</Text>
             </Wrapper>
             <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
               <Text className="!text-light-400"> Increment Date</Text>
-              <Text> {user?.incrementDate}</Text>
+              <Text className="capitalize"> {user?.incrementDate}</Text>
             </Wrapper>
             <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
               <Text className="!text-light-400"> User Type</Text>
-              <Text> {user?.userType}</Text>
+              <Text className="capitalize"> {user?.userType}</Text>
             </Wrapper>
             <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
               <Text className="!text-light-400">Status</Text>
-              <Text> {user?.status || 'active'}</Text>
+              <Text className="capitalize"> {user?.status || "active"}</Text>
             </Wrapper>
           </Wrapper>
         </Modal>
@@ -240,8 +271,8 @@ const AllEmployees = () => {
           hideModal={closeEditModal}
           heading={"Edit Employee - " + user?.name}
         >
-          <Wrapper className='max-w-[510px] m-auto'>
-          <EditEmployee user={user} closePopup={closeEditModal} />
+          <Wrapper className="max-w-[510px] m-auto">
+            <EditEmployee user={user} closePopup={closeEditModal} />
           </Wrapper>
         </Modal>
       )}
