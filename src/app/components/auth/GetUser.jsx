@@ -22,17 +22,20 @@ const GetUserData = (session) => {
             getUsers();
             getUserRoles();
             getUserNotifications();
-            getLeaves(data?.user?.userID)
+            getLeaves(data?.user?.userID)            
             setUserData(data?.user);
             setPermissions(data?.permissions);
+            
+            if(location === '/account/register' || location === '/account/login'){
+    
+              router.push('/', { scroll: false })
+      
+            }
           });
         setTimeout(() => {
           setUserLoggedIn(true)
         }, 2000);
-
-        if(location === '/account/register' || location === '/account/login'){
-          router.push('/', { scroll: false })
-        }
+    
         }
         else{
             if(location === '/account/register' || location === '/account/login'){

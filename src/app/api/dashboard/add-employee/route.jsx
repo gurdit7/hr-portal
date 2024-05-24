@@ -39,11 +39,39 @@ export const POST = async (request) => {
         gender:payload?.gender,
         department:payload?.department,
         DOB:payload?.DOB,
+        currentSalary:payload?.currentSalary,
         incrementDate:payload?.incrementDate
           });
 
       return new NextResponse(JSON.stringify(result), { status: 200 });
     }
+  } catch (error) {
+    console.log("error>>", error);
+    return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });
+  }
+};
+
+
+export const PUT = async (request) => {
+  try {
+    const db =  await connect();
+    const payload = await request.json();
+    const userDataPerson =  await UsersData.updateOne(
+      { email: payload?.email },
+      {
+        personalEmail:payload?.personalEmail,
+        currentAddress:payload?.currentAddress,
+        permanentAddress:payload?.permanentAddress,
+        phoneNumber:payload?.phoneNumber,
+        accountNumber:payload?.accountNumber,
+        IFSC:payload?.IFSC   
+      }
+    )   
+    const data = await UsersData.findOne({ email: payload?.email })
+    .then(async (userExist) => {
+      return userExist;
+    });
+    return new NextResponse(JSON.stringify(data), { status: 200 });
   } catch (error) {
     console.log("error>>", error);
     return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });

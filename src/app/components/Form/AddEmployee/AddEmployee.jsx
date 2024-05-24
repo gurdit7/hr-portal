@@ -17,6 +17,7 @@ import { useState } from "react";
 import ErrorNotification from "../../Ui/notification/loader/LoaderNotification";
 import sendEmail from "@/app/mailer/mailer";
 import useAuth from "@/app/contexts/Auth/auth";
+import IconSalary from "../../Icons/IconSalary";
 
 const AddEmployee = () => {
   const [formData, setFromData] = useState({});
@@ -237,7 +238,22 @@ const AddEmployee = () => {
                     {formData?.incrementDate || "Increment Date"}
                   </label>
                 </Wrapper>
+         
               </Wrapper>
+              <Wrapper className="relative w-full flex-1">
+                  <Input
+                    label="Current Salary"
+                    placeholder="Current Salary"
+                    setData={addItemForm}
+                    type="text"
+                    required={true}
+                    value={formData?.currentSalary || ""}
+                    name="currentSalary"
+                    className="border-light-600 border"
+                  >
+                    <IconSalary size="24px" color="fill-light-400" />
+                  </Input>            
+                </Wrapper>
               <FormButton
                 type="submit"
                 loadingText="Adding..."

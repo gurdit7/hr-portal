@@ -16,6 +16,7 @@ export const POST = async (request) => {
           department:payload?.department,
           DOB:payload?.DOB,
           incrementDate:payload?.incrementDate,
+          currentSalary:payload?.currentSalary,
           status:payload?.status,
           userType:payload?.userType      
         }

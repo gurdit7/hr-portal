@@ -10,14 +10,33 @@ import IconProfile from "@/app/components/Icons/IconProfile";
 import IconUserType from "@/app/components/Icons/IconUserType";
 import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
 import { department, designation, gender, userStatus, userType } from "@/app/data/default";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Notification from "../../Ui/notification/success/Notification";
 import useAuth from "@/app/contexts/Auth/auth";
+import IconSalary from "../../Icons/IconSalary";
 const EditEmployee = ({user,closePopup}) => {
+    const {userData} = useAuth();
     const [formData, setFromData] = useState({});
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const {userRoles} = useAuth();
+    useEffect(()=>{
+      setFromData({
+        userType:userData?.userType,
+        name:userData?.name,
+        joinDate: userData?.joinDate,
+        designation: userData?.designation,
+        role:userData?.role,
+        gender: userData?.gender,
+        department: userData?.department,
+        DOB: userData?.DOB,
+        incrementDate: userData?.incrementDate,
+        userID:userData?.userID,
+        email:userData?.email,
+        currentSalary:userData?.currentSalary,
+        status: userData?.status 
+      })
+    },[userData])
     const submitForm = (e) => {
         setLoading(true);
         e.preventDefault();
@@ -194,7 +213,20 @@ fetch('/api/dashboard/edit-employee',{
         </label>
       </Wrapper>
     </Wrapper>
- 
+    <Wrapper className="relative w-full flex-1">
+                  <Input
+                    label="Current Salary"
+                    placeholder="Current Salary"
+                    setData={addItemForm}
+                    type="text"
+                    required={true}
+                    value={formData?.currentSalary || ""}
+                    name="currentSalary"
+                    className="border-light-600 border"
+                  >
+                    <IconSalary size="24px" color="fill-light-400" />
+                  </Input>            
+                </Wrapper>
     <FormButton
       type="submit"
       loadingText="Updating..."

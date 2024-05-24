@@ -32,7 +32,7 @@ const Sidebar = () => {
             >
               HR PORTAL
             </Text>
-            <ProfileImage size={sidebarCollapse ? "46px" : "134px"} />
+            <ProfileImage size={sidebarCollapse ? "46" : "100"} />
             <Text
               className={` font-poppins font-semibold text-center text-white mt-[10px] ${
                 sidebarCollapse ? "text-sm font-normal" : "!text-lg"

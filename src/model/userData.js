@@ -58,6 +58,33 @@ const userSchema = new Schema({
         },
         balancedSandwichLeavesTaken:{
             type:String
+        },
+        coverImage:{
+            type:String
+        },
+        profileImage:{
+            type:String
+        },
+        currentSalary:{
+            type:String
+        },
+        personalEmail:{
+            type:String
+        },
+        currentAddress:{
+            type:String
+        },
+        permanentAddress:{
+            type:String
+        },
+        phoneNumber:{
+            type:String
+        },
+        accountNumber:{
+            type:String
+        },
+        IFSC:{
+            type:String
         }
 },{timestamps:true})
 

@@ -47,10 +47,10 @@ const Password = ({
 </span>)}
 <button className="right-[25px] absolute top-[15px]" type="button" onClick={viewClicked}>
   {view && (<svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M13.2505 16.6301C12.4381 16.8401 11.5957 16.9401 10.7232 16.9401C7.44367 16.9401 4.50516 15.4101 2.49934 12.9901C1.09527 11.3001 1.09527 8.69006 2.49934 7.01006C2.65981 6.81006 2.84033 6.62005 3.02085 6.43005" stroke="#C2C3CB" strokeWidth="1.5" strokeLineCap="round" strokeLinejoin="round"/>
-<path d="M18.947 12.9901C18.1447 13.9501 17.192 14.7701 16.1389 15.4101L5.29749 4.59006C6.89211 3.61006 8.73746 3.06006 10.7232 3.06006C14.0027 3.06006 16.9412 4.59006 18.947 7.01006C20.3511 8.69006 20.3511 11.3101 18.947 12.9901Z" stroke="#C2C3CB" strokeWidth="1.5" strokeLineCap="round" strokeLinejoin="round"/>
-<path d="M13.8122 10C13.8122 10.85 13.4611 11.62 12.9095 12.18L8.53687 7.82005C9.08846 7.26005 9.87073 6.92004 10.7232 6.92004C12.4382 6.92004 13.8122 8.29005 13.8122 10Z" stroke="#C2C3CB" strokeWidth="1.5" strokeLineCap="round" strokeLinejoin="round"/>
-<path d="M1.44629 0.75L5.29745 4.59L8.53684 7.82L12.9095 12.18L16.1489 15.41L20.0001 19.25" stroke="#C2C3CB" strokeWidth="1.5" strokeLineCap="round" strokeLinejoin="round"/>
+<path d="M13.2505 16.6301C12.4381 16.8401 11.5957 16.9401 10.7232 16.9401C7.44367 16.9401 4.50516 15.4101 2.49934 12.9901C1.09527 11.3001 1.09527 8.69006 2.49934 7.01006C2.65981 6.81006 2.84033 6.62005 3.02085 6.43005" stroke="#C2C3CB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+<path d="M18.947 12.9901C18.1447 13.9501 17.192 14.7701 16.1389 15.4101L5.29749 4.59006C6.89211 3.61006 8.73746 3.06006 10.7232 3.06006C14.0027 3.06006 16.9412 4.59006 18.947 7.01006C20.3511 8.69006 20.3511 11.3101 18.947 12.9901Z" stroke="#C2C3CB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+<path d="M13.8122 10C13.8122 10.85 13.4611 11.62 12.9095 12.18L8.53687 7.82005C9.08846 7.26005 9.87073 6.92004 10.7232 6.92004C12.4382 6.92004 13.8122 8.29005 13.8122 10Z" stroke="#C2C3CB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+<path d="M1.44629 0.75L5.29745 4.59L8.53684 7.82L12.9095 12.18L16.1489 15.41L20.0001 19.25" stroke="#C2C3CB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
 </svg>
 ) }
 {!view && (<svg width="21" height="21" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

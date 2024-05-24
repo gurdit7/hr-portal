@@ -224,7 +224,7 @@ const ForgotPassword = () => {
     e.preventDefault();
 
     if (formDataNewPassword?.password === formDataNewPassword?.cpassword) {
-      if (formDataNewPassword?.password.length < 9 && formDataNewPassword?.cpassword.length < 9) {
+      if (formDataNewPassword?.password.length < 8 && formDataNewPassword?.cpassword.length < 8) {
         setLoading(false);
         setError(true);
         setErrorAnimation(true);

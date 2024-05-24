@@ -13,6 +13,8 @@ import Notification from "../../Ui/notification/success/Notification";
 import ErrorNotification from "../../Ui/notification/loader/LoaderNotification";
 const LoginForm = () => {
   const route = useRouter();
+  const {userData} = useAuth();
+  const [active, setActive] = useState(false)
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState({
@@ -51,11 +53,13 @@ const LoginForm = () => {
 
           setTimeout(() => {
             setUserLoggedIn(true);
-            setUserData({email:data?.user?.email,userId:data?.user?.userID});
+            setUserData(data?.user);
+            route.push('/'); 
             setPermissions(data?.permissions);
           }, 500);
+           
+          
 
-          route.push('/');
         } else if (data?.status === 403) {
           setError({
             active: true,
@@ -127,7 +131,7 @@ const LoginForm = () => {
         btnType="solid"
       />
       <Text className="text-center font-poppins text-sm font-medium text-white">
-        Can't remember password?{" "}
+        Can&apos;t remember password?{" "}
         <FormButton
           event={forgotPassword}
           label="Forgot Password"
