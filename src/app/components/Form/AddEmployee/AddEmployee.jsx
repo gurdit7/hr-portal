@@ -20,6 +20,7 @@ import useAuth from "@/app/contexts/Auth/auth";
 import IconSalary from "../../Icons/IconSalary";
 
 const AddEmployee = () => {
+  const {getUsers} = useAuth();
   const [formData, setFromData] = useState({});
   const [loading, setLoading] = useState(false);
   const {userPermissions,userRoles, setAddEmployee} = useAuth();
@@ -60,14 +61,16 @@ const AddEmployee = () => {
             <p style="text-align:center;">Your Password is : <strong>fc@123456</strong>.</p>
             <p style="text-align:center;">To change you password please forgot password.</p>
             `
-          ).then(function (data) {
+          ).then(function (data) {            
             setAddEmployee(true);
+            getUsers();
+            setSuccess({
+              active: true,
+              animation: true,
+              message: "User added successfully!",
+            });
           });
-          setSuccess({
-            active: true,
-            animation: true,
-            message: "User added successfully!",
-          });
+   
         } else if (data?.status === 403) {
           setError({
             active: true,
@@ -82,7 +85,9 @@ const AddEmployee = () => {
           });
         }
         setLoading(false);
-        setFromData("");  
+        setFromData({
+          userType:'User Type'
+        });
         setTimeout(() => {
           setError({
             active: false,
@@ -153,7 +158,7 @@ const AddEmployee = () => {
                   >
                     <IconDate size="24px" color="stroke-light-400" />
                   </Input>
-                  <label className={`absolute left-[61px] top-[17px] pointer-events-none text-light-600 ${formData?.joinDate ? 'text-text-dark' : 'text-light-600'}`}>
+                  <label className={`absolute left-[48px] top-[38px] pointer-events-none text-light-600 ${formData?.joinDate ? 'text-text-dark' : 'text-light-600'}`}>
                     {formData?.joinDate || "Join Date"}
                   </label>
                 </Wrapper>
@@ -217,7 +222,7 @@ const AddEmployee = () => {
                   >
                     <IconDate size="24px" color="stroke-light-400" />
                   </Input>
-                  <label className={`absolute left-[61px] top-[17px] pointer-events-none ${formData?.DOB ? 'text-text-dark' : 'text-light-600'}`}>
+                  <label className={`absolute left-[48px] top-[38px] pointer-events-none ${formData?.DOB ? 'text-text-dark' : 'text-light-600'}`}>
                     {formData?.DOB || "DOB"}
                   </label>
                 </Wrapper>
@@ -234,7 +239,7 @@ const AddEmployee = () => {
                   >
                     <IconDate size="24px" color="stroke-light-400" />
                   </Input>
-                  <label className={`absolute left-[61px] top-[17px] pointer-events-none text-light-600 ${formData?.incrementDate ? 'text-text-dark' : 'text-light-600'}`}>
+                  <label className={`absolute left-[48px] top-[38px] pointer-events-none text-light-600 ${formData?.incrementDate ? 'text-text-dark' : 'text-light-600'}`}>
                     {formData?.incrementDate || "Increment Date"}
                   </label>
                 </Wrapper>

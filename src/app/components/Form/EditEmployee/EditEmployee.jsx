@@ -15,26 +15,26 @@ import Notification from "../../Ui/notification/success/Notification";
 import useAuth from "@/app/contexts/Auth/auth";
 import IconSalary from "../../Icons/IconSalary";
 const EditEmployee = ({user,closePopup}) => {
-    const {userData} = useAuth();
+    const {userData, getUsers} = useAuth();
     const [formData, setFromData] = useState({});
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const {userRoles} = useAuth();
     useEffect(()=>{
       setFromData({
-        userType:userData?.userType,
-        name:userData?.name,
-        joinDate: userData?.joinDate,
-        designation: userData?.designation,
-        role:userData?.role,
-        gender: userData?.gender,
-        department: userData?.department,
-        DOB: userData?.DOB,
-        incrementDate: userData?.incrementDate,
-        userID:userData?.userID,
-        email:userData?.email,
-        currentSalary:userData?.currentSalary,
-        status: userData?.status 
+        userType:user?.userType,
+        name:user?.name,
+        joinDate: user?.joinDate,
+        designation: user?.designation,
+        role:user?.role,
+        gender: user?.gender,
+        department: user?.department,
+        DOB: user?.DOB,
+        incrementDate: user?.incrementDate,
+        userID:user?.userID,
+        email:user?.email,
+        currentSalary:user?.currentSalary,
+        status: user?.status 
       })
     },[userData])
     const submitForm = (e) => {
@@ -55,6 +55,7 @@ fetch('/api/dashboard/edit-employee',{
             incrementDate:formData?.incrementDate || user?.incrementDate,
             userID:user?.userID,
             email:user?.email,
+            currentSalary:formData?.currentSalary || user?.currentSalary,
             status:formData?.status || user?.status || 'active'
         }
     )
@@ -62,6 +63,7 @@ fetch('/api/dashboard/edit-employee',{
     return res.json()
 }).then((res)=>{
   setSuccess(true)
+  getUsers();
   setTimeout(() => {
     setLoading(false); 
     closePopup(false)   
@@ -94,7 +96,7 @@ fetch('/api/dashboard/edit-employee',{
         items={userStatus}
         required={true}
         setData={addItemForm}
-        value={formData?.status || 'active'}
+        value={formData?.status ||  user?.status}
         name="status"
         placeholder={"User Status"}
       >
@@ -127,7 +129,7 @@ fetch('/api/dashboard/edit-employee',{
         >
           <IconDate size="24px" color="stroke-light-400" />
         </Input>
-        <label className={`absolute left-[61px] top-[17px] pointer-events-none text-light-600 ${formData?.joinDate || user?.joinDate ? 'text-text-dark' : 'text-light-600'}`}>
+        <label className={`absolute left-[48px] top-[38px] pointer-events-none text-light-600 ${formData?.joinDate || user?.joinDate ? 'text-text-dark' : 'text-light-600'}`}>
           {formData?.joinDate || user?.joinDate || "Join Date"}
         </label>
       </Wrapper>
@@ -191,7 +193,7 @@ fetch('/api/dashboard/edit-employee',{
         >
           <IconDate size="24px" color="stroke-light-400" />
         </Input>
-        <label className={`absolute left-[61px] top-[17px] pointer-events-none ${formData?.DOB || user?.DOB ? 'text-text-dark' : 'text-light-600'}`}>
+        <label className={`absolute left-[48px] top-[38px] pointer-events-none ${formData?.DOB || user?.DOB ? 'text-text-dark' : 'text-light-600'}`}>
           {formData?.DOB || user?.DOB || "DOB"}
         </label>
       </Wrapper>
@@ -208,7 +210,7 @@ fetch('/api/dashboard/edit-employee',{
         >
           <IconDate size="24px" color="stroke-light-400" />
         </Input>
-        <label className={`absolute left-[61px] top-[17px] pointer-events-none text-light-600 ${formData?.incrementDate || user?.incrementDate ? 'text-text-dark' : 'text-light-600'}`}>
+        <label className={`absolute left-[48px] top-[38px] pointer-events-none text-light-600 ${formData?.incrementDate || user?.incrementDate ? 'text-text-dark' : 'text-light-600'}`}>
           {formData?.incrementDate || user?.incrementDate || "Increment Date"}
         </label>
       </Wrapper>

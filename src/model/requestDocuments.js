@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
-const { Schema} = mongoose;
 
-const userSchema = new Schema({
+const { Schema} = mongoose;
+const requestDocumentSchema = new Schema({
         email:{
             type:String,
             required:true
         },
-        subject:{
+        userID:{
             type:String,
             required:true
         },
@@ -14,18 +14,20 @@ const userSchema = new Schema({
             type:String,
             required:true
         },
-        attachment:{
-            type:String            
+        document:{
+            type:String,
+            required:true
         },
         description:{
             type:String
         },
-        sendDate:{
+        status:{
             type:String
         },
-        emails:{
+        file:{
             type:String
-        }
+        }            
+
 },{timestamps:true})
 
-export default  mongoose.models.Notifications || mongoose.model('Notifications', userSchema);
+export default  mongoose.models.RequestDocuments || mongoose.model('RequestDocuments', requestDocumentSchema);

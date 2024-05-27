@@ -31,7 +31,7 @@ const Date = ({
                 >
                  {children} 
                 </Input>     
-                <label className='absolute left-[61px] top-[17px] pointer-events-none text-light-600'>{date || placeholder}</label>          
+                <label className='absolute left-[48px] top-[34px] pointer-events-none text-light-600'>{date || placeholder}</label>          
 </Wrapper>
   );
 }

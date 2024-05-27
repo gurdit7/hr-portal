@@ -10,6 +10,7 @@ import IconNotes from "../../Icons/IconNotes";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import IconAttachment from "../../Icons/IconAttachment";
+import FormButton from "../../Form/FormButton/FormButton";
 
 const AddNotification = () => {
   const [formData, setFromData] = useState({});
@@ -48,7 +49,7 @@ const AddNotification = () => {
             
             });
             reader.readAsDataURL(e.target.files[0]);
-            console.log(reader)
+            
         setAttachment(e.target.files[0].name)
   }
   const items = ["HI"];
@@ -56,7 +57,7 @@ const AddNotification = () => {
   const submitForm = (e) => {
     setLoading(true);
     e.preventDefault();
-    fetch("/api/auth/sign-up", {
+    fetch("/api/dashboard/notifications", {
       method: "POST",
       body: JSON.stringify(formData),
     })
@@ -64,49 +65,17 @@ const AddNotification = () => {
         return res.json();
       })
       .then(async function (data) {
-        if (data?.email) {
-          await sendEmail(
-            data?.email,
-            "HR Portal - You are registerd.",
-            `<h2 style='text-align:center;font-size: 200%;line-height: 1;margin: 0;'>Your are registered to the The fabcode's HR Portal.</h2>
-            <p style="text-align:center;">Your Password is : <strong>fc@123456</strong>.</p>
-            <p style="text-align:center;">To change you password please forgot password.</p>
-            `
-          ).then(function (data) {
-            setAddNotification(true);
-          });
-          setSuccess({
-            active: true,
-            animation: true,
-            message: "User added successfully!",
-          });
-        } else if (data?.status === 403) {
-          setError({
-            active: true,
-            animation: true,
-            message: "User Already Registerd.",
-          });
-        } else {
-          setError({
-            active: true,
-            animation: true,
-            message: "Something when wrong! Try again later.",
-          });
-        }
-        setLoading(false);
-        setFromData("");  
-        setTimeout(() => {
-          setError({
-            active: false,
-            animation: false,
-            message: "",
-          });
-          setSuccess({
-            active: false,
-            animation: false,
-            message: "",
-          });
-        }, 2000);
+        await sendEmail(
+          formData?.emails,
+          "HR Portal - You are registerd.",
+          `<h2 style='text-align:center;font-size: 200%;line-height: 1;margin: 0;'>Your are registered to the The fabcode's HR Portal.</h2>
+          <p style="text-align:center;">Your Password is : <strong>fc@123456</strong>.</p>
+          <p style="text-align:center;">To change you password please forgot password.</p>
+          `
+        ).then(function (data) {
+          console.log(data)
+          setLoading(false)
+        });
       });
   };
   return (
@@ -121,8 +90,8 @@ const AddNotification = () => {
                   setData={addItemForm}
                   type="email"
                   required={true}
-                  value={formData?.email || ""}
-                  name="email"
+                  value={formData?.emails || ""}
+                  name="emails"
                   multiple={true}
                   className="border-light-600 border"
                 >
@@ -147,7 +116,7 @@ const AddNotification = () => {
                   placeholder={attachment}
                   setData={addAttachment}
                   type="file"
-                  required={true}
+                  required={false}
                   value={formData?.attachment || ""}
                   name="attachment"
                   multiple={false}
@@ -155,6 +124,13 @@ const AddNotification = () => {
                 >
                   <IconAttachment size="24px" color="fill-light-400" />
                 </Input>
+                <FormButton
+                type="submit"
+                loadingText="Adding..."
+                loading={loading}
+                label="Add"
+                btnType="solid"
+              ></FormButton>
             </form>
             </Wrapper>
             )}

@@ -28,15 +28,17 @@ const AllEmployees = () => {
   const [index, setIndex] = useState(0);
   const [count, setCount] = useState("");
   const [error, setError] = useState(false);
+  const limit = 10;
   useEffect(() => {
     fetch("/api/dashboard/all-employee", {
       method: "POST",
-      body: JSON.stringify({ index: index, limit: 10 }),
+      body: JSON.stringify({ index: index, limit: limit }),
     })
       .then(function (res) {
         return res.json();
       })
       .then(async function (data) {
+        console.log(data?.count)
         setCount(data?.count);
         setUsers(data?.data);
 
@@ -117,7 +119,7 @@ const AllEmployees = () => {
     setIndex(e);
   };
   return (
-    <>
+    <>  
       {userPermissions && userPermissions?.includes("view-employee") && (
         <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full">
           <Wrapper className="flex justify-between items-center">
@@ -168,15 +170,15 @@ const AllEmployees = () => {
             </Wrapper>
             <Wrapper className="border border-light-500 border-t-0">
               {users &&
-                users.map((user, index) => (
+                users.map((user, i) => (
                   <Wrapper
-                    key={index}
-                    className={` flex items-center ${
-                      index > 0 ? "border-t border-light-500" : ""
+                    key={i}
+                    className={` flex items-center ${i} ${
+                      i > 0 ? "border-t border-light-500" : ""
                     }`}
                   >
                     <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
-                      {index + 1}
+                      {index > 0 ? i + 1 + limit * index : i + 1}
                     </Wrapper>
                     <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
                       {user.name}
@@ -209,7 +211,7 @@ const AllEmployees = () => {
             </Wrapper>
             {error && <Text className="text-center my-4">No Record Found.</Text>}
             {count > 0 && (
-              <Pagination count={5} getIndex={getIndex} index={index} />
+              <Pagination count={count} getIndex={getIndex} index={index} />
             )}
           </Wrapper>
         </Wrapper>

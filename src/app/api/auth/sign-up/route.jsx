@@ -48,6 +48,7 @@ export const POST = async (request) => {
         department: payload?.department,
         DOB: payload?.DOB,
         incrementDate: payload?.incrementDate,
+        currentSalary: payload?.currentSalary,
         totalLeaveTaken:0,
         balancedLeaves:totalLeave,
         balancedSandwichLeaves:balancedSandwichLeaves,

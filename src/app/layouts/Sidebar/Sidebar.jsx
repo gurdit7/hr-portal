@@ -12,6 +12,7 @@ import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 import IconNotification from "@/app/components/Icons/IconNotification";
 import IconEmployee from "@/app/components/Icons/IconEmployee";
 import IconLeave from "@/app/components/Icons/IconLeave";
+import IconSalary from "@/app/components/Icons/IconSalary";
 const Sidebar = () => {
   const { sidebarCollapse } = useThemeConfig();
   const { userLoggedIn, userPermissions, userData } = useAuth();
@@ -82,6 +83,21 @@ const Sidebar = () => {
                     size={"24px"}
                     color={
                       path === "/dashboard/leaves"
+                        ? "fill-dark-blue"
+                        : "fill-white"
+                    }
+                  />
+                </DashboardLink>
+                <DashboardLink
+                  sidebarCollapse={sidebarCollapse}
+                  href={"/dashboard/salary"}
+                  label="Salary"
+                  active={path === "/dashboard/salary"}
+                >
+                  <IconSalary
+                    size={"24px"}
+                    color={
+                      path === "/dashboard/salary"
                         ? "fill-dark-blue"
                         : "fill-white"
                     }

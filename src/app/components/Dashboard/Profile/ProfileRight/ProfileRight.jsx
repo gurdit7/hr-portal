@@ -10,12 +10,12 @@ import { formatDate } from "@/app/utils/DateFormat";
 import Link from "next/link";
 import { useState } from "react";
 
-const ProfileRight = () => {
+const ProfileRight = ({heading, button}) => {
   const [view, setView] = useState(false);
   const { userData } = useAuth();
   return (
     <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col w-full">
-      <H2>Salary</H2>
+      <H2>{heading}</H2>
       <Wrapper className="mt-[15px]">
         <Wrapper className="py-[10px] border-t border-b border-light-500 flex justify-between">
           <Text className="!text-light-400 flex-1">Current Salary</Text>
@@ -102,7 +102,7 @@ const ProfileRight = () => {
                   />
                 </svg>
               )}
-              {view && (userData?.currentSalary || "Not Added Yet")}
+              {view && (<span className="text-sm">{userData?.currentSalary || "Not Added Yet"}</span>)}
               <button onClick={() => setView((prevState) => !prevState)}>
                 {!view && <IconView size={"18px"} color={"fill-light-400"} />}
                 {view && (
@@ -154,15 +154,15 @@ const ProfileRight = () => {
           </Text>
         </Wrapper>
       </Wrapper>
-
-      <Wrapper className="mt-[15px]">
+{button && (      <Wrapper className="mt-[15px]">
         <FormButton
           type="button"
           label="Appraisal Form"
           btnType="solid"
           additionalCss="max-w-[250px] mx-auto block"
         />
-      </Wrapper>
+      </Wrapper>)}
+
     </Wrapper>
   );
 };

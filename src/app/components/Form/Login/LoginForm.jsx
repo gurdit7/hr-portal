@@ -116,6 +116,7 @@ const LoginForm = () => {
         <IconMail size="24px" color="fill-[#C2C3CB]" />
       </Input>
       <Password
+      label="Password"
         name="password"
         required
         setData={setFormValues}

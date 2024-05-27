@@ -2,12 +2,14 @@
 import PropTypes from "prop-types";
 import "./style.css";
 import { useState } from "react";
+import Wrapper from "../../Ui/Wrapper/Wrapper";
 const Password = ({
   required,
   setData,
   value,
   name,  
-  children
+  children,
+  label
 }) => {
   const [view,setView] = useState(false);
   const viewClicked = (e)=>{
@@ -20,8 +22,13 @@ const Password = ({
   let classes = "flex flex-col-reverse flex-1 relative w-full";
   return (
     <>
+    <Wrapper>
+    <span className="text-light-400 text-xs block mb-1">
+      {label}
+      </span>
+ 
       <div className={classes}>
-        <label className="pointer-events-none absolute top-[15px] left-[25px]">{children}</label>
+        <label className="pointer-events-none absolute top-[15px] left-[15px]">{children}</label>
         <input
           name={name}
           type={`${view ? 'text' : 'password'}`}
@@ -29,9 +36,9 @@ const Password = ({
           value={value}
           autoComplete=""
           onChange={onChange}
-          className="py-[15px] pl-[61px] pr-[25px] rounded-[80px] w-full placeholder-#C2C3CB"
+          className="py-[15px] pl-[48px] pr-[25px] rounded-lg w-full placeholder-#C2C3CB"
         />
-        {!value && (        <span className="absolute top-[23px] left-[64px] pointer-events-none"><svg width="118" height="8" viewBox="0 0 118 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {!value && (        <span className="absolute top-[23px] left-[48px] pointer-events-none"><svg width="118" height="8" viewBox="0 0 118 8" fill="none" xmlns="http://www.w3.org/2000/svg">
 <ellipse cx="3.51017" cy="4" rx="3.51017" ry="3.5" fill="#C2C3CB"/>
 <ellipse cx="14.5422" cy="4" rx="3.51017" ry="3.5" fill="#C2C3CB"/>
 <ellipse cx="25.5741" cy="4" rx="3.51017" ry="3.5" fill="#C2C3CB"/>
@@ -60,6 +67,7 @@ const Password = ({
 
 </button>
       </div>
+      </Wrapper>
     </>
   );
 };

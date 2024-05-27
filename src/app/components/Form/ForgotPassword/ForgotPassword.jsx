@@ -427,10 +427,11 @@ const ForgotPassword = () => {
             onSubmit={newPassword}
           >
             <Wrapper>
-              <label className="text-white mb-2 block">Password</label>
+              
               <Password
                 name="password"
                 required
+                label="Password"
                 setData={setNewFormData}
                 value={formDataNewPassword?.password || ""}
               >
@@ -438,10 +439,10 @@ const ForgotPassword = () => {
               </Password>
             </Wrapper>
             <Wrapper>
-              <label className="text-white mb-2 block">Confirm Password</label>
               <Password
                 name="cpassword"
                 required
+                label="Confirm Password"
                 setData={setNewFormData}
                 value={formDataNewPassword?.cpassword || ""}
               >

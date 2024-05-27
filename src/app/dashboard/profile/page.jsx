@@ -15,7 +15,7 @@ const page = () => {
       <Wrapper className='flex w-full gap-[15px] -mt-[50px] relative z-[1] px-[15px]'>
         <ProfileLeft/>
         <ProfileCenter/>
-        <ProfileRight/>
+        <ProfileRight heading="Salary" button={true} />
       </Wrapper>
     </Container>
   );

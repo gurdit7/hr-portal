@@ -23,7 +23,7 @@ const sendEmail = async (to, subject, html) => {
     const info = await transporter.sendMail(mailOptions);
     return true;
   } catch (error) {
-    return false;
+    return JSON.stringify(error);
   }
 };
 

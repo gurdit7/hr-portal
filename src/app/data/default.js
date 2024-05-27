@@ -6,3 +6,7 @@ export const userStatus = ['active', 'archive'];
 export const department = ['seo', 'node', 'web development'];
 export const leaveSort = ['pending', 'approved', 'not approved'];
 export const duration = ['Full Day', 'Halft Day', 'Short Leave', 'Other'];
+
+export const defaultTheme = {
+    requestDocumentsSuccess:'Request Sent.'
+}

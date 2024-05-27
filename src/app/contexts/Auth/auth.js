@@ -17,6 +17,7 @@ export function AuthProvider({ children }) {
     const [leaves, setLeaves] = useState([]);
     const [userRoles, setuserRoles] = useState(['hr','employee','admin', 'manager' , 'tl']);
     const [userNotifications, setUserNotifications] = useState('');
+    const [userNotificationsLength, setUserNotificationsLength] = useState('');
     const getUserRoles = () =>{
       fetch("/api/dashboard/roles/get")
         .then(function (res) {
@@ -31,12 +32,13 @@ export function AuthProvider({ children }) {
         });      
     }
     const getUserNotifications = () =>{
-      fetch("/api/dashboard/notifications")
+      fetch(`/api/dashboard/notifications?all=true&limit=3&start=0`)
         .then(function (res) {
           return res.json();
         })
         .then(async function (data) {
-          setUserNotifications(data)
+          setUserNotifications(data?.data);
+          setUserNotificationsLength(data?.length);
         });      
     }  
     const getUsers = () =>{

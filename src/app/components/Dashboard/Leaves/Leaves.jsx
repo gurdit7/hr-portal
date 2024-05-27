@@ -16,7 +16,7 @@ import { formatDate } from "@/app/utils/DateFormat";
 import IconGender from "../../Icons/IconGender";
 import IconClock from "../../Icons/IconClock";
 
-const Leaves = () => {
+const Leaves = ({heading}) => {
   const [formData, setFromData] = useState({});
   const { userPermissions, leaves, userData } = useAuth();
   const [user, setUser] = useState("");
@@ -42,8 +42,8 @@ const Leaves = () => {
 
   return (
     <>
-      {/* {userPermissions && userPermissions?.includes("balance-leaves") && ( */}
-      <Container heading="Leaves Managment">
+      {userPermissions && userPermissions?.includes("balance-leaves") && (
+      <Container heading={heading}>
         <Wrapper className="flex justify-between gap-[15px]">
           <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full items-center">
             <H1 className="text-light-500 text-[64px] leading-none">
@@ -125,7 +125,7 @@ const Leaves = () => {
           </Wrapper>
         </Wrapper>
       </Container>
-      {/* )} */}
+      )}
     </>
   );
 };

@@ -106,37 +106,12 @@ const RecentNotifications = () => {
     <>
       {userPermissions && userPermissions?.includes("view-users-notifications") && (
         <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full">
-          <Wrapper className="flex justify-between items-center">
-            <H2>Recent Notification</H2>
-            <DropDown
-              items={userType}
-              setData={getSortBy}
-              value={sortby}
-              placeholder="Sort By"
-              name="Sort By"
-              className="!flex-none max-w-[195px] w-full"
-            >
-              <IconSort size="24px" color="fill-light-400" />
-            </DropDown>
-          </Wrapper>
-          <Input
-            value={search}
-            setData={getSearch}
-            type="text"
-            placeholder="Search"
-            name="Search"
-            wrapperClassName="!flex-none"
-            className="border border-light-600"
-          >
-            <IconSearch size="24px" color="fill-light-400" />
-          </Input>
+
           <ItemRecentNotifications/>
           <Wrapper>
  
             {error && <Text className="text-center my-4">No Record Found.</Text>}
-            {count > 0 && (
-              <Pagination count={5} getIndex={getIndex} index={index} />
-            )}
+   
           </Wrapper>
         </Wrapper>
       )}

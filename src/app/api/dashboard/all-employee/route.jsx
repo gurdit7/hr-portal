@@ -9,7 +9,7 @@ export const POST = async (request) => {
     const payload = await request.json();    
     let count = await UsersData.find().count().then((e)=>{
       if(e > 10){
-        return e / payload?.limit;
+        return Math.ceil(e / payload?.limit);
       }
       else{
         return 0;

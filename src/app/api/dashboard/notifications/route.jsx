@@ -1,42 +1,94 @@
 import { NextResponse, NextRequest } from "next/server";
 import connect from "../../../libs/mongo/index";
 import Notifications from "@/model/notifications";
+import requestDocuments from "@/model/requestDocuments";
+import AppraisalForm from "@/model/AppraisalForm";
 
 export const GET = async (request) => {
   try {
-    await connect();  
-    const data = await Notifications.find()
-      .then((userExist) => {
-        if (userExist) {
-          return userExist;
-        }
-      })
-      .then((res) => {
-        return res;
-      });
+    await connect();
+    const url = new URL(request.url);
+    const all = url.searchParams.get("all");
+    const filter = url.searchParams.get("filter");
+    const start = url.searchParams.get("start");
+    const limit = url.searchParams.get("limit");
+    if (all === "false") {
+      const data = await Notifications.find()
+        .then((userExist) => {
+          if (userExist) {
+            return userExist;
+          }
+        })
+        .then((res) => {
+          return res;
+        });
       return new NextResponse(JSON.stringify(data), { status: 200 });
+    } else if (filter === "search") {
+      const search = url.searchParams.get("search");
+      const data = await requestDocuments
+        .find({
+          $or: [
+            { document: { $regex: search } },
+            { description: { $regex: search } },
+            { status: { $regex: search } },
+            { email: { $regex: search } },
+            { document: { $regex: search } },
+            { description: { $regex: search } },
+            { status: { $regex: search } },
+            { email: { $regex: search } },
+          ],
+        })
+        .limit(limit)
+        .skip(limit * start)
+        .sort({ $natural: -1 });
+      return new NextResponse(
+        JSON.stringify({ data: data, length: data.length }),
+        {
+          status: 200,
+        }
+      );
+    } else {
+      const requestDocument = await requestDocuments.find();
+      const notification = await Notifications.find();
+      const appraisal = await AppraisalForm.find();      
+      const allNotifications = [];      
+
+      allNotifications.push(...requestDocument);
+      allNotifications.push(...notification);
+      allNotifications.push(...appraisal);
+      
+      const result = allNotifications.sort((a, b) => {
+        return new Date(b.updatedAt) - new Date(a.updatedAt);
+      });
+      
+      const data = result.slice(start, Math.floor(start) + Math.floor(limit));
+      return new NextResponse(
+        JSON.stringify({ data: data, length: result.length }),
+        { status: 200 }
+      );
+      
     }
-    catch (error) {
-        return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });
-      }
+  } catch (error) {
+    return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });
+  }
 };
 
 export const POST = async (request) => {
-    try {
-      await connect();  
-      const payload = await request.json();
-      console.log(payload)
-      const date = new Date();
-      const notifications = new Notifications({
-        email: payload?.email,
-        subject: 'Leave On Monday',
-        attachment: 'https://thefabcode.org/wp-content/uploads/2022/12/aboutagency.png',
-        description: `Dear Sir, I hope this email finds you well. I am writing to inform you that I need to request a short leave from work today, 10-04-20204, due to an unexpected situation. Unfortunately, my eyeglasses broke today in morning, and I am unable to carry out my duties effectively without them. As such, I need to visit the optician's shop urgently to have them repaired or replaced. Given the nature of my work and the importance of clear vision, it's essential for me to resolve this issue promptly. I assure you that I will make every effort to minimize disruption to my tasks and team responsibilities during this short absence. I plan to complete any pending assignments before leaving and will ensure that my colleagues are briefed on any ongoing projects. I anticipate that the visit to the optician will not take more than a few hours. Thank you for your understanding and cooperation in this matter. Please let me know if there are any specific arrangements or instructions you would like to provide.<br> Best regards, <br>Gurdit Singh`,
-        sendDate: date
-      });
-      const result = await notifications.save();
-        return new NextResponse(JSON.stringify(result), { status: 200 });
-      }  catch (error) {
-          return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });
-        }
-  };
+  try {
+    await connect();
+    const payload = await request.json();
+    const date = new Date();
+    const notifications = new Notifications({
+      email: payload?.emails,
+      subject: payload?.subject,
+      attachment: payload?.attachment,
+      description: payload?.description,
+      name: payload?.name,
+      sendDate: payload?.sendDate,
+    });
+    const result = await notifications.save();
+    return new NextResponse(JSON.stringify(result), { status: 200 });
+  } catch (error) {
+    return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });
+  }
+};

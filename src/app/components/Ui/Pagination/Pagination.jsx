@@ -30,10 +30,10 @@ const Pagination = ({ count, index, getIndex }) => {
         getIndex(number);
         }
         if(num === count){
-            setIndex(4)
+            setIndex(count - 1)
             getIndex(count);
             setArrowForward(true)
-        }
+        }        
     }
     const setCount = (i)=>{
         getIndex(i);
@@ -43,7 +43,7 @@ const Pagination = ({ count, index, getIndex }) => {
  <div  onClick={()=>backword(_index)} className={ `w-8 text-base text-text-dark font-medium h-8 border flex items-center justify-center  border-light-500 ${arrowBackword ? 'opacity-30 cursor-not-allowed' : ' cursor-pointer'} ${_index === 0 ? 'opacity-30 cursor-not-allowed' : ' cursor-pointer'} `}>
       <IconArrowBackword size='12px' color='fill-black' />
 </div>
-{Array.from(Array(count), (e, i) => {
+{Array.from(Array(count), (e, i) => {    
     return <div key={i} onClick={()=> setCount(i)} className={ `w-8 text-base text-text-dark font-medium h-8 border flex items-center justify-center  border-light-500 ${_index === i ? 'bg-light-500 cursor-not-allowed' : 'cursor-pointer'}`}>
     {i + 1}
   </div>
