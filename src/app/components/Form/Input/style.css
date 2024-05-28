@@ -3,3 +3,18 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 opacity: 0;
 }
 
+input::-webkit-datetime-edit {
+    order: 2;
+    margin-left: 11px;
+}
+
+input[type="datetime-local" i]::-webkit-calendar-picker-indicator {
+    opacity: 0.4;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background-size: 18px;
+    background-position: 14px 18px;
+}

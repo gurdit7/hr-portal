@@ -5,8 +5,10 @@ export const designation = ['hr',  'manager', 'team lead', 'graphic designer', '
 export const userStatus = ['active', 'archive'];
 export const department = ['seo', 'node', 'web development'];
 export const leaveSort = ['pending', 'approved', 'not approved'];
-export const duration = ['Full Day', 'Halft Day', 'Short Leave', 'Other'];
+export const duration = ['Full Day', 'Half Day', 'Short Leave', 'Other'];
 
 export const defaultTheme = {
-    requestDocumentsSuccess:'Request Sent.'
+    requestDocumentsSuccess:'Request Sent.',
+    notificationsNoRecord:'You have no new notifications at the moment.',
+    leavesNoRecord:'You have no leaves at the moment.'
 }

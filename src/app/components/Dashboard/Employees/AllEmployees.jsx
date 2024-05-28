@@ -246,7 +246,7 @@ const AllEmployees = () => {
             </Wrapper>
             <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
               <Text className="!text-light-400"> DOB</Text>
-              <Text className="capitalize"> {user?.DOB}</Text>
+              <Text className="capitalize"> {formatDate(user?.DOB)}</Text>
             </Wrapper>
             <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
               <Text className="!text-light-400"> Gender</Text>
@@ -254,7 +254,7 @@ const AllEmployees = () => {
             </Wrapper>
             <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
               <Text className="!text-light-400"> Increment Date</Text>
-              <Text className="capitalize"> {user?.incrementDate}</Text>
+              <Text className="capitalize"> {formatDate(user?.incrementDate)}</Text>
             </Wrapper>
             <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
               <Text className="!text-light-400"> User Type</Text>

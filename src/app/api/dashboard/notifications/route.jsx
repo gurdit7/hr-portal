@@ -12,8 +12,9 @@ export const GET = async (request) => {
     const filter = url.searchParams.get("filter");
     const start = url.searchParams.get("start");
     const limit = url.searchParams.get("limit");
+    const email = url.searchParams.get("email");
     if (all === "false") {
-      const data = await Notifications.find()
+      const data = await Notifications.find({email:email})
         .then((userExist) => {
           if (userExist) {
             return userExist;
@@ -21,8 +22,8 @@ export const GET = async (request) => {
         })
         .then((res) => {
           return res;
-        });
-      return new NextResponse(JSON.stringify(data), { status: 200 });
+        });        
+      return new NextResponse(JSON.stringify({ data: data, length: data.length }), { status: 200 });
     } else if (filter === "search") {
       const search = url.searchParams.get("search");
       const data = await requestDocuments

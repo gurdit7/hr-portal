@@ -3,63 +3,64 @@
 import useAuth from "@/app/contexts/Auth/auth";
 import Wrapper from "../../Ui/Wrapper/Wrapper";
 import Text from "../../Ui/Text/Text";
-import H3 from "../../Ui/H3/H3";
-import { formatDate } from "@/app/utils/DateFormat";
-import { useEffect, useState } from "react";
-import Pagination from "../../Ui/Pagination/Pagination";
 import H2 from "../../Ui/H2/H2";
 import DropDown from "../../Form/DropDown/select";
 import Input from "../../Form/Input/Input";
 import IconSort from "../../Icons/IconSort";
-import { userType } from "@/app/data/default";
+import { defaultTheme, userType } from "@/app/data/default";
 import IconSearch from "../../Icons/IconSearch";
+import Pagination from "../../Ui/Pagination/Pagination";
+import Item from "./Item";
+import { useEffect, useState } from "react";
 
 const ItemRecentNotifications = () => {
-  const { userData } = useAuth();
-  const [emailID, setEmail] = useState(false);
-  const [name, setName] = useState(false);
-  const [userNotifications, setUserNotifications] = useState('');
+  const { userData, userPermissions } = useAuth();
+  const [emailID, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [userNotifications, setUserNotifications] = useState([]);
   const [userNotificationsLength, setUserNotificationsLength] = useState(0);
   const [limit, setLimit] = useState(5);
   const [count, setCount] = useState(0);
   const [start, setStart] = useState(0);
   const [sortby, setSortBy] = useState("");
   const [search, setSearch] = useState("");
-  const getIndex = (e) => {
-    setStart(e);
-  };
-  const getSearch = (e) => {
-    setSearch(e.target.value);
-  }
-  const getSortBy = (e) => {
-    setSortBy(e.target.value);
-  }
-  useEffect(()=>{
-    setCount(Math.ceil(userNotificationsLength/limit));
-  },[userNotificationsLength,limit])
-  useEffect(()=>{
-    setEmail(userData?.email);
-    setName(userData?.name);
-  },[userData])
-  useEffect(()=>{
-    fetch(`/api/dashboard/notifications?all=true&limit=${limit}&start=${start}`)
-    .then(function (res) {
-      return res.json();
-    })
-    .then(async function (data) {
-      setUserNotifications(data?.data);
-      setUserNotificationsLength(data?.length);
-    });  
-  },[limit,start])
 
+  useEffect(() => {
+    setEmail(userData?.email || "");
+    setName(userData?.name || "");
+  }, [userData]);
+
+  useEffect(() => {
+    setCount(Math.ceil(userNotificationsLength / limit));
+  }, [userNotificationsLength, limit]);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const all = !userPermissions?.includes("user-notifications");
+      const response = await fetch(
+        `/api/dashboard/notifications?all=${all}&limit=${limit}&start=${start}`
+      );
+      const data = await response.json();
+      setUserNotifications(data?.data || []);
+      setUserNotificationsLength(data?.length || 0);
+    };
+
+    fetchNotifications();
+  }, [limit, start, userPermissions]);
+
+  const handleSearchChange = (e) => setSearch(e.target.value);
+  const handleSortByChange = (e) => setSortBy(e.target.value);
+  const handlePageChange = (e) => setStart(e);
 
   return (
     <>
-       <Wrapper className="flex justify-between items-center">
+      <Wrapper className="flex justify-between items-center">
+        {count > 0 && (
+          <>
             <H2>Recent Notification</H2>
             <DropDown
               items={userType}
-              setData={getSortBy}
+              setData={handleSortByChange}
               value={sortby}
               placeholder="Sort By"
               name="Sort By"
@@ -67,65 +68,35 @@ const ItemRecentNotifications = () => {
             >
               <IconSort size="24px" color="fill-light-400" />
             </DropDown>
-          </Wrapper>
-          <Input
-            value={search}
-            setData={getSearch}
-            type="text"
-            placeholder="Search"
-            name="Search"
-            wrapperClassName="!flex-none"
-            className="border border-light-600"
-          >
-            <IconSearch size="24px" color="fill-light-400" />
-          </Input>
-    <div className="flex flex-col gap-[15px]">
-      {userNotifications &&
-        userNotifications.map((item, index) => {
-          return <Item item={item} key={index} emailID={emailID} name={name} />;
-        })}
-    </div>
-    {count > 1 && (
-    <Pagination
-    count={count} 
-    getIndex={getIndex}   
-    index={start}
-    />)}
+          </>
+        )}
+      </Wrapper>
+      {count > 0 && (
+        <Input
+          value={search}
+          setData={handleSearchChange}
+          type="text"
+          placeholder="Search"
+          name="Search"
+          wrapperClassName="!flex-none"
+          className="border border-light-600"
+        >
+          <IconSearch size="24px" color="fill-light-400" />
+        </Input>
+      )}
+      <div className="flex flex-col gap-[15px]">
+        {userNotifications.map((item, index) => (
+          <Item key={index} item={item} emailID={emailID} name={name} />
+        ))}
+      </div>
+      {count > 1 && <Pagination count={count} getIndex={handlePageChange} index={start} />}
+      {count === 0 && (
+        <Text className="text-center my-4">
+          {defaultTheme?.notificationsNoRecord}
+        </Text>
+      )}
     </>
   );
 };
 
 export default ItemRecentNotifications;
-
-export const Item = ({ item }) => {  
-  return (
-    <>
-  
-    <Wrapper className="border border-light-500">
-      <Wrapper className="p-[10px]">
-        {item?.document && <Text className="!text-light-400">
-          Document Requested
-        </Text>}
-        <H3>{item?.subject || item?.document} {item?.ExpectedSalary ? 'Appraisal Request' : ''}</H3>
-      {item?.description && (  <div
-          className="mt-[5px] text-sm font-medium font-poppins text-text-dark"
-          dangerouslySetInnerHTML={{
-            __html: item?.description?.substring(0, 350) + "...",
-          }}
-        ></div>)}
-
-
-          <Wrapper className='flex justify-between items-center border-t border-light-500 pt-[5px] mt-[5px]'
-          >  <Text>
-           {item?.name && ('Applied By: ' + item?.name)}
-          </Text>
-            <Text>
-            {formatDate(item?.updatedAt)}
-            </Text>
-          </Wrapper>
- 
-      </Wrapper>
-    </Wrapper>
-    </>
-  );
-};

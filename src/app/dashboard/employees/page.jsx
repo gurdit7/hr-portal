@@ -13,7 +13,7 @@ const page = () => {
   return (
  <>
  <Container heading='Employees'>
-  <Wrapper className='flex justify-between gap-[15px]'>
+  <Wrapper className='flex justify-between gap-[15px] mb-5'>
   <AllEmployees/>
   <AddEmployee/>
   <AccessDenied permission='view-employee' message='View Employees'/>

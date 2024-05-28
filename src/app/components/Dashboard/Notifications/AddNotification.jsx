@@ -35,7 +35,6 @@ const AddNotification = () => {
     });
   };
   const addDescription = (e) => {
-    console.log(e)
     setDescription(e);
     setFromData({
         ...formData,

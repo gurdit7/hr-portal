@@ -14,7 +14,7 @@ const userSchema = new Schema({
             type:String,
             required:true
         },
-        reason:{
+        description:{
             type:String,
             required:true
         },
@@ -23,7 +23,16 @@ const userSchema = new Schema({
         },
         status:{
             type:String
-        }          
+        },
+        name:{
+            type:String
+        },
+        from:{
+            type:String
+        },
+        to:{
+            type:String
+        }            
 
 },{timestamps:true})
 

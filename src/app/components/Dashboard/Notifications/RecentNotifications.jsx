@@ -43,18 +43,18 @@ const RecentNotifications = () => {
         } else {
           setError(false);
         }
-        setAddEmployee(false)
+        setAddEmployee(false);
       });
   }, [editEmployee, index, addEmployee]);
 
   const getSortBy = (e) => {
-    setSortBy(e.target.value)
+    setSortBy(e.target.value);
     fetch("/api/dashboard/filter-employee", {
       method: "POST",
       body: JSON.stringify({
         userType: e.target.value,
         index: index,
-        sort:true,
+        sort: true,
         limit: 10,
       }),
     })
@@ -78,7 +78,7 @@ const RecentNotifications = () => {
       body: JSON.stringify({
         search: e.target.value,
         index: index,
-        sort:false,
+        sort: false,
         limit: 10,
       }),
     })
@@ -104,18 +104,27 @@ const RecentNotifications = () => {
   };
   return (
     <>
-      {userPermissions && userPermissions?.includes("view-users-notifications") && (
+      {userPermissions &&
+        userPermissions?.includes("view-users-notifications") && (
+          <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full">
+            <ItemRecentNotifications />
+            <Wrapper>
+              {error && (
+                <Text className="text-center my-4">No Record Found.</Text>
+              )}
+            </Wrapper>
+          </Wrapper>
+        )}
+      {userPermissions && userPermissions?.includes("user-notifications") && (
         <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full">
-
-          <ItemRecentNotifications/>
+          <ItemRecentNotifications />
           <Wrapper>
- 
-            {error && <Text className="text-center my-4">No Record Found.</Text>}
-   
+            {error && (
+              <Text className="text-center my-4">No Record Found.</Text>
+            )}
           </Wrapper>
         </Wrapper>
       )}
-     
       {editEmployee && (
         <Modal
           opened={editEmployee}

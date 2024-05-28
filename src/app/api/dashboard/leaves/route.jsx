@@ -9,11 +9,15 @@ export const POST = async (request) => {
     const payload = await request.json();
     const date = (new Date().getTime()).toString(36);
     const leaves = new Leaves({
+      name:payload?.name,
       email: payload?.email,
+      userID: payload?.userID,
       duration: payload?.duration,
       subject: payload?.subject,
-      reason: payload?.reason,
+      description: payload?.description,
       attachment: payload?.attachment,
+      from: payload?.from,
+      to: payload?.to,
       status: 'pending'
     });
     const result = await leaves.save();

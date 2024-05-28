@@ -31,7 +31,7 @@ const DropDown = ({
             value ? "text-text-dark" : "text-light-600"
           }`}
         >
-          <option disabled data-index="0" value={placeholder} selected>
+          <option disabled data-index="0" value=''>
             {placeholder}
           </option>
           {items.map((item, index) => (
