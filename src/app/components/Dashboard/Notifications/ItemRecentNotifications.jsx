@@ -38,7 +38,7 @@ const ItemRecentNotifications = () => {
     const fetchNotifications = async () => {
       const all = !userPermissions?.includes("user-notifications");
       const response = await fetch(
-        `/api/dashboard/notifications?all=${all}&limit=${limit}&start=${start}`
+        `/api/dashboard/notifications?all=${all}&limit=${start * 5 + limit}&start=${start * 5}`
       );
       const data = await response.json();
       setUserNotifications(data?.data || []);
@@ -50,7 +50,7 @@ const ItemRecentNotifications = () => {
 
   const handleSearchChange = (e) => setSearch(e.target.value);
   const handleSortByChange = (e) => setSortBy(e.target.value);
-  const handlePageChange = (e) => {
+  const handlePageChange = (e) => {    
     setStart(e)
   };
 
