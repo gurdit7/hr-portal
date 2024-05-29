@@ -6,6 +6,7 @@ import GetUserData from "./components/auth/GetUser";
 import { AuthProvider } from "./contexts/Auth/auth";
 import Sidebar from "./layouts/Sidebar/Sidebar";
 import Header from "./layouts/Header/Header";
+import Birthday from "./components/Modals/Birthday/Birthday";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,6 +26,7 @@ export default async function RootLayout({ children }) {
         <Sidebar/>
         <Header/>
         {children}
+        <Birthday/>
        </AuthProvider>
       </ThemeConfiger>
       </body>

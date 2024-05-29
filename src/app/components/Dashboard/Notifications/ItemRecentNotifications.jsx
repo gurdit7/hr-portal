@@ -50,7 +50,9 @@ const ItemRecentNotifications = () => {
 
   const handleSearchChange = (e) => setSearch(e.target.value);
   const handleSortByChange = (e) => setSortBy(e.target.value);
-  const handlePageChange = (e) => setStart(e);
+  const handlePageChange = (e) => {
+    setStart(e)
+  };
 
   return (
     <>

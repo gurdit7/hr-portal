@@ -27,7 +27,7 @@ const Modal = ({children, opened, hideModal, heading}) => {
         <IconCloseModal size="56px" color="fill-white"/> 
         </FormButton>
         <Wrapper className='relative z-20 w-full'>
-{Heading1 && (<H1 className='text-3xl text-white text-center mb-[14px] leading-normal'>{heading}</H1>) }
+{heading && (<H1 className='text-3xl text-white text-center mb-[14px] leading-normal'>{heading}</H1>) }
 {children}
 </Wrapper>
 <Wrapper className='bg-dark-blue bg-opacity-90 backdrop-blur-xl w-full h-full absolute'/>

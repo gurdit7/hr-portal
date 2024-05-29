@@ -194,13 +194,13 @@ const AllEmployees = () => {
                     </Wrapper>
                     <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark flex gap-[2px]">
                       <span
-                        onClick={() => editEmployeeModal(index)}
+                        onClick={() => editEmployeeModal(i)}
                         className="rounded-full w-[30px] h-[30px] bg-accent flex justify-center items-center cursor-pointer hover:scale-110"
                       >
                         <IconEdit size="16px" color="fill-white" />
                       </span>
                       <span
-                        onClick={() => viewModal(index)}
+                        onClick={() => viewModal(i)}
                         className="rounded-full w-[30px] h-[30px] bg-[#219653] flex justify-center items-center cursor-pointer hover:scale-110"
                       >
                         <IconView size="16px" color="fill-white" />
@@ -223,7 +223,7 @@ const AllEmployees = () => {
           hideModal={closeViewModal}
           heading={"Employee - " + user?.name}
         >
-          <Wrapper className="bg-white rounded-[10px] p-5 max-w-[895px] w-full m-auto">
+          <Wrapper className="bg-white rounded-[10px] p-5 max-w-[895px] w-full m-auto max-h-[95vh] overflow-auto">
             <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
               <Text className="!text-light-400"> Name</Text>
               <Text className="capitalize"> {user?.name}</Text>
@@ -232,6 +232,7 @@ const AllEmployees = () => {
               <Text className="!text-light-400"> Email Address</Text>
               <Text className=""> {user?.email}</Text>
             </Wrapper>
+
             <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
               <Text className="!text-light-400"> Join Date</Text>
               <Text className="capitalize"> {formatDate(user?.joinDate)}</Text>
@@ -260,9 +261,28 @@ const AllEmployees = () => {
               <Text className="!text-light-400"> User Type</Text>
               <Text className="capitalize"> {user?.userType}</Text>
             </Wrapper>
+            
             <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
               <Text className="!text-light-400">Status</Text>
               <Text className="capitalize"> {user?.status || "active"}</Text>
+            </Wrapper>
+            <Wrapper className='border border-dark-blue px-4'>
+            <Wrapper className="flex justify-between py-[10px] border-b border-light-500  ">
+              <Text > Total Leave Taken </Text>
+              <Text className=""> {user?.totalLeaveTaken}</Text>
+            </Wrapper>
+            <Wrapper className="flex justify-between py-[10px] border-b border-light-500  ">
+              <Text > Balanced Leaves</Text>
+              <Text className=""> {user?.balancedLeaves}</Text>
+            </Wrapper>
+            <Wrapper className="flex justify-between py-[10px] border-b border-light-500  ">
+              <Text > Sandwich Leaves Taken</Text>
+              <Text className=""> {user?.balancedSandwichLeavesTaken}</Text>
+            </Wrapper>
+            <Wrapper className="flex justify-between py-[10px]  ">
+              <Text > Balanced Sandwich Leaves</Text>
+              <Text className=""> {user?.balancedSandwichLeaves}</Text>
+            </Wrapper>
             </Wrapper>
           </Wrapper>
         </Modal>

@@ -3,6 +3,7 @@ import connect from "../../../libs/mongo/index";
 import Notifications from "@/model/notifications";
 import requestDocuments from "@/model/requestDocuments";
 import AppraisalForm from "@/model/AppraisalForm";
+import addLeave from "@/model/addLeave";
 
 export const GET = async (request) => {
   try {
@@ -49,19 +50,19 @@ export const GET = async (request) => {
         }
       );
     } else {
-      const requestDocument = await requestDocuments.find();
-      const notification = await Notifications.find();
-      const appraisal = await AppraisalForm.find();      
+      const requestDocument = await requestDocuments.find().sort({$natural:-1});
+      const notification = await Notifications.find().sort({$natural:-1});
+      const appraisal = await AppraisalForm.find().sort({$natural:-1});
+      const leaves = await addLeave.find().sort({$natural:-1});      
       const allNotifications = [];      
-
       allNotifications.push(...requestDocument);
-      allNotifications.push(...notification);
       allNotifications.push(...appraisal);
+      allNotifications.push(...notification);
+      allNotifications.push(...leaves);
       
       const result = allNotifications.sort((a, b) => {
         return new Date(b.updatedAt) - new Date(a.updatedAt);
-      });
-      
+      });      
       const data = result.slice(start, Math.floor(start) + Math.floor(limit));
       return new NextResponse(
         JSON.stringify({ data: data, length: result.length }),

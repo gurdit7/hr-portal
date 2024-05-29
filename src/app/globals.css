@@ -191,3 +191,7 @@ body{
 .ql-container.ql-snow {
     @apply h-[calc(100%-43px)];    
 }
+.stroke-text{
+    -webkit-text-stroke: .015em #121212;
+    -webkit-text-fill-color: transparent;
+    }

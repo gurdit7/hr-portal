@@ -6,6 +6,13 @@ const userSchema = new Schema({
             type:String,
             required:true
         },
+        durationDate:{
+            type:String
+        },
+        durationHours:{
+            type:Number,
+            required:true
+        },
         email:{
             type:String,
             required:true
@@ -17,6 +24,9 @@ const userSchema = new Schema({
         description:{
             type:String,
             required:true
+        },
+        reason:{
+            type:String            
         },
         attachment:{
             type:String

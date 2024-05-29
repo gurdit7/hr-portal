@@ -25,36 +25,64 @@ import sendEmail from "@/app/mailer/mailer";
 import { toHTML } from "../Notifications/Item";
 import { TimeFormat } from "@/app/utils/TimeFormat";
 import Link from "next/link";
+import Badge from "../../Ui/Badge/Badge";
+import IconDate from "../../Icons/IconDate";
 
 const Leaves = ({ heading }) => {
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
+  const [val, setVal] = useState(false);
   const [load, setLoad] = useState(false);
   const { userPermissions, leaves, userData } = useAuth();
   const [user, setUser] = useState("");
   const [description, setDescription] = useState("");
   const [previousLeaves, setPreviousLeaves] = useState([]);
+  const [allLeaves, setAllLeaves] = useState([]);
   const [file, setFile] = useState(null);
   const [attachment, setAttachment] = useState("Add Attachment");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [errors, setErrors] = useState({});
-
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const getFrom = (e) => {
     setFrom(e);
+    setVal(e);
     const date = new Date(e);
+    setFromDate(date);
     const fromValue = formatDate(date) + " at " + TimeFormat(date);
     setFormData((prev) => ({ ...prev, from: fromValue }));
   };
   const getTo = (e) => {
     setTo(e);
+    setVal(e);
     const date = new Date(e);
+    setToDate(date);
     const toValue = formatDate(date) + " at " + TimeFormat(date);
     setFormData((prev) => ({ ...prev, to: toValue }));
   };
-
+  useEffect(() => {
+    if (formData?.duration) {
+      let h = 1;
+      if (formData?.duration === "Half Day") {
+        h = 0.5;
+      } else if (formData?.duration === "Short Leave") {
+        h = 0.3125;
+      } else if (formData?.duration === "Other") {
+        const date1 = new Date(fromDate || "");
+        const date2 = new Date(toDate || "");
+        const timeDifference = date2 - date1;
+        const millisecondsInADay = 24 * 60 * 60 * 1000;
+        const dayDifference = timeDifference / millisecondsInADay;
+        h = dayDifference;
+      }
+      setFormData((prev) => ({ ...prev, durationHours: h * 8 }));
+    }
+  }, [val]);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    setVal(value);
+
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -155,11 +183,21 @@ const Leaves = ({ heading }) => {
   useEffect(() => {
     setLoad(false);
     setUser(leaves);
-    fetch(`/api/dashboard/leaves?email=${userData?.email}`)
+     if(userPermissions?.includes("user-leaves")){
+      fetch(`/api/dashboard/leaves?all=true`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data)
+        setAllLeaves(data || []);
+      });
+     } 
+     else{
+      fetch(`/api/dashboard/leaves?email=${userData?.email}`)
       .then((res) => res.json())
       .then((data) => {
         setPreviousLeaves(data.leaves || []);
       });
+     }
   }, [leaves, userData.email, load]);
 
   const formErrorClass = "block text-xs mt-1 text-red-500";
@@ -239,7 +277,31 @@ const Leaves = ({ heading }) => {
                     </span>
                   )}
                 </Wrapper>
-
+                {formData.duration && formData.duration !== "Other" && (
+                  <Wrapper className="relative w-full flex-1">
+                    <Input
+                      label="Date"
+                      placeholder="Date"
+                      setData={handleInputChange}
+                      type="date"
+                      required={true}
+                      value={formData?.durationDate || ""}
+                      name="durationDate"
+                      className="border-light-600 border"
+                    >
+                      <IconDate size="24px" color="stroke-light-400" />
+                    </Input>
+                    <label
+                      className={`absolute left-[48px] top-[38px] pointer-events-none text-light-600 font-medium ${
+                        formData?.durationDate
+                          ? "text-text-dark"
+                          : "text-light-600"
+                      }`}
+                    >
+                      {formData?.durationDate || "Date"}
+                    </label>
+                  </Wrapper>
+                )}
                 {formData.duration === "Other" && (
                   <Wrapper className="relative w-full flex gap-4">
                     <DateTimeInput
@@ -322,7 +384,8 @@ const Leaves = ({ heading }) => {
         <Container heading="Leave Information">
           <Wrapper className="flex justify-between gap-[15px] mt-[15px]">
             <Wrapper className="bg-white rounded-[10px] p-5 w-full">
-              {previousLeaves.length > 0 ? (
+          
+              {allLeaves.length > 0 ? (
                 <Wrapper className="flex flex-col gap-[15px]">
                   <Wrapper className="flex justify-between items-center">
                     <H2>Leave Record</H2>
@@ -336,7 +399,7 @@ const Leaves = ({ heading }) => {
                     </DropDown>
                   </Wrapper>
 
-                  {previousLeaves.map((item, index) => (
+                  {allLeaves.map((item, index) => (
                     <LeaveItem item={item} key={index} />
                   ))}
                 </Wrapper>
@@ -377,13 +440,7 @@ const LeaveItem = ({ item, index }) => {
       <Wrapper className="p-3 relative">
         <Text className="!text-light-400">Leave Request</Text>
         <Wrapper className="absolute flex top-3 right-3">
-          <Text
-            className={`text-xs py-2 px-5 rounded-md text-white uppercase tracking-normal ${
-              item?.status === "pending" ? "bg-dark" : ""
-            } `}
-          >
-            {item?.status}
-          </Text>
+          <Badge status={item?.status} />
         </Wrapper>
         <H3>{item?.subject}</H3>
         {item?.description && (
@@ -396,10 +453,15 @@ const LeaveItem = ({ item, index }) => {
         )}
         <Wrapper className="flex justify-between items-center border-t border-light-500 pt-[5px] mt-[5px]">
           <Text>{item?.name && "Applied By: " + item?.name}</Text>
-          <Text>{formatDate(item?.updatedAt)}</Text>
+          <Text>Updated on: {formatDate(item?.updatedAt)}</Text>
         </Wrapper>
       </Wrapper>
-      <Link href={"/dashboard/leaves/" + item._id} className="opacity-0 absolute top-0 left-0 w-full h-full"> </Link>
+      <Link
+        href={"/dashboard/leaves/" + item._id}
+        className="opacity-0 absolute top-0 left-0 w-full h-full"
+      >
+        {" "}
+      </Link>
     </Wrapper>
   );
 };

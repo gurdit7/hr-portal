@@ -6,7 +6,7 @@ import { formatDate } from "@/app/utils/DateFormat";
 
 export const toHTML = (ref, content, limit) => {
   if (ref.current) {
-    ref.current.innerHTML = content.substring(0, limit) + "...";
+    ref.current.innerHTML = content.substring(0, limit);
   }
 };
 

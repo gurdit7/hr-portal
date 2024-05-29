@@ -48,16 +48,16 @@ const userSchema = new Schema({
             type:String
         },
         totalLeaveTaken:{
-            type:String
+            type:Number
         },
         balancedLeaves:{
-            type:String
+            type:Number
         },
         balancedSandwichLeaves:{
-            type:String
+            type:Number
         },
         balancedSandwichLeavesTaken:{
-            type:String
+            type:Number
         },
         coverImage:{
             type:String

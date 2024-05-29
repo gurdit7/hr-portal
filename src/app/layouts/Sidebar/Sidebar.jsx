@@ -77,12 +77,12 @@ const Sidebar = () => {
                   sidebarCollapse={sidebarCollapse}
                   href={"/dashboard/leaves"}
                   label="Leaves managment"
-                  active={path === "/dashboard/leaves"}
+                  active={path.includes('leaves')}
                 >
                   <IconLeave
                     size={"24px"}
                     color={
-                      path === "/dashboard/leaves"
+                      path.includes('leaves')
                         ? "fill-dark-blue"
                         : "fill-white"
                     }
@@ -136,7 +136,7 @@ const Sidebar = () => {
                     }
                   />
                 </DashboardLink>
-                )
+                
               </ul>
             </Wrapper>
           </Wrapper>

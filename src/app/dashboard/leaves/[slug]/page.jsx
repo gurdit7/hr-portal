@@ -1,10 +1,11 @@
-import React from 'react';
+import LeaveInformation from '@/app/components/Dashboard/Leaves/LeaveInformation';
+import Container from '@/app/components/Ui/DashboardContainer/Container';
 
 const page = () => {
   return (
-    <div>
-      
-    </div>
+<Container heading='Leave Information'>
+      <LeaveInformation/>
+</Container>
   );
 }
 
