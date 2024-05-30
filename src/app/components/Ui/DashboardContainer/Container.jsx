@@ -2,6 +2,7 @@
 import { useThemeConfig } from '@/app/contexts/theme/ThemeConfigure';
 import Wrapper from '../Wrapper/Wrapper';
 import H1 from '../H1/H1';
+import SkeletonLoader from '../skeletonLoader/skeletonLoader';
 
 const Container = ({heading, children}) => {
 const { sidebarCollapse } = useThemeConfig();
@@ -12,6 +13,7 @@ const { sidebarCollapse } = useThemeConfig();
     }`}
   >
     <H1>{heading}</H1>
+   {!heading && <SkeletonLoader className={'h-[72px] max-w-[40%] rounded-lg bg-white'} />   } 
     <Wrapper className="mt-[15px]">
 
 {children}

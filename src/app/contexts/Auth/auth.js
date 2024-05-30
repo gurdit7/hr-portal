@@ -11,8 +11,8 @@ export default function useAuth (){
 export function AuthProvider({ children }) {    
     const [userLoggedIn, setUserLoggedIn] = useState(false);
     const [addEmployee, setAddEmployee] = useState(false);
-    const [userData, setUserData] = useState('');
-    const [userPermissions, setPermissions] = useState([]);
+    const [userData, setUserData] = useState(false);
+    const [userPermissions, setPermissions] = useState(false);
     const [users, setUsers] = useState([]);
     const [leaves, setLeaves] = useState([]);
     const [userRoles, setuserRoles] = useState(['hr','employee','admin', 'manager' , 'tl']);

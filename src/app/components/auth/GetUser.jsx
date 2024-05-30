@@ -19,22 +19,21 @@ const GetUserData = (session) => {
             return res.json();
           })
           .then(async function (data) {
+            setTimeout(() => {
             getUsers();
             getUserRoles();
             getUserNotifications();
             getLeaves(data?.user?.userID)            
             setUserData(data?.user);
+            setUserLoggedIn(true)
             setPermissions(data?.permissions);
-            
+          }, 2000);
             if(location === '/account/register' || location === '/account/login'){
     
               router.push('/', { scroll: false })
       
             }
           });
-        setTimeout(() => {
-          setUserLoggedIn(true)
-        }, 2000);
     
         }
         else{

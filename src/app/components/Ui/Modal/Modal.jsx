@@ -22,11 +22,11 @@ const Modal = ({children, opened, hideModal, heading}) => {
     },[open])
 
   return (
-<Wrapper className={`fixed top-0 z-[999] left-0 w-full h-full flex justify-center items-center  duration-500 ${openFinal ? 'opacity-1 scale-100' : 'opacity-0 scale-90'}`}>
+<Wrapper className={`fixed top-0 z-[999]  left-0 w-full  h-full flex justify-center items-center  duration-500 ${openFinal ? 'opacity-1 scale-100' : 'opacity-0 scale-90'}`}>
     <FormButton additionalCss='absolute top-3 right-3 z-30' event={closeModal}>
         <IconCloseModal size="56px" color="fill-white"/> 
         </FormButton>
-        <Wrapper className='relative z-20 w-full'>
+        <Wrapper className='relative z-20 py-6 w-full overflow-auto max-h-[100vh]'>
 {heading && (<H1 className='text-3xl text-white text-center mb-[14px] leading-normal'>{heading}</H1>) }
 {children}
 </Wrapper>

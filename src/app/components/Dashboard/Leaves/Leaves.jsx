@@ -412,13 +412,14 @@ const Leaves = ({ heading }) => {
           </Wrapper>
         </Container>
       )}
+
     </>
   );
 };
 
-const LeaveSummaryCard = ({ title, count, tooltip }) => (
+export const LeaveSummaryCard = ({ title, count, tooltip }) => (
   <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full items-center">
-    <H1 className="text-light-500 text-[64px] leading-none">{count || 4}</H1>
+    <H1 className="text-light-500 text-[64px] leading-none">{count}</H1>
     <H3 className="text-center text-light-400 mt-[5px] flex gap-2 items-center">
       {title}
       {tooltip && (

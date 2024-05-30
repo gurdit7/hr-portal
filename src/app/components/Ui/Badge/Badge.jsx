@@ -11,6 +11,9 @@ const Badge = ({status}) => {
     ${
       status === "not-approved" ? "bg-red-600" : ""
     }
+    ${
+      status === "canceled" ? "bg-red-800" : ""
+    }
     `}
   >
     {status.replace('-', " ")}

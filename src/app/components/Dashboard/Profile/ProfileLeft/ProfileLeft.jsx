@@ -14,6 +14,7 @@ import Password from "@/app/components/Form/Password/Password";
 import IconLock from "@/app/components/Icons/IconLock";
 import Notification from "@/app/components/Ui/notification/success/Notification";
 import ErrorNotification from "@/app/components/Ui/notification/loader/LoaderNotification";
+import SkeletonLoader from "@/app/components/Ui/skeletonLoader/skeletonLoader";
 
 const ProfileLeft = () => {
   const { userData, setUserData } = useAuth();
@@ -182,25 +183,33 @@ const ProfileLeft = () => {
           onChange={changeCoverImage}
         />
       </Wrapper>
-      <H3 className="text-center mt-[5px]">{userData?.name}</H3>
+     
+      {!userData && <SkeletonLoader className='!w-1/2 rounded-2xl !h-[27px] mx-auto mt-[5px]'/>}
+          {userData &&  <H3 className="text-center mt-[5px]">{userData?.name}</H3>
+}
       <Wrapper className="mt-[15px]">
-        <Wrapper className="py-[10px] border-t border-b border-light-500 flex justify-between">
+        <Wrapper className="py-[10px] border-t border-b border-light-500 flex justify-between items-center">
           <Text className="!text-light-400 flex-1">Designation</Text>
-          <Text className="flex-1 text-right capitalize">
+          {!userData && <SkeletonLoader className='!w-1/2 rounded-2xl !h-3'/>}
+         {userData &&  <Text className="flex-1 text-right capitalize">
             {userData?.designation}
-          </Text>
+          </Text>}
         </Wrapper>
-        <Wrapper className="py-[10px]  border-b border-light-500 flex justify-between">
+        <Wrapper className="py-[10px]  border-b border-light-500 flex justify-between  items-center">
           <Text className="!text-light-400 flex-1">Department</Text>
-          <Text className="flex-1 text-right capitalize">
+          {!userData && <SkeletonLoader className='!w-1/2 rounded-2xl !h-3'/>}
+          {userData &&   <Text className="flex-1 text-right capitalize">
             {userData?.department}
-          </Text>
+          </Text> }
         </Wrapper>
-        <Wrapper className="py-[10px]  border-b border-light-500 flex justify-between">
+        <Wrapper className="py-[10px]  border-b border-light-500 flex justify-between  items-center">
           <Text className="!text-light-400 flex-1">Join Date</Text>
+          {!userData && <SkeletonLoader className='!w-1/2 rounded-2xl !h-3'/>}
+          {userData && 
           <Text className="flex-1 text-right capitalize">
             {formatDate(userData?.joinDate)}
           </Text>
+}
         </Wrapper>
       </Wrapper>
       <Wrapper className="mt-[15px]">

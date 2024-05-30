@@ -4,7 +4,7 @@ import { useState } from "react";
 import FormButton from "../../Form/FormButton/FormButton";
 import Wrapper from "../../Ui/Wrapper/Wrapper";
 import Modal from "../../Ui/Modal/Modal";
-import useAuth from "@/app/contexts/Auth/auth";
+
 import Notification from "../../Ui/notification/success/Notification";
 import ErrorNotification from "../../Ui/notification/loader/LoaderNotification";
 
@@ -31,7 +31,7 @@ const ApproveLeave = ({ id, user, setValue, leaves }) => {
     });
   };
   const handleApproveChange = (e) => {
-    const hour = leaves?.balancedLeaves * 8 - user?.durationHours;
+    const hour = leaves?.balancedLeaves * 8 - user?.durationHours;    
     const newDate = new Date(user?.durationDate);
     const days = [
       "Sunday",
@@ -44,8 +44,10 @@ const ApproveLeave = ({ id, user, setValue, leaves }) => {
     ];
     const day = days[newDate.getDay()];
     let balancedSandwichLeaves = leaves?.balancedSandwichLeaves;
+    let balancedSandwichLeavesTaken = leaves?.balancedSandwichLeavesTaken;
     if (day === "Friday" || day === "Monday") {
       balancedSandwichLeaves = leaves?.balancedSandwichLeaves - 1;
+      balancedSandwichLeavesTaken = (leaves?.balancedSandwichLeavesTaken * 8 + user?.durationHours) / 8;
     }
     if (heading === "Reason to Decline") {
       setApproveForm({
@@ -55,15 +57,13 @@ const ApproveLeave = ({ id, user, setValue, leaves }) => {
         [e.target.name]: e.target.value,
       });
     } else {
-        console.log((leaves?.totalLeaveTaken * 8 + user?.durationHours) / 8)
-        console.log(hour / 8)
       setApproveForm({
         ...approveForm,
         id: id,
         email: user?.email,
         balancedLeaves: hour / 8,
         balancedSandwichLeaves: balancedSandwichLeaves,
-        balancedSandwichLeavesTaken: leaves?.balancedSandwichLeavesTaken + 1,
+        balancedSandwichLeavesTaken:  balancedSandwichLeavesTaken,
         totalLeaveTaken:
           (leaves?.totalLeaveTaken * 8 + user?.durationHours) / 8,
         [e.target.name]: e.target.value,
@@ -89,15 +89,14 @@ const ApproveLeave = ({ id, user, setValue, leaves }) => {
         return res.json();
       })
       .then((res) => {
-        console.log(res);
+        console.log(res)
         setSuccess(true);
         setSuccessMessage("The status is changed.");
-        setSuccessAnimation(true);
-        setValue(true);
+        setSuccessAnimation(true);              
         setTimeout(() => {
-          setValue(false);
+          setValue(true);
           setApproveButtonLoading(false);
-          closeApproveModal();
+          closeApproveModal();          
           setSuccess(false);
           setSuccessAnimation(false);
         }, 3000);

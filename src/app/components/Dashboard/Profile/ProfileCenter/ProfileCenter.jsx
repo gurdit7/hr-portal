@@ -15,6 +15,7 @@ import Text from "@/app/components/Ui/Text/Text";
 import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
 import ErrorNotification from "@/app/components/Ui/notification/loader/LoaderNotification";
 import Notification from "@/app/components/Ui/notification/success/Notification";
+import SkeletonLoader from "@/app/components/Ui/skeletonLoader/skeletonLoader";
 import useAuth from "@/app/contexts/Auth/auth";
 import { formatDate } from "@/app/utils/DateFormat";
 import { useEffect, useState } from "react";
@@ -112,37 +113,69 @@ const ProfileCenter = () => {
       <Wrapper className="mt-[15px]">
         <Wrapper className="py-[10px] border-t border-b border-light-500 flex justify-between">
           <Text className="!text-light-400 flex-1">Email</Text>
+          {!userData && <SkeletonLoader className='!w-1/2 rounded-2xl !h-3'/>}
+          {userData && 
           <Text className="flex-1 text-right ">{userData?.email}</Text>
+}
         </Wrapper>
         <Wrapper className="py-[10px] border-b border-light-500 flex justify-between">
           <Text className="!text-light-400 flex-1">Personal Email</Text>
+          {!userData && <SkeletonLoader className='!w-1/2 rounded-2xl !h-3'/>}
+          {userData && 
           <Text className="flex-1 text-right ">
             {userData?.personalEmail || "Not Added"}
           </Text>
+}
         </Wrapper>
         <Wrapper className="py-[10px]  border-b border-light-500 flex justify-between">
           <Text className="!text-light-400 flex-1">Date of Birth</Text>
+          {!userData && <SkeletonLoader className='!w-1/2 rounded-2xl !h-3'/>}
+          {userData && 
           <Text className="flex-1 text-right capitalize">
             {formatDate(userData?.DOB)}
           </Text>
+}
         </Wrapper>
         <Wrapper className="py-[10px]  border-b border-light-500 flex justify-between">
           <Text className="!text-light-400 flex-1">Current Address</Text>
+          {!userData &&      <>
+            <Wrapper className='flex-1 flex gap-2 justify-end flex-col items-end'>
+            <SkeletonLoader className='!w-full rounded-2xl !h-3'/>
+            <SkeletonLoader className='!w-10/12 rounded-2xl !h-3'/>
+            <SkeletonLoader className='!w-8/12 rounded-2xl !h-3'/>
+            </Wrapper>
+            </>}
+          {userData && 
           <Text className="flex-1 text-right capitalize">
             {userData?.currentAddress || "Not Added Yet"}
           </Text>
+}
         </Wrapper>
         <Wrapper className="py-[10px] border-b border-light-500 flex justify-between">
           <Text className="!text-light-400 flex-1">Permanent Address</Text>
+          {!userData && (
+            <>
+            <Wrapper className='flex-1 flex gap-2 justify-end flex-col items-end'>
+            <SkeletonLoader className='!w-full rounded-2xl !h-3'/>
+            <SkeletonLoader className='!w-10/12 rounded-2xl !h-3'/>
+            <SkeletonLoader className='!w-8/12 rounded-2xl !h-3'/>
+            </Wrapper>
+            </>
+          )}
+          {userData && 
           <Text className="flex-1 text-right capitalize">
             {userData?.permanentAddress || "Not Added Yet"}
           </Text>
+}
         </Wrapper>
         <Wrapper className="py-[10px] border-b border-light-500 flex justify-between">
           <Text className="!text-light-400 flex-1">Phone Number</Text>
+          {!userData && <SkeletonLoader className='!w-1/2 rounded-2xl !h-3'/>}
+          {userData && 
           <Text className="flex-1 text-right capitalize">
             {userData?.phoneNumber || "Not Added Yet"}
           </Text>
+}
         </Wrapper>
       </Wrapper>
 
@@ -150,15 +183,21 @@ const ProfileCenter = () => {
       <Wrapper className="mt-[15px]">
         <Wrapper className="py-[10px] border-t border-b border-light-500 flex justify-between">
           <Text className="!text-light-400 flex-1">Account Number</Text>
+          {!userData && <SkeletonLoader className='!w-1/2 rounded-2xl !h-3'/>}
+          {userData && 
           <Text className="flex-1 text-right capitalize">
             {userData?.accountNumber || "Not Added Yet"}
           </Text>
+}
         </Wrapper>
         <Wrapper className="py-[10px]  border-b border-light-500 flex justify-between">
           <Text className="!text-light-400 flex-1">IFSC Code</Text>
+          {!userData && <SkeletonLoader className='!w-1/2 rounded-2xl !h-3'/>}
+          {userData && 
           <Text className="flex-1 text-right capitalize">
             {userData?.IFSC || "Not Added Yet"}
           </Text>
+}
         </Wrapper>
       </Wrapper>
       <Wrapper className="mt-[15px]">

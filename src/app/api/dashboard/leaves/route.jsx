@@ -37,7 +37,7 @@ export const GET = async (request) => {
     const email = url.searchParams.get("email");
     const id = url.searchParams.get("id");
     const all = url.searchParams.get("all");
-    if(all === 'true'){
+    if (all === "true") {
       const leaves = await Leaves.find();
       return new NextResponse(JSON.stringify(leaves), { status: 200 });
     }
@@ -73,9 +73,11 @@ export const GET = async (request) => {
     if (id && !all) {
       const leaves = await Leaves.findOne({ _id: id });
       const result = await UsersData.findOne({ email: leaves?.email });
-      return new NextResponse(JSON.stringify({leaves:leaves, user:result}), { status: 200 });
+      return new NextResponse(
+        JSON.stringify({ leaves: leaves, user: result }),
+        { status: 200 }
+      );
     }
-   
   } catch (error) {
     console.log("error>>", error);
     return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });
@@ -86,37 +88,89 @@ export const PUT = async (request) => {
   try {
     await connect();
     const payload = await request.json();
-    const userDataPerson = await Leaves.updateOne(
-      { _id: payload?.id },
-      {
-        status: payload?.status,
-        reason: payload?.reason,
-      }
-    )
-      .then((res) => {
-        return res;
-      })
-      .then(async (res) => {
-        const userDataRo = await UsersData.updateOne(
-          { email: payload?.email },
-          {
-            totalLeaveTaken: payload?.totalLeaveTaken,
-            balancedLeaves: payload?.balancedLeaves,
-            balancedSandwichLeaves: payload?.balancedSandwichLeaves,
-            balancedSandwichLeavesTaken: payload?.balancedSandwichLeavesTaken,
-          }
-        ).then((res) => {
-          console.log(res, payload?.totalLeaveTaken, payload?.balancedLeaves)
+    if (payload?.update === "leaves") {
+      const userDataRo = await UsersData.updateOne(
+        { email: payload?.email },
+        {
+          totalLeaveTaken: payload?.totalLeaveTaken,
+          balancedLeaves: payload?.balancedLeaves,
+          balancedSandwichLeaves: payload?.balancedSandwichLeaves,
+          balancedSandwichLeavesTaken: payload?.balancedSandwichLeavesTaken,
+        }
+      )
+        .then((res) => {
           return res;
-        }).then(async (res) => {
+        })
+        .then(async (res) => {
           const result = await UsersData.findOne({ email: payload?.email });
           return result;
         });
-        
-        return userDataRo;
-      });
+      return new NextResponse(JSON.stringify(userDataRo), { status: 200 });
+    } else if (payload?.update === "cancel") {
+      const userDataPerson = await Leaves.updateOne(
+        { _id: payload?.id },
+        {
+          status: payload?.status,
+        }
+      )
+        .then((res) => {
+          return res;
+        })
+        .then(async (res) => {
+          const userDataRo = await UsersData.updateOne(
+            { email: payload?.email },
+            {
+              totalLeaveTaken: payload?.totalLeaveTaken,
+              balancedLeaves: payload?.balancedLeaves,
+              balancedSandwichLeaves: payload?.balancedSandwichLeaves,
+              balancedSandwichLeavesTaken: payload?.balancedSandwichLeavesTaken,
+            }
+          )
+            .then((res) => {
+              return res;
+            })
+            .then(async (res) => {
+              const result = await UsersData.findOne({ email: payload?.email });
+              return result;
+            });
 
-    return new NextResponse(JSON.stringify(userDataPerson), { status: 200 });
+          return userDataRo;
+        });
+      return new NextResponse(JSON.stringify(userDataPerson), { status: 200 });
+    } else {
+      const userDataPerson = await Leaves.updateOne(
+        { _id: payload?.id },
+        {
+          status: payload?.status,
+          reason: payload?.reason,
+        }
+      )
+        .then((res) => {
+          return res;
+        })
+        .then(async (res) => {
+          const leave = await Leaves.findOne({ _id: payload?.id });
+          const userDataRo = await UsersData.updateOne(
+            { email: payload?.email },
+            {
+              totalLeaveTaken: payload?.totalLeaveTaken,
+              balancedLeaves: payload?.balancedLeaves,
+              balancedSandwichLeaves: payload?.balancedSandwichLeaves,
+              balancedSandwichLeavesTaken: payload?.balancedSandwichLeavesTaken,
+            }
+          )
+            .then((res) => {
+              return res;
+            })
+            .then(async (res) => {
+              const result = await UsersData.findOne({ email: payload?.email });
+              return { leave: leave, user: result };
+            });
+
+          return userDataRo;
+        });
+      return new NextResponse(JSON.stringify(userDataPerson), { status: 200 });
+    }
   } catch (error) {
     console.log("error>>", error);
     return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });

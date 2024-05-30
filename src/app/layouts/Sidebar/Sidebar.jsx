@@ -13,6 +13,7 @@ import IconNotification from "@/app/components/Icons/IconNotification";
 import IconEmployee from "@/app/components/Icons/IconEmployee";
 import IconLeave from "@/app/components/Icons/IconLeave";
 import IconSalary from "@/app/components/Icons/IconSalary";
+import SkeletonLoader from "@/app/components/Ui/skeletonLoader/skeletonLoader";
 const Sidebar = () => {
   const { sidebarCollapse } = useThemeConfig();
   const { userLoggedIn, userPermissions, userData } = useAuth();
@@ -142,6 +143,39 @@ const Sidebar = () => {
           </Wrapper>
         </aside>
       )}
+      {!userLoggedIn && !path.includes('account') && (
+         <aside
+         className={`fixed h-[100vh]  w-full left-0 top-0 transition-all duration-200 bg-dark-blue py-5 ${
+           sidebarCollapse ? "max-w-[100px]" : "max-w-[300px]"
+         }`}
+       >
+         <Wrapper>
+           <SkeletonLoader className={'h-[32px] max-w-[150px] mx-auto rounded-lg mb-4'} />
+           <SkeletonLoader className={'h-[112px] w-[112px] max-w-[112px] mx-auto rounded-full mb-4'} />          
+           <SkeletonLoader className={'h-[28px] max-w-[150px] mx-auto rounded-lg mt-[10px]'} />         
+           <Wrapper
+             className={`mt-[35px]  ${
+               sidebarCollapse ? "pl-[10px]" : "pl-12"
+             }`}
+           >
+             <ul className="list-none p-0 mt-0">
+             <SkeletonLoader className={'h-[48px] mx-auto rounded-l-[60px] mt-[0px]'} />    
+             <SkeletonLoader className={'h-[48px] mx-auto rounded-l-[60px] mt-[0px]'} />    
+             <SkeletonLoader className={'h-[48px] mx-auto rounded-l-[60px] mt-[0px]'} />    
+             <SkeletonLoader className={'h-[48px] mx-auto rounded-l-[60px] mt-[0px]'} />    
+             <SkeletonLoader className={'h-[48px] mx-auto rounded-l-[60px] mt-[0px]'} />    
+             <SkeletonLoader className={'h-[48px] mx-auto rounded-l-[60px] mt-[0px]'} />    
+             <SkeletonLoader className={'h-[48px] mx-auto rounded-l-[60px] mt-[0px]'} />    
+             <SkeletonLoader className={'h-[48px] mx-auto rounded-l-[60px] mt-[0px]'} />    
+             <SkeletonLoader className={'h-[48px] mx-auto rounded-l-[60px] mt-[0px]'} />     
+             
+             </ul>
+           </Wrapper>
+         </Wrapper>
+       </aside>
+       
+      )
+      }
     </>
   );
 };

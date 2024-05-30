@@ -12,7 +12,6 @@ const Employees = () => {
   const [total, setTotal] = useState("");
   const [male, setMale] = useState("");
   const [female, setFemale] = useState("");
-
   useEffect(() => {
     const maleCount = users?.filter((item) => {
       return item?.gender === "male";
@@ -50,6 +49,30 @@ const Employees = () => {
       </Wrapper>
     </Container>
     )}
+      {!userPermissions && (
+    <Container> 
+    <Wrapper className="flex justify-between gap-[15px]">
+      <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full items-center animate-pulse">
+        <H1 className="text-light-500 text-[64px] leading-none opacity-0">{total || 0}</H1>
+        <H3 className="text-center text-light-400 mt-[5px] opacity-0">
+          Total Employees
+        </H3>
+      </Wrapper>
+      <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full items-center animate-pulse">
+        <H1 className="text-light-500 text-[64px] leading-none opacity-0">{male || 0}</H1>
+        <H3 className="text-center text-light-400 mt-[5px] opacity-0">
+          Male Employees
+        </H3>
+      </Wrapper>
+      <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full items-center animate-pulse">
+        <H1 className="text-light-500 text-[64px] leading-none opacity-0">{female || 0}</H1>
+        <H3 className="text-center text-light-400 mt-[5px] opacity-0">
+          Female Employees
+        </H3>
+      </Wrapper>
+    </Wrapper>
+  </Container>
+      )}
     </>
   );
 };

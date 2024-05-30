@@ -5,6 +5,7 @@ import IconView from "@/app/components/Icons/IconView";
 import H2 from "@/app/components/Ui/H2/H2";
 import Text from "@/app/components/Ui/Text/Text";
 import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
+import SkeletonLoader from "@/app/components/Ui/skeletonLoader/skeletonLoader";
 import useAuth from "@/app/contexts/Auth/auth";
 import { formatDate } from "@/app/utils/DateFormat";
 import Link from "next/link";
@@ -149,9 +150,12 @@ const ProfileRight = ({heading, button}) => {
         </Wrapper>
         <Wrapper className="py-[10px] border-b border-light-500 flex justify-between">
           <Text className="!text-light-400 flex-1">Increment Date</Text>
+          {!userData && <SkeletonLoader className='!w-1/2 rounded-2xl !h-3'/>}
+          {userData && 
           <Text className="flex-1 text-right capitalize">
             {formatDate(userData?.incrementDate)}
           </Text>
+}
         </Wrapper>
       </Wrapper>
 {button && (      <Wrapper className="mt-[15px]">

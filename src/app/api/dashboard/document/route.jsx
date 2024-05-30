@@ -6,7 +6,7 @@ export const POST = async (request) => {
   try {
     const db = await connect();
     const payload = await request.json();
-    const document = new requestDocuments({
+    const documentPOST = new requestDocuments({
       email: payload?.email,
       userID: payload?.userID,
       document: payload?.document,
@@ -15,7 +15,7 @@ export const POST = async (request) => {
       status: "pending",
       file: "",
     });
-    const result = await document.save();
+    const result = await documentPOST.save();
     return new NextResponse(JSON.stringify(result), { status: 200 });
   } catch (error) {
     console.log("error>>", error);

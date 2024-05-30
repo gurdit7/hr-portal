@@ -33,11 +33,7 @@ export const GET = async (request) => {
             { document: { $regex: search } },
             { description: { $regex: search } },
             { status: { $regex: search } },
-            { email: { $regex: search } },
-            { document: { $regex: search } },
-            { description: { $regex: search } },
-            { status: { $regex: search } },
-            { email: { $regex: search } },
+            { email: { $regex: search } }            
           ],
         })
         .limit(limit)
