@@ -1,85 +1,107 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import connect from "../../../libs/mongo/index";
 import Leaves from "@/model/addLeave";
 import UsersData from "@/model/userData";
+import Notifications from "@/model/notifications";
+import addRole from "@/model/addRole";
+import sendEmail from "@/app/mailer/mailer";
+
+const getUserByEmail = async (email) => {
+  const user = await UsersData.findOne({ email });
+  if (!user) throw new Error("User Not Found");
+  return user;
+};
+
+const getRolesWithPermission = async (permission) => {
+  const roles = await addRole.find({ permissions: permission });  
+  return roles.map(role => role.role);
+};
+
+const getEmailsByRoleAndDepartment = async (roles, department) => { 
+  const users = await UsersData.find({ department, role: { $in: roles } });  
+  return users.map(user => user.email);
+};
+
+const getHrAndAdminEmails = async () => {
+  const users = await UsersData.find({ role: { $in: ["hr", "admin"] } });
+  return users.map(user => user.email);
+};
 
 export const POST = async (request) => {
   try {
-    const db = await connect();
+    await connect();
     const payload = await request.json();
-    const date = new Date().getTime().toString(36);
-    const leaves = new Leaves({
-      name: payload?.name,
-      email: payload?.email,
-      userID: payload?.userID,
-      duration: payload?.duration,
-      durationDate: payload?.durationDate,
-      durationHours: payload?.durationHours,
-      subject: payload?.subject,
-      description: payload?.description,
-      attachment: payload?.attachment,
-      from: payload?.from,
-      to: payload?.to,
-      status: "pending",
-    });
+    const leaves = new Leaves({ ...payload, status: "pending" });
     const result = await leaves.save();
+
+    const user = await getUserByEmail(result.email);
+    const roles = await getRolesWithPermission("view-users-notifications");    
+    const departmentEmails = await getEmailsByRoleAndDepartment(roles, user.department);
+    const hrAdminEmails = await getHrAndAdminEmails();
+    const mails = [...new Set([...departmentEmails, ...hrAdminEmails])];
+    const mailsString = mails.toString();
+
+    await sendEmail(
+      mailsString,
+      `HR Portal - ${user.name} has applied for leave.`,
+      `<h4><strong>Subject:</strong> ${payload.subject}</h4>
+      <p style="text-align:left;font-size:16px;"><strong>Duration:</strong> ${
+        payload.duration === "Other" ? `From: ${payload.from} - To: ${payload.to}` : payload.duration
+      }</p>
+      <p style="text-align:left;font-size:16px;"><strong>Date:</strong> ${
+        payload.durationDate
+      }</p>
+      <strong>Description:</strong> ${payload.description}`,
+      payload.attachment
+    );
+
+    const viewedStatus = mails.map(mail => ({ mail, status: false }));
+    const notifications = new Notifications({
+      ...payload,
+      toEmails: mails,
+      type: 'leaves',
+      id: result._id,
+      viewed: viewedStatus
+    });
+
+    await notifications.save();
     return new NextResponse(JSON.stringify(result), { status: 200 });
   } catch (error) {
-    console.log("error>>", error);
+    console.error("Error:", error);
     return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });
   }
 };
 
 export const GET = async (request) => {
   try {
-    const db = await connect();
+    await connect();
     const url = new URL(request.url);
     const email = url.searchParams.get("email");
     const id = url.searchParams.get("id");
     const all = url.searchParams.get("all");
+
     if (all === "true") {
       const leaves = await Leaves.find();
       return new NextResponse(JSON.stringify(leaves), { status: 200 });
     }
-    if (!id && !all) {
-      if (!email) {
-        return new NextResponse(
-          JSON.stringify({ error: "Email not provided" }),
-          { status: 400 }
-        );
-      }
-      const leaves = await Leaves.find({ email: email })
-        .sort({ $natural: -1 })
-        .then(async (data) => {
-          if (data) {
-            const userData = await UsersData.findOne({ email: email }).then(
-              async (data) => {
-                return {
-                  name: data?.name,
-                  email: data?.email,
-                };
-              }
-            );
-            return { leaves: data, user: userData };
-          } else {
-            return { error: "User Not Found", status: 404 };
-          }
-        })
-        .then((res) => {
-          return res;
-        });
-      return new NextResponse(JSON.stringify(leaves), { status: 200 });
+
+    if (!id && !email) {
+      return new NextResponse(JSON.stringify({ error: "Email not provided" }), { status: 400 });
     }
-    if (id && !all) {
-      const leaves = await Leaves.findOne({ _id: id });
-      const result = await UsersData.findOne({ email: leaves?.email });
-      return new NextResponse(
-        JSON.stringify({ leaves: leaves, user: result }),
-        { status: 200 }
-      );
+
+    if (email) {
+      const leaves = await Leaves.find({ email }).sort({ $natural: -1 });
+      const user = await UsersData.findOne({ email });
+      return new NextResponse(JSON.stringify({ leaves, user }), { status: 200 });
+    }
+
+    if (id) {
+      const leaves = await Leaves.findById(id);
+      const user = await UsersData.findOne({ email: leaves.email });
+      return new NextResponse(JSON.stringify({ leaves, user }), { status: 200 });
     }
   } catch (error) {
-    console.log("error>>", error);
+    console.error("Error:", error);
     return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });
   }
 };
@@ -88,91 +110,85 @@ export const PUT = async (request) => {
   try {
     await connect();
     const payload = await request.json();
-    if (payload?.update === "leaves") {
-      const userDataRo = await UsersData.updateOne(
-        { email: payload?.email },
-        {
-          totalLeaveTaken: payload?.totalLeaveTaken,
-          balancedLeaves: payload?.balancedLeaves,
-          balancedSandwichLeaves: payload?.balancedSandwichLeaves,
-          balancedSandwichLeavesTaken: payload?.balancedSandwichLeavesTaken,
-        }
-      )
-        .then((res) => {
-          return res;
-        })
-        .then(async (res) => {
-          const result = await UsersData.findOne({ email: payload?.email });
-          return result;
-        });
-      return new NextResponse(JSON.stringify(userDataRo), { status: 200 });
-    } else if (payload?.update === "cancel") {
-      const userDataPerson = await Leaves.updateOne(
-        { _id: payload?.id },
-        {
-          status: payload?.status,
-        }
-      )
-        .then((res) => {
-          return res;
-        })
-        .then(async (res) => {
-          const userDataRo = await UsersData.updateOne(
-            { email: payload?.email },
-            {
-              totalLeaveTaken: payload?.totalLeaveTaken,
-              balancedLeaves: payload?.balancedLeaves,
-              balancedSandwichLeaves: payload?.balancedSandwichLeaves,
-              balancedSandwichLeavesTaken: payload?.balancedSandwichLeavesTaken,
-            }
-          )
-            .then((res) => {
-              return res;
-            })
-            .then(async (res) => {
-              const result = await UsersData.findOne({ email: payload?.email });
-              return result;
-            });
 
-          return userDataRo;
-        });
-      return new NextResponse(JSON.stringify(userDataPerson), { status: 200 });
-    } else {
-      const userDataPerson = await Leaves.updateOne(
-        { _id: payload?.id },
+    if (payload.update === "leaves") {
+      await UsersData.updateOne(
+        { email: payload.email },
         {
-          status: payload?.status,
-          reason: payload?.reason,
+          totalLeaveTaken: payload.totalLeaveTaken,
+          balancedLeaves: payload.balancedLeaves,
+          balancedSandwichLeaves: payload.balancedSandwichLeaves,
+          balancedSandwichLeavesTaken: payload.balancedSandwichLeavesTaken,
         }
-      )
-        .then((res) => {
-          return res;
-        })
-        .then(async (res) => {
-          const leave = await Leaves.findOne({ _id: payload?.id });
-          const userDataRo = await UsersData.updateOne(
-            { email: payload?.email },
-            {
-              totalLeaveTaken: payload?.totalLeaveTaken,
-              balancedLeaves: payload?.balancedLeaves,
-              balancedSandwichLeaves: payload?.balancedSandwichLeaves,
-              balancedSandwichLeavesTaken: payload?.balancedSandwichLeavesTaken,
-            }
-          )
-            .then((res) => {
-              return res;
-            })
-            .then(async (res) => {
-              const result = await UsersData.findOne({ email: payload?.email });
-              return { leave: leave, user: result };
-            });
-
-          return userDataRo;
-        });
-      return new NextResponse(JSON.stringify(userDataPerson), { status: 200 });
+      );
+      const updatedUser = await UsersData.findOne({ email: payload.email });
+      return new NextResponse(JSON.stringify(updatedUser), { status: 200 });
     }
+
+    if (payload.update === "cancel") {
+      await Leaves.updateOne({ _id: payload.id }, { status: payload.status });
+      await UsersData.updateOne(
+        { email: payload.email },
+        {
+          totalLeaveTaken: payload.totalLeaveTaken,
+          balancedLeaves: payload.balancedLeaves,
+          balancedSandwichLeaves: payload.balancedSandwichLeaves,
+          balancedSandwichLeavesTaken: payload.balancedSandwichLeavesTaken,
+        }
+      );
+      const updatedUser = await UsersData.findOne({ email: payload.email });
+      await sendEmail(
+        payload.email,
+        `HR Portal - Your Leave is canceled.`,
+        `Your Leave is canceled.`
+      );       
+      const notifications = new Notifications({
+        ...payload,
+        subject:"Your Leave is Canceled.",
+        name: "HR",
+        toEmails:  payload.email,
+        type: 'info',
+        id: payload.id,
+        viewed: [{mail:payload.email, status:false}]
+      });
+  
+      await notifications.save();
+      return new NextResponse(JSON.stringify(updatedUser), { status: 200 });
+    }
+
+    await Leaves.updateOne({ _id: payload.id }, { status: payload.status, reason: payload.reason });
+    const updatedLeave = await Leaves.findById(payload.id);
+    await sendEmail(
+      payload.email,
+      `HR Portal - Your leave is ${payload.status}`,      `
+      ${payload.reason}
+      `
+    );       
+    const notifications = new Notifications({
+      ...payload,
+      subject: `Your leave is ${payload.status}`,
+      description:`${payload.reason}`,
+      name: "HR",
+      toEmails:  payload.email,
+      type: 'info',
+      id: payload.id,
+      viewed: [{mail:payload.email, status:false}]
+    });
+
+    await notifications.save();
+    const updatedUser = await UsersData.updateOne(
+      { email: payload.email },
+      {
+        totalLeaveTaken: payload.totalLeaveTaken,
+        balancedLeaves: payload.balancedLeaves,
+        balancedSandwichLeaves: payload.balancedSandwichLeaves,
+        balancedSandwichLeavesTaken: payload.balancedSandwichLeavesTaken,
+      }
+    );
+
+    return new NextResponse(JSON.stringify({ leave: updatedLeave, user: updatedUser }), { status: 200 });
   } catch (error) {
-    console.log("error>>", error);
+    console.error("Error:", error);
     return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });
   }
 };

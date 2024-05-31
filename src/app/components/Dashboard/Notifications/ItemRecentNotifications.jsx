@@ -38,9 +38,10 @@ const ItemRecentNotifications = () => {
     const fetchNotifications = async () => {
       const all = !userPermissions?.includes("user-notifications");
       const response = await fetch(
-        `/api/dashboard/notifications?all=${all}&limit=${start * 5 + limit}&start=${start * 5}`
+        `/api/dashboard/notifications?all=${all}&limit=${start * 5 + limit}&start=${start * 5}&email=${userData?.email}`
       );
-      const data = await response.json();
+      
+      const data = await response.json();      
       setUserNotifications(data?.data || []);
       setUserNotificationsLength(data?.length || 0);
     };
@@ -88,7 +89,7 @@ const ItemRecentNotifications = () => {
       )}
       <div className="flex flex-col gap-[15px]">
         {userNotifications.map((item, index) => (
-          <Item key={index} item={item} emailID={emailID} name={name} />
+          <Item key={index} item={item} emailID={emailID} name={name} userData={userData} />
         ))}
       </div>
       {count > 1 && <Pagination count={count} getIndex={handlePageChange} index={start} />}

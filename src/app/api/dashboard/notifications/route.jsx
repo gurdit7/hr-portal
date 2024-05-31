@@ -2,8 +2,6 @@ import { NextResponse, NextRequest } from "next/server";
 import connect from "../../../libs/mongo/index";
 import Notifications from "@/model/notifications";
 import requestDocuments from "@/model/requestDocuments";
-import AppraisalForm from "@/model/AppraisalForm";
-import addLeave from "@/model/addLeave";
 
 export const GET = async (request) => {
   try {
@@ -15,7 +13,7 @@ export const GET = async (request) => {
     const limit = url.searchParams.get("limit");
     const email = url.searchParams.get("email");
     if (all === "false") {
-      const data = await Notifications.find({email:email})
+      const data = await Notifications.find({toEmails:email}).sort({$natural:-1})
         .then((userExist) => {
           if (userExist) {
             return userExist;
@@ -46,20 +44,11 @@ export const GET = async (request) => {
         }
       );
     } else {
-      const requestDocument = await requestDocuments.find().sort({$natural:-1});
-      const notification = await Notifications.find().sort({$natural:-1});
-      const appraisal = await AppraisalForm.find().sort({$natural:-1});
-      const leaves = await addLeave.find().sort({$natural:-1});      
-      const allNotifications = [];      
-      allNotifications.push(...requestDocument);
-      allNotifications.push(...appraisal);
-      allNotifications.push(...notification);
-      allNotifications.push(...leaves);
-      
-      const result = allNotifications.sort((a, b) => {
+      const notification = await Notifications.find({toEmails:email}).sort({$natural:-1});        
+      const result = notification.sort((a, b) => {
         return new Date(b.updatedAt) - new Date(a.updatedAt);
-      });      
-      const data = result.slice(start, Math.floor(start) + Math.floor(limit));
+      });
+      const data = result.slice(start, Math.floor(start) + Math.floor(limit));      
       return new NextResponse(
         JSON.stringify({ data: data, length: result.length }),
         { status: 200 }
@@ -90,3 +79,15 @@ export const POST = async (request) => {
     return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });
   }
 };
+
+
+export const PUT = async (request) => {
+  try {
+    await connect();
+    const payload = await request.json();    
+    const notification = await Notifications.updateOne({ _id: payload.id }, { viewed: payload.viewed });
+    return new NextResponse(JSON.stringify(notification), { status: 200 });
+  } catch (error) {
+    return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });
+  }
+}

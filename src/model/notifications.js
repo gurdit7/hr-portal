@@ -23,8 +23,17 @@ const userSchema = new Schema({
         sendDate:{
             type:String
         },
-        emails:{
+        toEmails:{
+            type:Array
+        },
+        type:{
             type:String
+        },
+        id:{
+            type:String
+        },
+        viewed:{
+            type:Array
         }
 },{timestamps:true})
 

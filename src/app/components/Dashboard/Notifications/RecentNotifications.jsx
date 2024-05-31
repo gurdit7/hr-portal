@@ -106,7 +106,7 @@ const RecentNotifications = () => {
     <>
       {userPermissions &&
         userPermissions?.includes("view-users-notifications") && (
-          <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full">
+          <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full max-w-1/2">
             <ItemRecentNotifications />
             <Wrapper>
               {error && (

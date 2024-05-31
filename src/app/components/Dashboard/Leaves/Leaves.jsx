@@ -27,6 +27,8 @@ import { TimeFormat } from "@/app/utils/TimeFormat";
 import Link from "next/link";
 import Badge from "../../Ui/Badge/Badge";
 import IconDate from "../../Icons/IconDate";
+import Notification from "../../Ui/notification/success/Notification";
+import ErrorNotification from "../../Ui/notification/loader/LoaderNotification";
 
 const Leaves = ({ heading }) => {
   const [formData, setFormData] = useState({});
@@ -45,6 +47,12 @@ const Leaves = ({ heading }) => {
   const [errors, setErrors] = useState({});
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [successAnimation, setSuccessAnimation] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [errorAnimation, setErrorAnimation] = useState(false);
   const getFrom = (e) => {
     setFrom(e);
     setVal(e);
@@ -153,58 +161,54 @@ const Leaves = ({ heading }) => {
       });
 
       const data = await response.json();
-      await sendEmail(
-        "thefabcodeuser9@gmail.com",
-        `HR Portal - ${userData.name} requested a leave.`,
-        `
-          <p style="text-align:left;font-size:16px;"><strong>Subject:</strong> ${
-            formData.subject
-          }</p>
-          <p style="text-align:left;font-size:16px;"><strong>Duration:</strong> ${
-            formData.duration === "Other"
-              ? `From: ${formData?.from} - To:${formData?.to}`
-              : formData.duration
-          } </p>
-          <p style="text-align:left;font-size:16px;"><strong>Description:</strong></p>
-          ${formData.description}
-        `,
-        formDataCopy.attachment
-      );
+      setSuccess(true);
+      setSuccessMessage("The status is changed.");
+      setSuccessAnimation(true);
       setLoad(true);
-      setLoading(false);
-      setFormData("");
-      setDescription("");
-      setAttachment("");
+      setTimeout(() => {
+        setSuccessAnimation(false);
+        setSuccess(false);
+        setLoading(false);
+        setFormData("");
+        setDescription("");
+        setAttachment("");
+      }, 3000);
     } catch (err) {
-      setLoading(false);
+      setError(true);
+      setErrorMessage("Something went wrong! please try again later");
+      setErrorAnimation(true);
+      setTimeout(() => {
+        setErrorAnimation(false);
+        setError(false);
+        setLoading(false);
+      }, 3000);
     }
   };
 
   useEffect(() => {
     setLoad(false);
     setUser(leaves);
-     if(userPermissions?.includes("user-leaves")){
+    if (userPermissions && userPermissions?.includes("user-leaves")) {
       fetch(`/api/dashboard/leaves?all=true`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data)
-        setAllLeaves(data || []);
-      });
-     } 
-     else{
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          setAllLeaves(data || []);
+        });
+    } else {
       fetch(`/api/dashboard/leaves?email=${userData?.email}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setPreviousLeaves(data.leaves || []);
-      });
-     }
+        .then((res) => res.json())
+        .then((data) => {
+          setPreviousLeaves(data.leaves || []);
+        });
+    }
   }, [leaves, userData.email, load]);
 
   const formErrorClass = "block text-xs mt-1 text-red-500";
 
   return (
     <>
-      {userPermissions?.includes("balance-leaves") && (
+      {userPermissions && userPermissions?.includes("balance-leaves") && (
         <Container heading={heading}>
           <Wrapper className="flex justify-between gap-[15px]">
             <LeaveSummaryCard
@@ -380,11 +384,10 @@ const Leaves = ({ heading }) => {
         </Container>
       )}
 
-      {userPermissions?.includes("user-leaves") && (
+      {userPermissions && userPermissions?.includes("user-leaves") && (
         <Container heading="Leave Information">
           <Wrapper className="flex justify-between gap-[15px] mt-[15px]">
             <Wrapper className="bg-white rounded-[10px] p-5 w-full">
-          
               {allLeaves.length > 0 ? (
                 <Wrapper className="flex flex-col gap-[15px]">
                   <Wrapper className="flex justify-between items-center">
@@ -412,7 +415,18 @@ const Leaves = ({ heading }) => {
           </Wrapper>
         </Container>
       )}
-
+      {success && (
+        <Notification
+          active={successAnimation}
+          message={successMessage}
+        ></Notification>
+      )}
+      {error && (
+        <ErrorNotification
+          active={errorAnimation}
+          message={errorMessage}
+        ></ErrorNotification>
+      )}
     </>
   );
 };

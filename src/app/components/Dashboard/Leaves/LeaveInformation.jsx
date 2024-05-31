@@ -114,7 +114,7 @@ const LeaveInformation = () => {
   return (
     <>
       <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full relative">
-        <H2>Subject: {leaves?.subject}</H2>
+       {leaves?.subject && (<H2>Subject: {leaves?.subject}</H2>)} 
         {leaves?.description && (
           <div className="mt-[5px] text-sm font-medium font-poppins text-text-dark" ref={paraRef}>
             {toHTML(paraRef, leaves?.description, leaves?.description.length)}
@@ -151,13 +151,13 @@ const LeaveInformation = () => {
               </Link>
             </Wrapper>
           )}
-          {userPermissions?.includes("approve-decline-leaves") && leaves?.status === "pending" && (
+          {userPermissions && userPermissions?.includes("approve-decline-leaves") && leaves?.status === "pending" && (
             <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Take Action:</Text>
               <ApproveLeave id={id} setValue={setValue} user={leaves} leaves={user} />
             </Wrapper>
           )}
-          {userPermissions?.includes("approve-decline-leaves") && leaves?.status === "approved" && (
+          {userPermissions && userPermissions?.includes("approve-decline-leaves") && leaves?.status === "approved" && (
             <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Take Action:</Text>
               <Wrapper>
@@ -177,6 +177,14 @@ const LeaveInformation = () => {
             <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Comment</Text>
               <Text>{leaves?.status === "canceled" ? "Your leave is canceled." : leaves?.reason}</Text>
+            </Wrapper>
+          )}
+                 {leaves?.updatedAt && (
+            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+              <Text className="!text-light-400">Applied On:</Text>
+              <Text>
+              {formatDate(leaves?.updatedAt)}
+              </Text>
             </Wrapper>
           )}
         </Wrapper>
