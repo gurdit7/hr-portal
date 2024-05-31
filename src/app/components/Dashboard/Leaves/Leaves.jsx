@@ -29,6 +29,7 @@ import Badge from "../../Ui/Badge/Badge";
 import IconDate from "../../Icons/IconDate";
 import Notification from "../../Ui/notification/success/Notification";
 import ErrorNotification from "../../Ui/notification/loader/LoaderNotification";
+import SkeletonLoader from "../../Ui/skeletonLoader/skeletonLoader";
 
 const Leaves = ({ heading }) => {
   const [formData, setFormData] = useState({});
@@ -39,7 +40,7 @@ const Leaves = ({ heading }) => {
   const [user, setUser] = useState("");
   const [description, setDescription] = useState("");
   const [previousLeaves, setPreviousLeaves] = useState([]);
-  const [allLeaves, setAllLeaves] = useState([]);
+  const [allLeaves, setAllLeaves] = useState(false);
   const [file, setFile] = useState(null);
   const [attachment, setAttachment] = useState("Add Attachment");
   const [from, setFrom] = useState("");
@@ -53,6 +54,7 @@ const Leaves = ({ heading }) => {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [errorAnimation, setErrorAnimation] = useState(false);
+  const array = [0, 1, 2, 3, 4];
   const getFrom = (e) => {
     setFrom(e);
     setVal(e);
@@ -415,6 +417,45 @@ const Leaves = ({ heading }) => {
           </Wrapper>
         </Container>
       )}
+
+      {!allLeaves && (
+        <Container heading={false}>
+          <Wrapper className="flex justify-between gap-[15px] mt-[15px]">
+            <Wrapper className="bg-white rounded-[10px] p-5 w-full">
+              <Wrapper className="flex flex-col gap-[15px]">
+                <Wrapper className="flex justify-between items-center">
+                  <SkeletonLoader className="w-full max-w-[172px] !h-9 rounded-lg" />
+                  <SkeletonLoader className="!h-[58px] !w-[195px] rounded-lg"></SkeletonLoader>
+                </Wrapper>
+
+                {array.map((item, index) => (
+                  <Wrapper className="border border-light-500 relative">
+                    <Wrapper className="p-3 relative">
+                      <SkeletonLoader className="w-full max-w-[172px] !h-5 rounded-3xl" />
+                      <SkeletonLoader className="w-full max-w-[50%] h-[27px] rounded-3xl mt-1 mb-2" />
+                      <Wrapper className="flex flex-col gap-2">
+                        <SkeletonLoader className="h-3 rounded-3xl  w-1/3" />
+                        <SkeletonLoader className="h-3 rounded-3xl  w-1/4" />
+                        <SkeletonLoader className="h-3 rounded-3xl  w-1/5" />
+                        <SkeletonLoader className="h-3 rounded-3xl  w-1/6" />
+                      </Wrapper>
+                      <Wrapper className="absolute flex top-3 right-3 w-full max-w-[103px]">
+                        <SkeletonLoader className="!h-8 rounded-md  w-full max-w-[103px]" />
+                      </Wrapper>
+
+                      <Wrapper className="flex justify-between items-center border-t border-light-500 pt-[5px] mt-[5px]">
+                        <SkeletonLoader className="h-3 rounded-3xl  w-full max-w-[172px]" />
+                        <SkeletonLoader className="h-3 rounded-3xl  w-full max-w-[172px]" />
+                      </Wrapper>
+                    </Wrapper>
+                  </Wrapper>
+                ))}
+              </Wrapper>
+            </Wrapper>
+          </Wrapper>
+        </Container>
+      )}
+
       {success && (
         <Notification
           active={successAnimation}

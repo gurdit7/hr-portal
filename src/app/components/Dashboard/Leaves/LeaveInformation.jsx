@@ -16,6 +16,7 @@ import Modal from "../../Ui/Modal/Modal";
 import FormButton from "../../Form/FormButton/FormButton";
 import Input from "../../Form/Input/Input";
 import IconNumber from "../../Icons/IconNumber";
+import SkeletonLoader from "../../Ui/skeletonLoader/skeletonLoader";
 
 const LeaveInformation = () => {
   const [formData, setFormData] = useState({});
@@ -35,12 +36,15 @@ const LeaveInformation = () => {
       try {
         const response = await fetch(`/api/dashboard/leaves?id=${id}`);
         const result = await response.json();
-        setUser(result?.user);
-        setLeaves(result?.leaves);
+          setUser(result?.user);
+          setLeaves(result?.leaves);
 
-        const balancedSandwichLeaves = result?.leaves?.durationDay === "Friday" || result?.leaves?.durationDay === "Monday"
-          ? result?.user?.balancedSandwichLeaves + 1
-          : result?.user?.balancedSandwichLeaves;
+
+        const balancedSandwichLeaves =
+          result?.leaves?.durationDay === "Friday" ||
+          result?.leaves?.durationDay === "Monday"
+            ? result?.user?.balancedSandwichLeaves + 1
+            : result?.user?.balancedSandwichLeaves;
 
         setFormData({
           update: "leaves",
@@ -48,7 +52,8 @@ const LeaveInformation = () => {
           balancedLeaves: result?.user?.balancedLeaves,
           totalLeaveTaken: result?.user?.totalLeaveTaken,
           balancedSandwichLeaves,
-          balancedSandwichLeavesTaken: result?.user?.balancedSandwichLeavesTaken,
+          balancedSandwichLeavesTaken:
+            result?.user?.balancedSandwichLeavesTaken,
         });
 
         setFormDataCancel({
@@ -58,7 +63,8 @@ const LeaveInformation = () => {
           email: result?.user?.email,
           balancedLeaves: result?.user?.balancedLeaves,
           balancedSandwichLeaves,
-          balancedSandwichLeavesTaken: result?.user?.balancedSandwichLeavesTaken,
+          balancedSandwichLeavesTaken:
+            result?.user?.balancedSandwichLeavesTaken,
           totalLeaveTaken: result?.user?.totalLeaveTaken,
         });
       } catch (error) {
@@ -114,11 +120,27 @@ const LeaveInformation = () => {
   return (
     <>
       <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full relative">
-       {leaves?.subject && (<H2>Subject: {leaves?.subject}</H2>)} 
+        {leaves?.subject && <H2>Subject: {leaves?.subject}</H2>}
+        {!leaves?.subject && (
+          <SkeletonLoader className="h-9 rounded-lg w-1/2" />
+        )}
         {leaves?.description && (
-          <div className="mt-[5px] text-sm font-medium font-poppins text-text-dark" ref={paraRef}>
+          <div
+            className="mt-[5px] text-sm font-medium font-poppins text-text-dark"
+            ref={paraRef}
+          >
             {toHTML(paraRef, leaves?.description, leaves?.description.length)}
           </div>
+        )}
+        {!leaves?.description && (
+          <Wrapper className="flex flex-col gap-2">
+            <SkeletonLoader className="h-3 rounded-3xl  w-2/3" />
+            <SkeletonLoader className="h-3 rounded-3xl  w-1/2" />
+            <SkeletonLoader className="h-3 rounded-3xl  w-1/3" />
+            <SkeletonLoader className="h-3 rounded-3xl  w-1/4" />
+            <SkeletonLoader className="h-3 rounded-3xl  w-1/5" />
+            <SkeletonLoader className="h-3 rounded-3xl  w-1/6" />
+          </Wrapper>
         )}
         <Wrapper>
           {leaves?.name && (
@@ -127,10 +149,22 @@ const LeaveInformation = () => {
               <Text>{leaves?.name}</Text>
             </Wrapper>
           )}
+          {!leaves && (
+            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-y min-h-[50px]">
+              <Text className="!text-light-400">Applied by:</Text>
+              <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
+            </Wrapper>
+          )}
           {leaves?.status && (
             <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Status:</Text>
               <Badge status={leaves?.status} />
+            </Wrapper>
+          )}
+          {!leaves && (
+            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+              <Text className="!text-light-400">Status:</Text>
+              <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
             </Wrapper>
           )}
           {leaves?.duration && (
@@ -143,67 +177,122 @@ const LeaveInformation = () => {
               </Text>
             </Wrapper>
           )}
+          {!leaves && (
+            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+              <Text className="!text-light-400">Duration:</Text>
+              <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
+            </Wrapper>
+          )}
           {leaves?.attachment && (
             <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Attachment:</Text>
-              <Link href={leaves?.attachment} target="_blank" className="text-xs py-2 px-5 rounded-md text-white uppercase tracking-normal bg-red-400">
+              <Link
+                href={leaves?.attachment}
+                target="_blank"
+                className="text-xs py-2 px-5 rounded-md text-white uppercase tracking-normal bg-red-400"
+              >
                 Check Attachment
               </Link>
             </Wrapper>
           )}
-          {userPermissions && userPermissions?.includes("approve-decline-leaves") && leaves?.status === "pending" && (
+          {!leaves && (
             <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
-              <Text className="!text-light-400">Take Action:</Text>
-              <ApproveLeave id={id} setValue={setValue} user={leaves} leaves={user} />
+              <Text className="!text-light-400">Attachment:</Text>
+              <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
             </Wrapper>
           )}
-          {userPermissions && userPermissions?.includes("approve-decline-leaves") && leaves?.status === "approved" && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
-              <Text className="!text-light-400">Take Action:</Text>
-              <Wrapper>
-                <FormButton
-                  type="button"
-                  label="Cancel"
-                  btnType="solid"
-                  additionalCss="px-12 !bg-red-600"
-                  event={handleCancelLeave}
-                  loading={loading}
-                  loadingText="Canceling Leave"
+          {userPermissions &&
+            userPermissions?.includes("approve-decline-leaves") &&
+            leaves?.status === "pending" && (
+              <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+                <Text className="!text-light-400">Take Action:</Text>
+                <ApproveLeave
+                  id={id}
+                  setValue={setValue}
+                  user={leaves}
+                  leaves={user}
                 />
               </Wrapper>
-            </Wrapper>
-          )}
+            )}
+          {userPermissions &&
+            userPermissions?.includes("approve-decline-leaves") &&
+            leaves?.status === "approved" && (
+              <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+                <Text className="!text-light-400">Take Action:</Text>
+                <Wrapper>
+                  <FormButton
+                    type="button"
+                    label="Cancel"
+                    btnType="solid"
+                    additionalCss="px-12 !bg-red-600"
+                    event={handleCancelLeave}
+                    loading={loading}
+                    loadingText="Canceling Leave"
+                  />
+                </Wrapper>
+              </Wrapper>
+            )}
           {leaves?.reason && (
             <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Comment</Text>
-              <Text>{leaves?.status === "canceled" ? "Your leave is canceled." : leaves?.reason}</Text>
+              <Text>
+                {leaves?.status === "canceled"
+                  ? "Your leave is canceled."
+                  : leaves?.reason}
+              </Text>
             </Wrapper>
           )}
-                 {leaves?.updatedAt && (
+          {!leaves && (
+            <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
+              <Text className="!text-light-400">Comment</Text>
+              <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
+            </Wrapper>
+          )}
+          {leaves?.updatedAt && (
             <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Applied On:</Text>
-              <Text>
-              {formatDate(leaves?.updatedAt)}
-              </Text>
+              <Text>{formatDate(leaves?.updatedAt)}</Text>
+            </Wrapper>
+          )}
+          {!leaves && (
+            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+              <Text className="!text-light-400">Applied On:</Text>
+              <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
             </Wrapper>
           )}
         </Wrapper>
       </Wrapper>
 
       {show && (
-        <Modal opened={show} hideModal={() => setShow(false)} heading="Balanced Leaves">
+        <Modal
+          opened={show}
+          hideModal={() => setShow(false)}
+          heading="Balanced Leaves"
+        >
           <Wrapper>
             <Wrapper className="flex justify-between gap-[15px] max-w-[1200px] px-4 mx-auto">
-              <LeaveSummaryCard title="Balance Leaves" count={user?.balancedLeaves} />
-              <LeaveSummaryCard title="Total Leaves Taken" count={user?.totalLeaveTaken} />
+              <LeaveSummaryCard
+                title="Balance Leaves"
+                count={user?.balancedLeaves}
+              />
+              <LeaveSummaryCard
+                title="Total Leaves Taken"
+                count={user?.totalLeaveTaken}
+              />
               <LeaveSummaryCard
                 title="Balance Sandwich Leaves"
                 count={user?.balancedSandwichLeaves}
                 tooltip="Employees are granted four extra leave days annually, one per quarter, strategically aligned with weekends or public holidays."
               />
-              <LeaveSummaryCard title="Sandwich Leaves Taken" count={user?.balancedSandwichLeavesTaken} />
+              <LeaveSummaryCard
+                title="Sandwich Leaves Taken"
+                count={user?.balancedSandwichLeavesTaken}
+              />
             </Wrapper>
-            <form className="flex flex-col gap-4 max-w-[1200px] px-4 mx-auto mt-5" onSubmit={handleUpdateLeaves}>
+            <form
+              className="flex flex-col gap-4 max-w-[1200px] px-4 mx-auto mt-5"
+              onSubmit={handleUpdateLeaves}
+            >
               <H2 className="text-center text-white">Change Leaves</H2>
               <Wrapper className="flex gap-4">
                 <Input

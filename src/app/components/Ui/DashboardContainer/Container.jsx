@@ -6,6 +6,7 @@ import SkeletonLoader from '../skeletonLoader/skeletonLoader';
 
 const Container = ({heading, children}) => {
 const { sidebarCollapse } = useThemeConfig();
+
   return (
     <Wrapper
     className={`py-[10px] px-[25px] ${
@@ -13,7 +14,7 @@ const { sidebarCollapse } = useThemeConfig();
     }`}
   >
     <H1>{heading}</H1>
-   {!heading && <SkeletonLoader className={'h-[72px] max-w-[40%] rounded-lg bg-white'} />   } 
+   {!heading && <SkeletonLoader className={'!h-[72px] max-w-[40%] rounded-lg '} />   } 
     <Wrapper className="mt-[15px]">
 
 {children}
