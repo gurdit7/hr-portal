@@ -10,8 +10,7 @@ import IconInfo from "../../Icons/IconInfo";
 import Text from "../../Ui/Text/Text";
 import H2 from "../../Ui/H2/H2";
 import DropDown from "../../Form/DropDown/select";
-import IconSort from "../../Icons/IconSort";
-import { defaultTheme, duration, leaveSort } from "@/app/data/default";
+import { duration } from "@/app/data/default";
 import { formatDate } from "@/app/utils/DateFormat";
 import IconClock from "../../Icons/IconClock";
 import IconSubject from "../../Icons/IconSubject";
@@ -21,7 +20,6 @@ import "react-quill/dist/quill.snow.css";
 import IconAttachment from "../../Icons/IconAttachment";
 import FormButton from "../../Form/FormButton/FormButton";
 import axios from "axios";
-import sendEmail from "@/app/mailer/mailer";
 import { toHTML } from "../Notifications/Item";
 import { TimeFormat } from "@/app/utils/TimeFormat";
 import Link from "next/link";
@@ -30,17 +28,16 @@ import IconDate from "../../Icons/IconDate";
 import Notification from "../../Ui/notification/success/Notification";
 import ErrorNotification from "../../Ui/notification/loader/LoaderNotification";
 import SkeletonLoader from "../../Ui/skeletonLoader/skeletonLoader";
+import BalancedLeaves from "./BalancedLeaves";
+import LeavesRecord from "./LeavesRecord";
 
-const Leaves = ({ heading }) => {
+const Leaves = () => {
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [val, setVal] = useState(false);
   const [load, setLoad] = useState(false);
-  const { userPermissions, leaves, userData } = useAuth();
-  const [user, setUser] = useState("");
+  const { userPermissions, userData } = useAuth();
   const [description, setDescription] = useState("");
-  const [previousLeaves, setPreviousLeaves] = useState([]);
-  const [allLeaves, setAllLeaves] = useState(false);
   const [file, setFile] = useState(null);
   const [attachment, setAttachment] = useState("Add Attachment");
   const [from, setFrom] = useState("");
@@ -71,24 +68,6 @@ const Leaves = ({ heading }) => {
     const toValue = formatDate(date) + " at " + TimeFormat(date);
     setFormData((prev) => ({ ...prev, to: toValue }));
   };
-  useEffect(() => {
-    if (formData?.duration) {
-      let h = 1;
-      if (formData?.duration === "Half Day") {
-        h = 0.5;
-      } else if (formData?.duration === "Short Leave") {
-        h = 0.3125;
-      } else if (formData?.duration === "Other") {
-        const date1 = new Date(fromDate || "");
-        const date2 = new Date(toDate || "");
-        const timeDifference = date2 - date1;
-        const millisecondsInADay = 24 * 60 * 60 * 1000;
-        const dayDifference = timeDifference / millisecondsInADay;
-        h = dayDifference;
-      }
-      setFormData((prev) => ({ ...prev, durationHours: h * 8 }));
-    }
-  }, [val]);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setVal(value);
@@ -164,7 +143,7 @@ const Leaves = ({ heading }) => {
 
       const data = await response.json();
       setSuccess(true);
-      setSuccessMessage("The status is changed.");
+      setSuccessMessage("Your leave request is sent.");
       setSuccessAnimation(true);
       setLoad(true);
       setTimeout(() => {
@@ -188,237 +167,164 @@ const Leaves = ({ heading }) => {
   };
 
   useEffect(() => {
-    setLoad(false);
-    setUser(leaves);
-    if (userPermissions && userPermissions?.includes("user-leaves")) {
-      fetch(`/api/dashboard/leaves?all=true`)
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-          setAllLeaves(data || []);
-        });
-    } else {
-      fetch(`/api/dashboard/leaves?email=${userData?.email}`)
-        .then((res) => res.json())
-        .then((data) => {
-          setPreviousLeaves(data.leaves || []);
-        });
+    if (formData?.duration) {
+      let h = 1;
+      if (formData?.duration === "Half Day") {
+        h = 0.5;
+      } else if (formData?.duration === "Short Leave") {
+        h = 0.3125;
+      } else if (formData?.duration === "Other") {
+        const date1 = new Date(fromDate || "");
+        const date2 = new Date(toDate || "");
+        const timeDifference = date2 - date1;
+        const millisecondsInADay = 24 * 60 * 60 * 1000;
+        const dayDifference = timeDifference / millisecondsInADay;
+        h = dayDifference;
+      }
+      setFormData((prev) => ({ ...prev, durationHours: h * 8 }));
     }
-  }, [leaves, userData.email, load]);
-
+  }, [val]);
   const formErrorClass = "block text-xs mt-1 text-red-500";
 
   return (
     <>
-      {userPermissions && userPermissions?.includes("balance-leaves") && (
-        <Container heading={heading}>
-          <Wrapper className="flex justify-between gap-[15px]">
-            <LeaveSummaryCard
-              title="Balance Leaves"
-              count={user?.balancedLeaves || 12}
-            />
-            <LeaveSummaryCard
-              title="Total Leaves Taken"
-              count={user?.totalLeaveTaken || 0}
-            />
-            <LeaveSummaryCard
-              title="Balance Sandwich Leaves"
-              count={user?.balancedSandwichLeaves || 4}
-              tooltip="Employees are granted four extra leave days annually, one per quarter, strategically aligned with weekends or public holidays."
-            />
-            <LeaveSummaryCard
-              title="Sandwich Leaves Taken"
-              count={user?.balancedSandwichLeavesTaken || 0}
-            />
-          </Wrapper>
+      <Container heading="Leave Information">
+        {userPermissions && userPermissions?.includes("balance-leaves") && (
+          <BalancedLeaves />
+        )}
 
-          <Wrapper className="flex justify-between gap-[15px] mt-[15px]">
-            <Wrapper className="bg-white rounded-[10px] p-5 w-full">
-              {previousLeaves.length > 0 ? (
-                <Wrapper className="flex flex-col gap-[15px]">
-                  <Wrapper className="flex justify-between items-center">
-                    <H2>Leave Record</H2>
+        <Wrapper className="flex justify-between gap-[15px] mt-[15px]">
+          <LeavesRecord load={load} />
+          {userPermissions && userPermissions?.includes("balance-leaves") && (
+            <Wrapper className="w-full  max-w-[600px]">
+              <Wrapper className="bg-white sticky top-4 rounded-[10px] p-5 w-full ">
+                <H2>Request For Leave</H2>
+                <form
+                  className="mt-[15px] gap-[15px] flex flex-col"
+                  onSubmit={handleSubmit}
+                >
+                  <Wrapper>
                     <DropDown
-                      items={leaveSort}
-                      placeholder="Sort By"
-                      value=""
-                      name="Sort By"
-                      className="!flex-none max-w-[195px] w-full"
-                    >
-                      <IconSort size="24px" color="fill-light-400" />
-                    </DropDown>
-                  </Wrapper>
-
-                  {previousLeaves.map((item, index) => (
-                    <LeaveItem item={item} key={index} index={index} />
-                  ))}
-                </Wrapper>
-              ) : (
-                <Text className="text-center my-4">
-                  {defaultTheme?.leavesNoRecord}
-                </Text>
-              )}
-            </Wrapper>
-
-            <Wrapper className="bg-white rounded-[10px] p-5 w-full max-w-[600px]">
-              <H2>Request For Leave</H2>
-              <form
-                className="mt-[15px] gap-[15px] flex flex-col"
-                onSubmit={handleSubmit}
-              >
-                <Wrapper>
-                  <DropDown
-                    items={duration}
-                    required
-                    setData={handleInputChange}
-                    value={formData.duration || ""}
-                    name="duration"
-                    placeholder="Duration"
-                  >
-                    <IconClock size="24px" color="stroke-light-400" />
-                  </DropDown>
-                  {errors.duration && (
-                    <span className={formErrorClass}>
-                      This field is required.
-                    </span>
-                  )}
-                </Wrapper>
-                {formData.duration && formData.duration !== "Other" && (
-                  <Wrapper className="relative w-full flex-1">
-                    <Input
-                      label="Date"
-                      placeholder="Date"
+                      items={duration}
+                      required
                       setData={handleInputChange}
-                      type="date"
-                      required={true}
-                      value={formData?.durationDate || ""}
-                      name="durationDate"
+                      value={formData.duration || ""}
+                      name="duration"
+                      placeholder="Duration"
+                    >
+                      <IconClock size="24px" color="stroke-light-400" />
+                    </DropDown>
+                    {errors.duration && (
+                      <span className={formErrorClass}>
+                        This field is required.
+                      </span>
+                    )}
+                  </Wrapper>
+                  {formData.duration && formData.duration !== "Other" && (
+                    <Wrapper className="relative w-full flex-1">
+                      <Input
+                        label="Date"
+                        placeholder="Date"
+                        setData={handleInputChange}
+                        type="date"
+                        required={true}
+                        value={formData?.durationDate || ""}
+                        name="durationDate"
+                        className="border-light-600 border"
+                      >
+                        <IconDate size="24px" color="stroke-light-400" />
+                      </Input>
+                      <label
+                        className={`absolute left-[48px] top-[38px] pointer-events-none text-light-600 font-medium ${
+                          formData?.durationDate
+                            ? "text-text-dark"
+                            : "text-light-600"
+                        }`}
+                      >
+                        {formData?.durationDate || "Date"}
+                      </label>
+                    </Wrapper>
+                  )}
+                  {formData.duration === "Other" && (
+                    <Wrapper className="relative w-full flex gap-4">
+                      <DateTimeInput
+                        label="From"
+                        value={from || ""}
+                        onChange={getFrom}
+                        error={errors.from}
+                      />
+                      <DateTimeInput
+                        label="To"
+                        value={to || ""}
+                        onChange={getTo}
+                        error={errors.to}
+                      />
+                    </Wrapper>
+                  )}
+
+                  <Wrapper>
+                    <Input
+                      label="Subject"
+                      placeholder="Subject"
+                      setData={handleInputChange}
+                      type="text"
+                      required
+                      value={formData.subject || ""}
+                      name="subject"
                       className="border-light-600 border"
                     >
-                      <IconDate size="24px" color="stroke-light-400" />
+                      <IconSubject size="24px" color="fill-light-400" />
                     </Input>
-                    <label
-                      className={`absolute left-[48px] top-[38px] pointer-events-none text-light-600 font-medium ${
-                        formData?.durationDate
-                          ? "text-text-dark"
-                          : "text-light-600"
-                      }`}
+                    {errors.subject && (
+                      <span className={formErrorClass}>
+                        This field is required.
+                      </span>
+                    )}
+                  </Wrapper>
+
+                  <Wrapper>
+                    <ReactQuill
+                      theme="snow"
+                      value={description}
+                      onChange={handleDescriptionChange}
+                    />
+                    {errors.description && (
+                      <span className={formErrorClass}>
+                        This field is required.
+                      </span>
+                    )}
+                  </Wrapper>
+
+                  <Wrapper>
+                    <Input
+                      label="Add Attachment"
+                      placeholder={attachment}
+                      setData={handleFileChange}
+                      type="file"
+                      value=""
+                      name="attachment"
+                      multiple={false}
+                      className="border-light-600 border"
                     >
-                      {formData?.durationDate || "Date"}
-                    </label>
+                      <IconAttachment size="24px" color="fill-light-400" />
+                    </Input>
                   </Wrapper>
-                )}
-                {formData.duration === "Other" && (
-                  <Wrapper className="relative w-full flex gap-4">
-                    <DateTimeInput
-                      label="From"
-                      value={from || ""}
-                      onChange={getFrom}
-                      error={errors.from}
-                    />
-                    <DateTimeInput
-                      label="To"
-                      value={to || ""}
-                      onChange={getTo}
-                      error={errors.to}
-                    />
-                  </Wrapper>
-                )}
 
-                <Wrapper>
-                  <Input
-                    label="Subject"
-                    placeholder="Subject"
-                    setData={handleInputChange}
-                    type="text"
-                    required
-                    value={formData.subject || ""}
-                    name="subject"
-                    className="border-light-600 border"
-                  >
-                    <IconSubject size="24px" color="fill-light-400" />
-                  </Input>
-                  {errors.subject && (
-                    <span className={formErrorClass}>
-                      This field is required.
-                    </span>
-                  )}
-                </Wrapper>
-
-                <Wrapper>
-                  <ReactQuill
-                    theme="snow"
-                    value={description}
-                    onChange={handleDescriptionChange}
+                  <FormButton
+                    type="submit"
+                    loadingText="Sending..."
+                    loading={loading}
+                    label="Send"
+                    btnType="solid"
                   />
-                  {errors.description && (
-                    <span className={formErrorClass}>
-                      This field is required.
-                    </span>
-                  )}
-                </Wrapper>
-
-                <Wrapper>
-                  <Input
-                    label="Add Attachment"
-                    placeholder={attachment}
-                    setData={handleFileChange}
-                    type="file"
-                    value=""
-                    name="attachment"
-                    multiple={false}
-                    className="border-light-600 border"
-                  >
-                    <IconAttachment size="24px" color="fill-light-400" />
-                  </Input>
-                </Wrapper>
-
-                <FormButton
-                  type="submit"
-                  loadingText="Sending..."
-                  loading={loading}
-                  label="Send"
-                  btnType="solid"
-                />
-              </form>
+                </form>
+              </Wrapper>
             </Wrapper>
-          </Wrapper>
-        </Container>
-      )}
+          )}
+        </Wrapper>
+      </Container>
 
-      {userPermissions && userPermissions?.includes("user-leaves") && (
-        <Container heading="Leave Information">
-          <Wrapper className="flex justify-between gap-[15px] mt-[15px]">
-            <Wrapper className="bg-white rounded-[10px] p-5 w-full">
-              {allLeaves.length > 0 ? (
-                <Wrapper className="flex flex-col gap-[15px]">
-                  <Wrapper className="flex justify-between items-center">
-                    <H2>Leave Record</H2>
-                    <DropDown
-                      items={leaveSort}
-                      placeholder="Sort By"
-                      name="Sort By"
-                      className="!flex-none max-w-[195px] w-full"
-                    >
-                      <IconSort size="24px" color="fill-light-400" />
-                    </DropDown>
-                  </Wrapper>
-
-                  {allLeaves.map((item, index) => (
-                    <LeaveItem item={item} key={index} />
-                  ))}
-                </Wrapper>
-              ) : (
-                <Text className="text-center my-4">
-                  {defaultTheme?.leavesNoRecord}
-                </Text>
-              )}
-            </Wrapper>
-          </Wrapper>
-        </Container>
-      )}
-
-      {!allLeaves && (
+      {!userPermissions && (
         <Container heading={false}>
           <Wrapper className="flex justify-between gap-[15px] mt-[15px]">
             <Wrapper className="bg-white rounded-[10px] p-5 w-full">
@@ -429,23 +335,26 @@ const Leaves = ({ heading }) => {
                 </Wrapper>
 
                 {array.map((item, index) => (
-                  <Wrapper className="border border-light-500 relative">
+                  <Wrapper
+                    key={index}
+                    className="border border-light-500 relative"
+                  >
                     <Wrapper className="p-3 relative">
                       <SkeletonLoader className="w-full max-w-[172px] !h-5 rounded-3xl" />
-                      <SkeletonLoader className="w-full max-w-[50%] h-[27px] rounded-3xl mt-1 mb-2" />
-                      <Wrapper className="flex flex-col gap-2">
-                        <SkeletonLoader className="h-3 rounded-3xl  w-1/3" />
-                        <SkeletonLoader className="h-3 rounded-3xl  w-1/4" />
-                        <SkeletonLoader className="h-3 rounded-3xl  w-1/5" />
-                        <SkeletonLoader className="h-3 rounded-3xl  w-1/6" />
+                      <SkeletonLoader className="w-full max-w-[50%] !h-[27px] rounded-3xl mt-1 mb-2" />
+                      <Wrapper className="flex flex-col gap-2 mt-2 mb-2">
+                        <SkeletonLoader className="!h-3 rounded-3xl  w-1/3" />
+                        <SkeletonLoader className="!h-3 rounded-3xl  w-1/4" />
+                        <SkeletonLoader className="!h-3 rounded-3xl  w-1/5" />
+                        <SkeletonLoader className="!h-3 rounded-3xl  w-1/6" />
                       </Wrapper>
                       <Wrapper className="absolute flex top-3 right-3 w-full max-w-[103px]">
                         <SkeletonLoader className="!h-8 rounded-md  w-full max-w-[103px]" />
                       </Wrapper>
 
                       <Wrapper className="flex justify-between items-center border-t border-light-500 pt-[5px] mt-[5px]">
-                        <SkeletonLoader className="h-3 rounded-3xl  w-full max-w-[172px]" />
-                        <SkeletonLoader className="h-3 rounded-3xl  w-full max-w-[172px]" />
+                        <SkeletonLoader className="!h-3 rounded-3xl  w-full max-w-[172px]" />
+                        <SkeletonLoader className="!h-3 rounded-3xl  w-full max-w-[172px]" />
                       </Wrapper>
                     </Wrapper>
                   </Wrapper>
@@ -489,7 +398,7 @@ export const LeaveSummaryCard = ({ title, count, tooltip }) => (
   </Wrapper>
 );
 
-const LeaveItem = ({ item, index }) => {
+export const LeaveItem = ({ item, index }) => {
   const paraRef = useRef();
   return (
     <Wrapper className="border border-light-500 relative">
@@ -522,7 +431,7 @@ const LeaveItem = ({ item, index }) => {
   );
 };
 
-const DateTimeInput = ({ label, value, onChange, error }) => (
+export const DateTimeInput = ({ label, value, onChange, error }) => (
   <Wrapper className="flex flex-col w-full">
     <Input
       label={label}

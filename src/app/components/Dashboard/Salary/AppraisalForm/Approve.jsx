@@ -1,0 +1,148 @@
+"use client";
+import { useState } from "react";
+import FormButton from "@/app/components/Form/FormButton/FormButton";
+import Modal from "@/app/components/Ui/Modal/Modal";
+import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
+import ErrorNotification from "@/app/components/Ui/notification/loader/LoaderNotification";
+import Notification from "@/app/components/Ui/notification/success/Notification";
+import Input from "@/app/components/Form/Input/Input";
+import IconSalary from "@/app/components/Icons/IconSalary";
+
+const Approve = ({ id, user, setValue }) => {
+  const [approvePopup, setApprovePopup] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [approveButtonLoading, setApproveButtonLoading] = useState(false);
+  const [heading, setHeading] = useState("Offer a Salary.");
+  const [success, setSuccess] = useState(false);
+  const [successAnimation, setSuccessAnimation] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [errorAnimation, setErrorAnimation] = useState(false);
+  const closeApproveModal = (e) => {
+    setApprovePopup(false);
+  };
+  const declineModal = (e) => {
+    setApprovePopup(true);
+    setFormData({
+      ...formData,
+      id:id,
+      email:user?.email,
+      status: "not-approved",
+    });
+  };
+  const approveAction = () => {
+    setApprovePopup(true);
+    setFormData({
+      ...formData,
+      id:id,
+      email:user?.email,
+      status: "approved",
+    });
+  };
+  const addReason = (e) => {
+    setApproveButtonLoading(true);
+    e.preventDefault();
+    fetch("/api/dashboard/appraisal", {
+      method: "PUT",
+      body: JSON.stringify(formData),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        setSuccess(true);
+        setSuccessMessage("The status is changed.");
+        setSuccessAnimation(true);
+        setTimeout(() => {
+          setValue(true);
+          setApproveButtonLoading(false);
+          closeApproveModal();
+          setSuccess(false);
+          setSuccessAnimation(false);
+        }, 3000);
+      });
+  };
+  const handleApproveChange = (e) => {};
+  const addFormValues = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+  return (
+    <Wrapper className="flex gap-4">
+      <FormButton
+        type="button"
+        label="Decline"
+        event={declineModal}
+        btnType="outlined"
+      />
+      <FormButton
+        type="button"
+        label="Approve"
+        btnType="solid"
+        additionalCss="px-12"
+        event={approveAction}
+      />
+
+      {approvePopup && (
+        <Modal
+          opened={approvePopup}
+          hideModal={closeApproveModal}
+          heading={heading}
+        >
+          <Wrapper className="max-w-[510px] m-auto">
+            <form onSubmit={addReason}>
+              <Input
+                type="text"
+                required={true}
+                name="salaryOffered"
+                value={formData?.salaryOffered || ""}
+                setData={addFormValues}
+                placeholder="Salary Offered"
+                className="border border-light-600"
+              >
+                <IconSalary size={24} color="fill-light-600" />
+              </Input>
+              <span className="text-light-400 text-xs block mb-1 mt-2">
+                Reason
+              </span>
+              <textarea
+                required
+                onChange={addFormValues}
+                name="reason"
+                className="w-full rounded-lg h-72 p-4"
+                value={formData?.reason}
+              ></textarea>
+              <Wrapper className="flex gap-4">
+                <FormButton
+                  type="submit"
+                  loading={approveButtonLoading}
+                  loadingText="Adding reason"
+                  label="Add reason"
+                  btnType="solid"
+                  additionalCss="px-12"
+                />
+              </Wrapper>
+            </form>
+          </Wrapper>
+          {success && (
+            <Notification
+              active={successAnimation}
+              message={successMessage}
+            ></Notification>
+          )}
+          {error && (
+            <ErrorNotification
+              active={errorAnimation}
+              message={errorMessage}
+            ></ErrorNotification>
+          )}
+        </Modal>
+      )}
+    </Wrapper>
+  );
+};
+
+export default Approve;

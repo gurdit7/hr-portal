@@ -38,7 +38,6 @@ const AllEmployees = () => {
         return res.json();
       })
       .then(async function (data) {
-        console.log(data?.count)
         setCount(data?.count);
         setUsers(data?.data);
 
@@ -47,18 +46,18 @@ const AllEmployees = () => {
         } else {
           setError(false);
         }
-        setAddEmployee(false)
+        setAddEmployee(false);
       });
   }, [editEmployee, index, addEmployee]);
 
   const getSortBy = (e) => {
-    setSortBy(e.target.value)
+    setSortBy(e.target.value);
     fetch("/api/dashboard/filter-employee", {
       method: "POST",
       body: JSON.stringify({
         userType: e.target.value,
         index: index,
-        sort:true,
+        sort: true,
         limit: 10,
       }),
     })
@@ -82,7 +81,7 @@ const AllEmployees = () => {
       body: JSON.stringify({
         search: e.target.value,
         index: index,
-        sort:false,
+        sort: false,
         limit: 10,
       }),
     })
@@ -99,7 +98,6 @@ const AllEmployees = () => {
         }
       });
   };
-
 
   const closeViewModal = (e) => {
     setView(e);
@@ -119,7 +117,7 @@ const AllEmployees = () => {
     setIndex(e);
   };
   return (
-    <>  
+    <>
       {userPermissions && userPermissions?.includes("view-employee") && (
         <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full">
           <Wrapper className="flex justify-between items-center">
@@ -149,8 +147,7 @@ const AllEmployees = () => {
           <Wrapper>
             <Wrapper className="flex bg-dark-blue">
               <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white">
-                {" "}
-                S.no{" "}
+                S.no
               </Wrapper>
               <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white">
                 Name
@@ -208,8 +205,11 @@ const AllEmployees = () => {
                     </Wrapper>
                   </Wrapper>
                 ))}
+                
             </Wrapper>
-            {error && <Text className="text-center my-4">No Record Found.</Text>}
+            {error && (
+              <Text className="text-center my-4">No Record Found.</Text>
+            )}
             {count > 0 && (
               <Pagination count={count} getIndex={getIndex} index={index} />
             )}
@@ -255,34 +255,37 @@ const AllEmployees = () => {
             </Wrapper>
             <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
               <Text className="!text-light-400"> Increment Date</Text>
-              <Text className="capitalize"> {formatDate(user?.incrementDate)}</Text>
+              <Text className="capitalize">
+                {" "}
+                {formatDate(user?.incrementDate)}
+              </Text>
             </Wrapper>
             <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
               <Text className="!text-light-400"> User Type</Text>
               <Text className="capitalize"> {user?.userType}</Text>
             </Wrapper>
-            
+
             <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
               <Text className="!text-light-400">Status</Text>
               <Text className="capitalize"> {user?.status || "active"}</Text>
             </Wrapper>
-            <Wrapper className='border border-dark-blue px-4'>
-            <Wrapper className="flex justify-between py-[10px] border-b border-light-500  ">
-              <Text > Total Leave Taken </Text>
-              <Text className=""> {user?.totalLeaveTaken}</Text>
-            </Wrapper>
-            <Wrapper className="flex justify-between py-[10px] border-b border-light-500  ">
-              <Text > Balanced Leaves</Text>
-              <Text className=""> {user?.balancedLeaves}</Text>
-            </Wrapper>
-            <Wrapper className="flex justify-between py-[10px] border-b border-light-500  ">
-              <Text > Sandwich Leaves Taken</Text>
-              <Text className=""> {user?.balancedSandwichLeavesTaken}</Text>
-            </Wrapper>
-            <Wrapper className="flex justify-between py-[10px]  ">
-              <Text > Balanced Sandwich Leaves</Text>
-              <Text className=""> {user?.balancedSandwichLeaves}</Text>
-            </Wrapper>
+            <Wrapper className="border border-dark-blue px-4">
+              <Wrapper className="flex justify-between py-[10px] border-b border-light-500  ">
+                <Text> Total Leave Taken </Text>
+                <Text className=""> {user?.totalLeaveTaken}</Text>
+              </Wrapper>
+              <Wrapper className="flex justify-between py-[10px] border-b border-light-500  ">
+                <Text> Balanced Leaves</Text>
+                <Text className=""> {user?.balancedLeaves}</Text>
+              </Wrapper>
+              <Wrapper className="flex justify-between py-[10px] border-b border-light-500  ">
+                <Text> Sandwich Leaves Taken</Text>
+                <Text className=""> {user?.balancedSandwichLeavesTaken}</Text>
+              </Wrapper>
+              <Wrapper className="flex justify-between py-[10px]  ">
+                <Text> Balanced Sandwich Leaves</Text>
+                <Text className=""> {user?.balancedSandwichLeaves}</Text>
+              </Wrapper>
             </Wrapper>
           </Wrapper>
         </Modal>

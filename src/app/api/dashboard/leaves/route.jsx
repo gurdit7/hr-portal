@@ -6,25 +6,25 @@ import Notifications from "@/model/notifications";
 import addRole from "@/model/addRole";
 import sendEmail from "@/app/mailer/mailer";
 
-const getUserByEmail = async (email) => {
+export const getUserByEmail = async (email) => {
   const user = await UsersData.findOne({ email });
   if (!user) throw new Error("User Not Found");
   return user;
 };
 
-const getRolesWithPermission = async (permission) => {
-  const roles = await addRole.find({ permissions: permission });  
-  return roles.map(role => role.role);
+export const getRolesWithPermission = async (permission) => {
+  const roles = await addRole.find({ permissions: permission });
+  return roles.map((role) => role.role);
 };
 
-const getEmailsByRoleAndDepartment = async (roles, department) => { 
-  const users = await UsersData.find({ department, role: { $in: roles } });  
-  return users.map(user => user.email);
+export const getEmailsByRoleAndDepartment = async (roles, department) => {
+  const users = await UsersData.find({ department, role: { $in: roles } });
+  return users.map((user) => user.email);
 };
 
-const getHrAndAdminEmails = async () => {
+export const getHrAndAdminEmails = async () => {
   const users = await UsersData.find({ role: { $in: ["hr", "admin"] } });
-  return users.map(user => user.email);
+  return users.map((user) => user.email);
 };
 
 export const POST = async (request) => {
@@ -35,8 +35,11 @@ export const POST = async (request) => {
     const result = await leaves.save();
 
     const user = await getUserByEmail(result.email);
-    const roles = await getRolesWithPermission("view-users-notifications");    
-    const departmentEmails = await getEmailsByRoleAndDepartment(roles, user.department);
+    const roles = await getRolesWithPermission("view-users-notifications");
+    const departmentEmails = await getEmailsByRoleAndDepartment(
+      roles,
+      user.department
+    );
     const hrAdminEmails = await getHrAndAdminEmails();
     const mails = [...new Set([...departmentEmails, ...hrAdminEmails])];
     const mailsString = mails.toString();
@@ -46,7 +49,9 @@ export const POST = async (request) => {
       `HR Portal - ${user.name} has applied for leave.`,
       `<h4><strong>Subject:</strong> ${payload.subject}</h4>
       <p style="text-align:left;font-size:16px;"><strong>Duration:</strong> ${
-        payload.duration === "Other" ? `From: ${payload.from} - To: ${payload.to}` : payload.duration
+        payload.duration === "Other"
+          ? `From: ${payload.from} - To: ${payload.to}`
+          : payload.duration
       }</p>
       <p style="text-align:left;font-size:16px;"><strong>Date:</strong> ${
         payload.durationDate
@@ -55,13 +60,13 @@ export const POST = async (request) => {
       payload.attachment
     );
 
-    const viewedStatus = mails.map(mail => ({ mail, status: false }));
+    const viewedStatus = mails.map((mail) => ({ mail, status: false }));
     const notifications = new Notifications({
       ...payload,
       toEmails: mails,
-      type: 'leaves',
+      type: "leaves",
       id: result._id,
-      viewed: viewedStatus
+      viewed: viewedStatus,
     });
 
     await notifications.save();
@@ -79,26 +84,60 @@ export const GET = async (request) => {
     const email = url.searchParams.get("email");
     const id = url.searchParams.get("id");
     const all = url.searchParams.get("all");
+    const value = url.searchParams.get("value");
 
-    if (all === "true") {
-      const leaves = await Leaves.find();
+    if (all === "true" && !value) {
+      const leaves = await Leaves.find().sort({ $natural: -1 });
       return new NextResponse(JSON.stringify(leaves), { status: 200 });
     }
-
+    if (all === "true" && value) {
+      const leaves = await Leaves.find({ status: value }).sort({
+        $natural: -1,
+      });
+      return new NextResponse(JSON.stringify(leaves), { status: 200 });
+    }
+    if (all === "salary") {
+      const date = new Date();
+      const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+      const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+      const leaves = await Leaves.find({
+        createdAt: { $gte: firstDay, $lt: lastDay },
+      }).sort({
+        $natural: -1,
+      });
+      return new NextResponse(JSON.stringify(leaves), { status: 200 });
+    }
     if (!id && !email) {
-      return new NextResponse(JSON.stringify({ error: "Email not provided" }), { status: 400 });
+      return new NextResponse(JSON.stringify({ error: "Email not provided" }), {
+        status: 400,
+      });
     }
 
-    if (email) {
+    if (email && !value) {
       const leaves = await Leaves.find({ email }).sort({ $natural: -1 });
       const user = await UsersData.findOne({ email });
-      return new NextResponse(JSON.stringify({ leaves, user }), { status: 200 });
+      return new NextResponse(JSON.stringify({ leaves, user }), {
+        status: 200,
+      });
+    }
+    if (email && value) {
+      const leaves = await Leaves.find({ email, status: value }).sort({
+        $natural: -1,
+      });
+      const user = await UsersData.findOne({ email });
+      return new NextResponse(JSON.stringify({ leaves, user }), {
+        status: 200,
+      });
     }
 
     if (id) {
       const leaves = await Leaves.findById(id);
-      const user = await UsersData.findOne({ email: leaves.email });
-      return new NextResponse(JSON.stringify({ leaves, user }), { status: 200 });
+      const user = await UsersData.findOne({ email: leaves.email }).sort({
+        $natural: -1,
+      });
+      return new NextResponse(JSON.stringify({ leaves, user }), {
+        status: 200,
+      });
     }
   } catch (error) {
     console.error("Error:", error);
@@ -141,38 +180,42 @@ export const PUT = async (request) => {
         payload.email,
         `HR Portal - Your Leave is canceled.`,
         `Your Leave is canceled.`
-      );       
+      );
       const notifications = new Notifications({
         ...payload,
-        subject:"Your Leave is Canceled.",
+        subject: "Your Leave is Canceled.",
         name: "HR",
-        toEmails:  payload.email,
-        type: 'info',
+        toEmails: payload.email,
+        type: "info",
         id: payload.id,
-        viewed: [{mail:payload.email, status:false}]
+        viewed: [{ mail: payload.email, status: false }],
       });
-  
+
       await notifications.save();
       return new NextResponse(JSON.stringify(updatedUser), { status: 200 });
     }
 
-    await Leaves.updateOne({ _id: payload.id }, { status: payload.status, reason: payload.reason });
+    await Leaves.updateOne(
+      { _id: payload.id },
+      { status: payload.status, reason: payload.reason }
+    );
     const updatedLeave = await Leaves.findById(payload.id);
     await sendEmail(
       payload.email,
-      `HR Portal - Your leave is ${payload.status}`,      `
+      `HR Portal - Your leave is ${payload.status}`,
+      `
       ${payload.reason}
       `
-    );       
+    );
     const notifications = new Notifications({
       ...payload,
       subject: `Your leave is ${payload.status}`,
-      description:`${payload.reason}`,
+      description: `${payload.reason}`,
       name: "HR",
-      toEmails:  payload.email,
-      type: 'info',
+      toEmails: payload.email,
+      type: "info",
       id: payload.id,
-      viewed: [{mail:payload.email, status:false}]
+      viewed: [{ mail: payload.email, status: false }],
     });
 
     await notifications.save();
@@ -186,7 +229,10 @@ export const PUT = async (request) => {
       }
     );
 
-    return new NextResponse(JSON.stringify({ leave: updatedLeave, user: updatedUser }), { status: 200 });
+    return new NextResponse(
+      JSON.stringify({ leave: updatedLeave, user: updatedUser }),
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error:", error);
     return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });

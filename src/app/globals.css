@@ -195,3 +195,10 @@ body{
     -webkit-text-stroke: .015em #121212;
     -webkit-text-fill-color: transparent;
     }
+    ::-webkit-inner-spin-button, ::-webkit-outer-spin-button{
+        opacity: 0;
+    }
+
+
+
+    

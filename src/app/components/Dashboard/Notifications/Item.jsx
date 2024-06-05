@@ -48,11 +48,17 @@ const Item = ({ item, emailID, name, userData }) => {
       <div className="p-[10px]"  onClick={()=>click(item?._id)}>
         {item?.type === 'document' && <Text className="!text-light-400">Document Requested</Text>}
         {item?.type === 'leaves' && <Text className="!text-light-400">Requested Leave</Text>}
+        {item?.type === 'appraisalForm' && <Text className="!text-light-400">Requested appraisal</Text>}
         {(item?.type === 'leaves' || item?.type === 'info')  && ( <Link
         href={"/dashboard/leaves/" + item.id}
         className="opacity-0 absolute top-0 left-0 w-full h-full"
       >
-        {" "} 
+      </Link>
+)}
+        {(item?.type === 'appraisalForm')  && ( <Link
+        href={"/dashboard/appraisal/" + item.id}
+        className="opacity-0 absolute top-0 left-0 w-full h-full"
+      >
       </Link>
 )}
         <H3>

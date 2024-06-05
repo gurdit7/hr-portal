@@ -18,9 +18,18 @@ const appraisalForm = new Schema({
             type:String,
             required:true
         },
+        salaryOffered:{
+            type:String
+        },
         description:{
             type:String
         },
+        reason:{
+            type:String
+        },     
+        currentSalary:{
+            type:String
+        },   
         status:{
             type:String
         }         

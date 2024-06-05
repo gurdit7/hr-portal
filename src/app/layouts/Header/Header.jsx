@@ -7,9 +7,11 @@ import useAuth from "@/app/contexts/Auth/auth";
 import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 
 const Header = () => {
   const { sidebarCollapse, setSidebarCollapse } = useThemeConfig();
+  const [loader, setLoader] = useState(false);
   const { userLoggedIn, setUserLoggedIn, setUserData, setPermissions } =
     useAuth();
   const router = useRouter();
@@ -25,6 +27,8 @@ const Header = () => {
         return res.json();
       })
       .then(function (data) {
+        setLoader(true);
+        setTimeout(() => {
         if (data?.success == true) {
           setUserLoggedIn("");
           setUserData("");
@@ -32,7 +36,9 @@ const Header = () => {
           setTimeout(() => {
             router.push("/account/login");
           }, 200);
+          setLoader(false);
         }
+      }, 1000);
       });
   };
   return (
@@ -94,6 +100,7 @@ const Header = () => {
           </Wrapper>
         </Wrapper>
       )}
+      {loader && (<Wrapper className='fixed top-0 left-0 w-full h-full bg-white z-50'></Wrapper>)}
     </>
   );
 };

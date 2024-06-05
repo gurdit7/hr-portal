@@ -1,4 +1,4 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import connect from "../../../libs/mongo/index";
 import Users from '../../../../model/userCreated';
 import UsersData from '../../../../model/userData'

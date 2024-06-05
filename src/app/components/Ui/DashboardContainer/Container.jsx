@@ -4,12 +4,12 @@ import Wrapper from '../Wrapper/Wrapper';
 import H1 from '../H1/H1';
 import SkeletonLoader from '../skeletonLoader/skeletonLoader';
 
-const Container = ({heading, children}) => {
+const Container = ({heading, children, className}) => {
 const { sidebarCollapse } = useThemeConfig();
 
   return (
     <Wrapper
-    className={`py-[10px] px-[25px] ${
+    className={`mb-8 ${className || ''} py-[10px] px-[25px] ${
       sidebarCollapse ? "ml-[100px]" : "ml-[300px]"
     }`}
   >

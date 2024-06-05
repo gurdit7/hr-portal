@@ -41,7 +41,7 @@ const DropDown = ({
               data-index={index + 1}
               className="text-text-dark"
             >
-              {item}
+              {item.replace("-"," ")}
             </option>
           ))}
         </select>

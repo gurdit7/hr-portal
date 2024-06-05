@@ -1,5 +1,4 @@
-'use client'
-
+'use client';
 import FormButton from "@/app/components/Form/FormButton/FormButton";
 import Input from "@/app/components/Form/Input/Input";
 import IconSalary from "@/app/components/Icons/IconSalary";
@@ -7,7 +6,7 @@ import H2 from "@/app/components/Ui/H2/H2";
 import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
 import Notification from "@/app/components/Ui/notification/success/Notification";
 import useAuth from "@/app/contexts/Auth/auth";
-import sendEmail from "@/app/mailer/mailer";
+import { defaultTheme } from "@/app/data/default";
 import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css';
@@ -16,6 +15,7 @@ const AppraisalForm = () => {
     const [loading, setLoading] = useState(false);
     const {userData} = useAuth();
     const [success, setSuccess] = useState(false);
+    const [error, setError] = useState(false);
     const [description, setDescription] = useState('');  
     useEffect(()=>{
       setFormData({
@@ -34,13 +34,16 @@ const AppraisalForm = () => {
     const addFormValues = (e) => {
         setFormData({
             ...formData,
+            currentSalary:userData?.currentSalary,
             [e.target.name]: e.target.value,
           });
       };
     const submitForm = (e) => {
+
         e.preventDefault();
         setLoading(true);
-        fetch("/api/dashboard/appraisal", {
+        if(formData?.description.length > 250){
+   fetch("/api/dashboard/appraisal", {
           method: "POST",
           body: JSON.stringify(formData),
         })
@@ -49,34 +52,29 @@ const AppraisalForm = () => {
           })
           .then(async function (data) {
             if (data?.email) {
-              await sendEmail(
-                'gurditthefabcode@gmail.com',
-                "Appraisal Request - HR Portal",
-                `<h2 style='text-align:center;font-size: 24px;line-height: 1;margin: 0;'>
-                ${userData?.name} is requested for Appraisal.
-                </h2>                
-                <p style="text-align:center;">
-                Email : ${userData?.email}<br/>
-                Expected Salary : ${formData?.ExpectedSalary}<br/>
-                Please check on portal.</p>            
-                `,      
-              ).then(function (data) {
-                setLoading(false); 
-                setFormData('');
-                setDescription('')
-              });
-          
+              setLoading(false); 
+              setFormData(' ');
+              setDescription(' ');
+              setSuccess(true)          
             } 
            
           });
+        }
+        else{
+          setLoading(false);
+          setError(true);
+          console.log('error')
+        }
+       
     }
   return (
     <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col w-full">
+           
     <H2>Appraisal Form</H2>
     <Wrapper className="mt-[15px]">
       <form onSubmit={submitForm}>
         <Input
-              type="text"
+              type="number"
               required={true}
               name="ExpectedSalary"
               value={formData?.ExpectedSalary || ""}
@@ -90,7 +88,8 @@ const AppraisalForm = () => {
           Reason for Appraisal
 
           </label>
-          <ReactQuill theme="snow" value={description} onChange={addDescription} className="mt-[5px] mb-[15px]" />
+          <ReactQuill theme="snow" value={description} onChange={addDescription} className="mt-[5px] mb-[15px]"  />
+          {error && (<span className="block text-xs mb-2 text-red-500">Please add a brief description.</span>)}
                 <FormButton
                 type="submit"
                 label="Submit"                  
@@ -105,7 +104,7 @@ const AppraisalForm = () => {
     {success && (
       <Notification
         active={success}
-        message={defaultTheme?.requestDocumentsSuccess}
+        message={defaultTheme?.requestAppraisalSuccess}
       ></Notification>
     )}
   </Wrapper>

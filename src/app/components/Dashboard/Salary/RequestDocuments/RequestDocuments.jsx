@@ -98,6 +98,8 @@ const RequestDocuments = () => {
       });
 
   };
+  const salarySlips = ()=>{    
+  }
   return (
     <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col w-full">
       <H2>Request Documents</H2>
@@ -152,6 +154,13 @@ const RequestDocuments = () => {
                   
                 </FormButton>
         </form>
+        <FormButton
+                  type="button"
+                  label="Download Salary Slip"                  
+                  btnType="solid"                        
+                >
+                  
+                </FormButton>
       </Wrapper>
       {success && (
         <Notification
