@@ -83,3 +83,25 @@ export const formatMonthName = (dateString) => {
   const day = date.getDate();
   return `${monthName[month]}`;
 };
+
+
+export function getMondaysAndFridays(startDate, endDate) {
+  const result = [];
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  if (start > end) {
+    return result;
+  }
+
+  let currentDate = new Date(start);
+
+  while (currentDate <= end) {
+    const day = currentDate.getDay();
+    if (day === 1 || day === 5) { 
+      result.push(new Date(currentDate)); 
+    }
+    currentDate.setDate(currentDate.getDate() + 1); 
+  }
+
+  return result;
+}

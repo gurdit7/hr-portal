@@ -42,7 +42,13 @@ const userSchema = new Schema({
         },
         to:{
             type:String
-        }            
+        },
+        paidLeaves:{
+            type:Number
+        },
+        unPaidLeaves:{
+            type:Number
+        }                 
 
 },{timestamps:true})
 

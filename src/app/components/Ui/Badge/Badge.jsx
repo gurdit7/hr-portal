@@ -12,7 +12,10 @@ const Badge = ({status}) => {
       status === "not-approved" ? "bg-red-600" : ""
     }
     ${
-      status === "canceled" ? "bg-red-800" : ""
+      status === "canceled" ? "bg-red-700" : ""
+    }
+    ${
+      status === "unpaid" ? "bg-red-900" : ""
     }
     `}
   >

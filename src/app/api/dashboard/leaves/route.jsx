@@ -129,7 +129,6 @@ export const GET = async (request) => {
         status: 200,
       });
     }
-
     if (id) {
       const leaves = await Leaves.findById(id);
       const user = await UsersData.findOne({ email: leaves.email }).sort({
@@ -138,7 +137,8 @@ export const GET = async (request) => {
       return new NextResponse(JSON.stringify({ leaves, user }), {
         status: 200,
       });
-    }
+    } 
+
   } catch (error) {
     console.error("Error:", error);
     return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });
@@ -194,7 +194,8 @@ export const PUT = async (request) => {
       await notifications.save();
       return new NextResponse(JSON.stringify(updatedUser), { status: 200 });
     }
-
+    if(payload.update === "approve"){
+    
     await Leaves.updateOne(
       { _id: payload.id },
       { status: payload.status, reason: payload.reason }
@@ -228,7 +229,7 @@ export const PUT = async (request) => {
         balancedSandwichLeavesTaken: payload.balancedSandwichLeavesTaken,
       }
     );
-
+  }
     return new NextResponse(
       JSON.stringify({ leave: updatedLeave, user: updatedUser }),
       { status: 200 }

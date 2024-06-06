@@ -11,7 +11,7 @@ import Text from "../../Ui/Text/Text";
 import H2 from "../../Ui/H2/H2";
 import DropDown from "../../Form/DropDown/select";
 import { duration } from "@/app/data/default";
-import { formatDate } from "@/app/utils/DateFormat";
+import { formatDate, getMondaysAndFridays } from "@/app/utils/DateFormat";
 import IconClock from "../../Icons/IconClock";
 import IconSubject from "../../Icons/IconSubject";
 import Input from "../../Form/Input/Input";
@@ -32,6 +32,16 @@ import BalancedLeaves from "./BalancedLeaves";
 import LeavesRecord from "./LeavesRecord";
 
 const Leaves = () => {
+  const date = new Date();
+  const mon = date.getMonth() + 1;
+  const day = date.getDate();
+  const today =
+    date.getFullYear() +
+    "-" +
+    (mon > 9 ? mon : "0" + mon) +
+    "-" +
+    (day > 9 ? day : "0" + day) +
+    "T24:00";
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [val, setVal] = useState(false);
@@ -52,6 +62,7 @@ const Leaves = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [errorAnimation, setErrorAnimation] = useState(false);
   const array = [0, 1, 2, 3, 4];
+
   const getFrom = (e) => {
     setFrom(e);
     setVal(e);
@@ -98,72 +109,72 @@ const Leaves = () => {
   };
 
   const handleSubmit = async (e) => {
-    setLoading(true);
+    // setLoading(true);
     e.preventDefault();
     if (!validateForm()) return;
 
-    setLoading(true);
+    // setLoading(true);
     const formDataCopy = {
       ...formData,
       email: userData.email,
       userID: userData.userID,
       name: userData.name,
     };
+    console.log(formData, from, to);
+    // if (file) {
+    //   try {
+    //     const random = Math.floor(Math.random() * 1000000 + 1);
+    //     const imageFormData = new FormData();
+    //     imageFormData.append("folder", userData.userID);
+    //     imageFormData.append(
+    //       "name",
+    //       `${userData.userID}-${random}-leave-image.jpg`
+    //     );
+    //     imageFormData.append("file", file);
 
-    if (file) {
-      try {
-        const random = Math.floor(Math.random() * 1000000 + 1);
-        const imageFormData = new FormData();
-        imageFormData.append("folder", userData.userID);
-        imageFormData.append(
-          "name",
-          `${userData.userID}-${random}-leave-image.jpg`
-        );
-        imageFormData.append("file", file);
+    //     const response = await axios.post(
+    //       "https://thefabcode.org/hr-portal/upload.php",
+    //       imageFormData,
+    //       {
+    //         headers: { "Content-Type": "multipart/form-data" },
+    //       }
+    //     );
 
-        const response = await axios.post(
-          "https://thefabcode.org/hr-portal/upload.php",
-          imageFormData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
-        );
+    //     formDataCopy.attachment = response.data.url;
+    //   } catch (err) {
+    //     setLoading(false);
+    //     return;
+    //   }
+    // }
+    // try {
+    //   const response = await fetch("/api/dashboard/leaves", {
+    //     method: "POST",
+    //     body: JSON.stringify(formDataCopy),
+    //   });
 
-        formDataCopy.attachment = response.data.url;
-      } catch (err) {
-        setLoading(false);
-        return;
-      }
-    }
-    try {
-      const response = await fetch("/api/dashboard/leaves", {
-        method: "POST",
-        body: JSON.stringify(formDataCopy),
-      });
-
-      const data = await response.json();
-      setSuccess(true);
-      setSuccessMessage("Your leave request is sent.");
-      setSuccessAnimation(true);
-      setLoad(true);
-      setTimeout(() => {
-        setSuccessAnimation(false);
-        setSuccess(false);
-        setLoading(false);
-        setFormData("");
-        setDescription("");
-        setAttachment("");
-      }, 3000);
-    } catch (err) {
-      setError(true);
-      setErrorMessage("Something went wrong! please try again later");
-      setErrorAnimation(true);
-      setTimeout(() => {
-        setErrorAnimation(false);
-        setError(false);
-        setLoading(false);
-      }, 3000);
-    }
+    //   const data = await response.json();
+    //   setSuccess(true);
+    //   setSuccessMessage("Your leave request is sent.");
+    //   setSuccessAnimation(true);
+    //   setLoad(true);
+    //   setTimeout(() => {
+    //     setSuccessAnimation(false);
+    //     setSuccess(false);
+    //     setLoading(false);
+    //     setFormData("");
+    //     setDescription("");
+    //     setAttachment("");
+    //   }, 3000);
+    // } catch (err) {
+    //   setError(true);
+    //   setErrorMessage("Something went wrong! please try again later");
+    //   setErrorAnimation(true);
+    //   setTimeout(() => {
+    //     setErrorAnimation(false);
+    //     setError(false);
+    //     setLoading(false);
+    //   }, 3000);
+    // }
   };
 
   useEffect(() => {
@@ -173,14 +184,43 @@ const Leaves = () => {
         h = 0.5;
       } else if (formData?.duration === "Short Leave") {
         h = 0.3125;
-      } else if (formData?.duration === "Other") {
+      } else if (formData?.duration === "Other") {  
+        const dateForm = (date)=>{
+          const mon = date.getMonth() + 1;
+          const day = date.getDate() - 1;
+          const hours = date.getHours();
+          const minutes = date.getMinutes();
+          return date.getFullYear() +
+          "-" +
+          (mon > 9 ? mon : "0" + mon) +
+          "-" +
+          (day > 9 ? day : "0" + day)+
+          "T" +
+          (hours > 9 ? hours : "0" + hours)+
+          ":" +
+          (minutes > 9 ? minutes : "0" + minutes)
+          ;
+        }
+        
         const date1 = new Date(fromDate || "");
-        const date2 = new Date(toDate || "");
-        const timeDifference = date2 - date1;
+        const date2 = new Date(toDate || "");   
+        const dd = new Date(dateForm(date1));
+        const ddd = new Date(dateForm(date2));
+        const timeDifference = ddd - dd;
         const millisecondsInADay = 24 * 60 * 60 * 1000;
         const dayDifference = timeDifference / millisecondsInADay;
-        h = dayDifference;
+        const startDate = dd;
+        const endDate = ddd;
+        const mondaysAndFridays = getMondaysAndFridays(startDate, endDate);
+        if(mondaysAndFridays.length > 0){
+
+        }
+        else{
+          h = dayDifference;
+        }
+
       }
+
       setFormData((prev) => ({ ...prev, durationHours: h * 8 }));
     }
   }, [val]);
@@ -249,13 +289,13 @@ const Leaves = () => {
                     <Wrapper className="relative w-full flex gap-4">
                       <DateTimeInput
                         label="From"
-                        value={from || ""}
+                        value={from || today}
                         onChange={getFrom}
                         error={errors.from}
                       />
                       <DateTimeInput
                         label="To"
-                        value={to || ""}
+                        value={to || today}
                         onChange={getTo}
                         error={errors.to}
                       />

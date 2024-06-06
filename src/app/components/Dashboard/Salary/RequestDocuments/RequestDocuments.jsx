@@ -9,6 +9,7 @@ import Notification from "@/app/components/Ui/notification/success/Notification"
 import useAuth from "@/app/contexts/Auth/auth";
 import { defaultTheme } from "@/app/data/default";
 import sendEmail from "@/app/mailer/mailer";
+import { formatMonthName } from "@/app/utils/DateFormat";
 import { useEffect, useState } from "react";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -24,13 +25,15 @@ const RequestDocuments = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [document, setDocument] = useState('Salary Slip - Last Three Months');
-  const [description, setDescription] = useState('');  
+  const [description, setDescription] = useState(''); 
+
   useEffect(()=>{
     setFormData({
       email:userData?.email,
       userID:userData?.userID,
       name:userData?.name
     })
+
   },[userData])
   const addDescription = (e)=>{
     setDescription(e);

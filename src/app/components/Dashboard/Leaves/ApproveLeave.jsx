@@ -1,14 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FormButton from "../../Form/FormButton/FormButton";
 import Wrapper from "../../Ui/Wrapper/Wrapper";
 import Modal from "../../Ui/Modal/Modal";
 
 import Notification from "../../Ui/notification/success/Notification";
 import ErrorNotification from "../../Ui/notification/loader/LoaderNotification";
+import useAuth from "@/app/contexts/Auth/auth";
+import Text from "../../Ui/Text/Text";
+import IconNumber from "../../Icons/IconNumber";
+import Input from "../../Form/Input/Input";
 
-const ApproveLeave = ({ id, user, setValue, leaves }) => {
+const ApproveLeave = ({ id, user, setValue, leaves, prevLeaves }) => {
+  const {userData} = useAuth();
   const [approvePopup, setApprovePopup] = useState(false);
   const [approveForm, setApproveForm] = useState();
   const [approveButtonLoading, setApproveButtonLoading] = useState(false);
@@ -18,7 +23,29 @@ const ApproveLeave = ({ id, user, setValue, leaves }) => {
   const [successMessage, setSuccessMessage] = useState(false);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [errorAnimation, setErrorAnimation] = useState(false);
+  const [errorAnimation, setErrorAnimation] = useState(false);  
+  const [paidLeaves, setPaidLeaves] = useState({});
+  useEffect(()=>{
+    const requestedLeaves = user?.durationHours / 8;
+
+    if(requestedLeaves > prevLeaves?.paidLeaves){
+        const unPaidLeaves = requestedLeaves - prevLeaves?.paidLeaves;
+        setPaidLeaves({
+          ...paidLeaves,
+          paidLeaves:prevLeaves?.paidLeaves,
+          unPaidLeaves,
+          message:`${prevLeaves?.paidLeaves} ${prevLeaves?.paidLeaves > 1 ? 'days' : 'day'} will be paid and ${unPaidLeaves} ${unPaidLeaves > 1 ? 'days' : 'day'} will be unpaid.`
+        })
+    }
+    else{
+      setPaidLeaves({
+        ...paidLeaves,
+        paidLeaves:prevLeaves?.paidLeaves,
+        unPaidLeaves:0,
+        message:"This will be paid leave."
+      })
+    }
+  },[prevLeaves])
   const closeApproveModal = (e) => {
     setApprovePopup(false);
   };
@@ -75,6 +102,7 @@ const ApproveLeave = ({ id, user, setValue, leaves }) => {
     setApprovePopup(true);
     setApproveForm({
       ...approveForm,
+      update:"approve",
       status: "approved",
     });
   };
@@ -126,6 +154,32 @@ const ApproveLeave = ({ id, user, setValue, leaves }) => {
         >
           <Wrapper className="max-w-[510px] m-auto">
             <form onSubmit={addReason}>
+              <Wrapper className='mb-4'>
+             {paidLeaves && paidLeaves?.message && <Text className="text-center text-white text-xl">{paidLeaves?.message}</Text> }         
+              </Wrapper>
+              <Wrapper className="flex flex-col gap-4">
+              <Input 
+            onChange={handleApproveChange}
+            value={approveForm?.paidLeaves || paidLeaves?.paidLeaves}
+            type="number"
+            placeholder="No. of paid leaves."
+            name="paidLeaves"
+            wrapperClassName="!flex-none"
+            className="border border-light-600"
+          >
+            <IconNumber size="24px" color="fill-light-400" />
+          </Input>
+          <Input 
+            onChange={handleApproveChange}
+            value={approveForm?.unPaidLeaves || paidLeaves?.unPaidLeaves}
+            type="number"
+            placeholder="No. of unpaid leaves."
+            name="unPaidLeaves"
+            wrapperClassName="!flex-none"
+            className="border border-light-600"
+          >
+            <IconNumber size="24px" color="fill-light-400" />
+          </Input>
               <textarea
                 required
                 onChange={handleApproveChange}
@@ -133,8 +187,7 @@ const ApproveLeave = ({ id, user, setValue, leaves }) => {
                 className="w-full rounded-lg h-72 p-4"
                 value={approveForm?.reason}
               ></textarea>
-              <Wrapper className="flex gap-4">
-                <FormButton
+                   <FormButton
                   type="submit"
                   loading={approveButtonLoading}
                   loadingText="Adding reason"
@@ -143,6 +196,7 @@ const ApproveLeave = ({ id, user, setValue, leaves }) => {
                   additionalCss="px-12"
                 />
               </Wrapper>
+     
             </form>
           </Wrapper>
           {success && (
@@ -164,3 +218,4 @@ const ApproveLeave = ({ id, user, setValue, leaves }) => {
 };
 
 export default ApproveLeave;
+

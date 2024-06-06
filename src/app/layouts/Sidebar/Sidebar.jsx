@@ -95,7 +95,7 @@ const Sidebar = () => {
       </Wrapper>
     </aside>
   )}
-  {!userLoggedIn && (
+  {!userLoggedIn && !path.includes('account')  && (
       <aside
       className={`fixed h-full w-full left-0 top-0 transition-all duration-200 bg-dark-blue py-5 ${
         sidebarCollapse ? "max-w-[100px]" : "max-w-[300px]"

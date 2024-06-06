@@ -28,9 +28,17 @@ const LeaveInformation = () => {
   const [user, setUser] = useState(null);
   const [leaves, setLeaves] = useState(null);
   const [value, setValue] = useState(false);
+  const [prevLeaves, setPrevLeaves] = useState(false);
   const paraRef = useRef(null);
   const id = path.replace("/dashboard/leaves/", "");
-
+  useEffect(()=>{
+    fetch(`/api/dashboard/paid-leaves?email=${user?.email}`)
+      .then((res) => {  
+        return res.json();
+      }).then((res) => {
+        setPrevLeaves(res);   
+      })
+  },[user])
   useEffect(() => {
     const fetchLeaveData = async () => {
       try {
@@ -211,6 +219,7 @@ const LeaveInformation = () => {
                   setValue={setValue}
                   user={leaves}
                   leaves={user}
+                  prevLeaves={prevLeaves}
                 />
               </Wrapper>
             )}
