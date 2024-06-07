@@ -6,7 +6,6 @@ export const GET = async (request) => {
     await connect();
     const url = new URL(request.url);
     const email = url.searchParams.get("email");
-    console.log(email)
     const date = new Date();
     const balancedPaidLeaves = 12 - (date.getMonth() + 1);
     const startDate = (date.getFullYear() - 1) + "-" + 12 + "-" + 31;  

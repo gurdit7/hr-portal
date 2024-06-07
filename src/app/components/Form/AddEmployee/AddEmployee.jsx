@@ -20,13 +20,19 @@ import useAuth from "@/app/contexts/Auth/auth";
 import IconSalary from "../../Icons/IconSalary";
 
 const AddEmployee = () => {
-  const { getUsers } = useAuth();
+  const { getUsers, userData } = useAuth();
   const [formData, setFromData] = useState({});
   const [loading, setLoading] = useState(false);
   const [__error, setErrorForm] = useState(false);
   const [show, setShow] = useState(true);
   const { userPermissions, userRoles, setAddEmployee } = useAuth();
   const formError = "block text-xs mt-1 text-red-500";
+  useEffect(()=>{    
+    setFromData({
+      ...formData,
+      key:`f6bb694916a535eecf64c585d4d879ad_${userData?._id}`      
+    });
+  },[userData])
   const [success, setSuccess] = useState({
     active: false,
     animation: false,
@@ -79,7 +85,7 @@ const AddEmployee = () => {
       !newErrorState?.incrementDate
     ) {
       setLoading(true);
-      fetch("/api/auth/sign-up", {
+      fetch(`/api/auth/sign-up`, {
         method: "POST",
         body: JSON.stringify(formData),
       })

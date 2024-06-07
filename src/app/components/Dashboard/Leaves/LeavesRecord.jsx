@@ -21,7 +21,7 @@ const LeavesRecord = () => {
     setError(false);
     if (e.target.value !== "all") {
       if (userPermissions && userPermissions?.includes("user-leaves")) {
-        fetch(`/api/dashboard/leaves?all=true&value=${e.target.value}`)
+        fetch(`/api/dashboard/leaves?all=true&value=${e.target.value}&key=f6bb694916a535eecf64c585d4d879ad_${userData?._id}`)
           .then((res) => res.json())
           .then((data) => {
             setAllLeaves(data || []);
@@ -34,7 +34,7 @@ const LeavesRecord = () => {
           });
       } else {
         fetch(
-          `/api/dashboard/leaves?email=${userData?.email}&value=${e.target.value}`
+          `/api/dashboard/leaves?email=${userData?.email}&value=${e.target.value}&key=f6bb694916a535eecf64c585d4d879ad_${userData?._id}`
         )
           .then((res) => res.json())
           .then((data) => {
@@ -54,7 +54,7 @@ const LeavesRecord = () => {
   useEffect(() => {
     setLoad(false);
     if (userPermissions && userPermissions?.includes("user-leaves")) {
-      fetch(`/api/dashboard/leaves?all=true`)
+      fetch(`/api/dashboard/leaves?all=true&key=f6bb694916a535eecf64c585d4d879ad_${userData?._id}`)
         .then((res) => res.json())
         .then((data) => {
           if (data.length === 0) {
@@ -63,7 +63,7 @@ const LeavesRecord = () => {
           setAllLeaves(data || []);
         });
     } else {
-      fetch(`/api/dashboard/leaves?email=${userData?.email}`)
+      fetch(`/api/dashboard/leaves?email=${userData?.email}&key=f6bb694916a535eecf64c585d4d879ad_${userData?._id}`)
         .then((res) => res.json())
         .then((data) => {
           if (data.leaves.length === 0) {

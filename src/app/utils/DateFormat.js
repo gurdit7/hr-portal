@@ -87,8 +87,8 @@ export const formatMonthName = (dateString) => {
 
 export function getMondaysAndFridays(startDate, endDate) {
   const result = [];
-  const start = new Date(startDate);
-  const end = new Date(endDate);
+  let start = new Date(startDate.getFullYear() + "-" + (startDate.getMonth() + 1) + "-" + (startDate.getDate() - 1));
+  let end = new Date(endDate.getFullYear() + "-" + (endDate.getMonth() + 1) + "-" + (endDate.getDate() + 1)); 
   if (start > end) {
     return result;
   }
@@ -103,5 +103,30 @@ export function getMondaysAndFridays(startDate, endDate) {
     currentDate.setDate(currentDate.getDate() + 1); 
   }
 
-  return result;
+  return result.length;
+}
+
+
+export function countFridays(startDate, endDate) {  
+  let start = new Date(startDate.getFullYear() + "-" + (startDate.getMonth() + 1) + "-" + (startDate.getDate() - 1));
+  let end = new Date(endDate.getFullYear() + "-" + (endDate.getMonth() + 1) + "-" + (endDate.getDate() + 1));  
+  let fridayCount = 0;
+  while (start <= end) {
+      if (start.getDay() === 5) {
+          fridayCount++;
+      }
+      start.setDate(start.getDate() + 1);
+  }
+    return fridayCount;
+}
+
+
+export function checkMondayOrFriday(date) {
+  const result = [];
+  let start = new Date(date); 
+  const day = start.getDay();
+    if (day === 1 || day === 5) { 
+      result.push(start); 
+    }
+  return result.length;
 }

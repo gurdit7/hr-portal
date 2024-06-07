@@ -5,6 +5,7 @@ import UsersData from "@/model/userData";
 import Notifications from "@/model/notifications";
 import addRole from "@/model/addRole";
 import sendEmail from "@/app/mailer/mailer";
+import userData from "@/model/userData";
 
 export const getUserByEmail = async (email) => {
   const user = await UsersData.findOne({ email });
@@ -33,7 +34,6 @@ export const POST = async (request) => {
     const payload = await request.json();
     const leaves = new Leaves({ ...payload, status: "pending" });
     const result = await leaves.save();
-
     const user = await getUserByEmail(result.email);
     const roles = await getRolesWithPermission("view-users-notifications");
     const departmentEmails = await getEmailsByRoleAndDepartment(
@@ -85,7 +85,12 @@ export const GET = async (request) => {
     const id = url.searchParams.get("id");
     const all = url.searchParams.get("all");
     const value = url.searchParams.get("value");
-
+    const key = url.searchParams.get("key");
+    if(key){
+    const apiKey = key.replace("f6bb694916a535eecf64c585d4d879ad_","");
+    const user = await userData.findOne({_id:apiKey});
+ 
+    if(user){
     if (all === "true" && !value) {
       const leaves = await Leaves.find().sort({ $natural: -1 });
       return new NextResponse(JSON.stringify(leaves), { status: 200 });
@@ -138,7 +143,19 @@ export const GET = async (request) => {
         status: 200,
       });
     } 
-
+  }  
+  else{
+    return new NextResponse(JSON.stringify({ error:"Invalid api key." }), {
+      status: 200,
+    });
+  }
+}
+else{
+  return new NextResponse(JSON.stringify({ error:"Please add a API key." }), {
+    status: 200,
+  });
+}
+  console.log("apiKey",apiKey)
   } catch (error) {
     console.error("Error:", error);
     return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });

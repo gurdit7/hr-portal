@@ -1,10 +1,12 @@
 "use client";
 import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
+import useAuth from "@/app/contexts/Auth/auth";
 import { formatMonthName, formatYear } from "@/app/utils/DateFormat";
 import { useEffect, useState, useCallback } from "react";
 import { CSVLink } from "react-csv";
 
 const CreateSalary = () => {
+  const {userData} = useAuth();
   const [users, setUsers] = useState([]);
   const [leaves, setLeaves] = useState([]);
   const [showInput, setShowInput] = useState({});
@@ -13,8 +15,8 @@ const CreateSalary = () => {
   const month = "Employees-Salary-" + formatMonthName(new Date()) + "-" + formatYear(new Date());
   useEffect(() => {
     fetchUsers(setUsers);
-    fetchLeaves(setLeaves);
-  }, []);
+    fetchLeaves(setLeaves,userData?._id);
+  }, [userData]);
 
   const calculateLeaves = useCallback((mail, currentSalary) => {
     const date = new Date();
@@ -184,9 +186,9 @@ export const fetchUsers = async (setUsers) => {
 	setUsers(data?.data || []);
   };
 
-  export const fetchLeaves = async (setLeaves) => {
+  export const fetchLeaves = async (setLeaves,key) => {
 	try {
-	  const res = await fetch(`/api/dashboard/leaves?all=salary`);
+	  const res = await fetch(`/api/dashboard/leaves?all=salary&key=f6bb694916a535eecf64c585d4d879ad_${key}`);
 	  const result = await res.json();
 	  setLeaves(result || []);
 	} catch (error) {

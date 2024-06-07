@@ -18,8 +18,8 @@ export function AuthProvider({ children }) {
     const [userRoles, setuserRoles] = useState(['hr','employee','admin', 'manager' , 'tl']);
     const [userNotifications, setUserNotifications] = useState('');
     const [userNotificationsLength, setUserNotificationsLength] = useState('');
-    const getUserRoles = () =>{
-      fetch("/api/dashboard/roles/get")
+    const getUserRoles = (key) =>{
+      fetch(`/api/dashboard/roles/get?key=f6bb694916a535eecf64c585d4d879ad_${key}`)
         .then(function (res) {
           return res.json();
         })

@@ -21,7 +21,7 @@ import SkeletonLoader from "../../Ui/skeletonLoader/skeletonLoader";
 const LeaveInformation = () => {
   const [formData, setFormData] = useState({});
   const [formDataCancel, setFormDataCancel] = useState({});
-  const { userPermissions } = useAuth();
+  const { userPermissions, userData } = useAuth();
   const path = usePathname();
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -42,7 +42,7 @@ const LeaveInformation = () => {
   useEffect(() => {
     const fetchLeaveData = async () => {
       try {
-        const response = await fetch(`/api/dashboard/leaves?id=${id}`);
+        const response = await fetch(`/api/dashboard/leaves?id=${id}&key=f6bb694916a535eecf64c585d4d879ad_${userData?._id}`);
         const result = await response.json();
           setUser(result?.user);
           setLeaves(result?.leaves);
@@ -81,7 +81,7 @@ const LeaveInformation = () => {
     };
 
     fetchLeaveData();
-  }, [id, value]);
+  }, [id, value, userData]);
 
   const handleFormChange = (e) => {
     setFormData((prevData) => ({

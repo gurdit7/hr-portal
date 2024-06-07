@@ -11,7 +11,12 @@ import Text from "../../Ui/Text/Text";
 import H2 from "../../Ui/H2/H2";
 import DropDown from "../../Form/DropDown/select";
 import { duration } from "@/app/data/default";
-import { formatDate, getMondaysAndFridays } from "@/app/utils/DateFormat";
+import {
+  checkMondayOrFriday,
+  countFridays,
+  formatDate,
+  getMondaysAndFridays,
+} from "@/app/utils/DateFormat";
 import IconClock from "../../Icons/IconClock";
 import IconSubject from "../../Icons/IconSubject";
 import Input from "../../Form/Input/Input";
@@ -19,7 +24,6 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import IconAttachment from "../../Icons/IconAttachment";
 import FormButton from "../../Form/FormButton/FormButton";
-import axios from "axios";
 import { toHTML } from "../Notifications/Item";
 import { TimeFormat } from "@/app/utils/TimeFormat";
 import Link from "next/link";
@@ -35,13 +39,6 @@ const Leaves = () => {
   const date = new Date();
   const mon = date.getMonth() + 1;
   const day = date.getDate();
-  const today =
-    date.getFullYear() +
-    "-" +
-    (mon > 9 ? mon : "0" + mon) +
-    "-" +
-    (day > 9 ? day : "0" + day) +
-    "T24:00";
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [val, setVal] = useState(false);
@@ -61,6 +58,8 @@ const Leaves = () => {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [errorAnimation, setErrorAnimation] = useState(false);
+  const [sandwitchCount, setSandwitchCount] = useState(0);
+  const [sandwitchLeavesData, setSandwitchLeavesData] = useState(false);
   const array = [0, 1, 2, 3, 4];
 
   const getFrom = (e) => {
@@ -81,8 +80,6 @@ const Leaves = () => {
   };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setVal(value);
-
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -120,7 +117,7 @@ const Leaves = () => {
       userID: userData.userID,
       name: userData.name,
     };
-    console.log(formData, from, to);
+    console.log(formData);
     // if (file) {
     //   try {
     //     const random = Math.floor(Math.random() * 1000000 + 1);
@@ -177,53 +174,212 @@ const Leaves = () => {
     // }
   };
 
-  useEffect(() => {
-    if (formData?.duration) {
-      let h = 1;
-      if (formData?.duration === "Half Day") {
-        h = 0.5;
-      } else if (formData?.duration === "Short Leave") {
-        h = 0.3125;
-      } else if (formData?.duration === "Other") {  
-        const dateForm = (date)=>{
-          const mon = date.getMonth() + 1;
-          const day = date.getDate() - 1;
-          const hours = date.getHours();
-          const minutes = date.getMinutes();
-          return date.getFullYear() +
-          "-" +
-          (mon > 9 ? mon : "0" + mon) +
-          "-" +
-          (day > 9 ? day : "0" + day)+
-          "T" +
-          (hours > 9 ? hours : "0" + hours)+
-          ":" +
-          (minutes > 9 ? minutes : "0" + minutes)
-          ;
-        }
-        
-        const date1 = new Date(fromDate || "");
-        const date2 = new Date(toDate || "");   
-        const dd = new Date(dateForm(date1));
-        const ddd = new Date(dateForm(date2));
-        const timeDifference = ddd - dd;
-        const millisecondsInADay = 24 * 60 * 60 * 1000;
-        const dayDifference = timeDifference / millisecondsInADay;
-        const startDate = dd;
-        const endDate = ddd;
-        const mondaysAndFridays = getMondaysAndFridays(startDate, endDate);
-        if(mondaysAndFridays.length > 0){
+  const endformatDate = (date) => {
+    const mon = date.getMonth() + 1;
+    const day = date.getDate() - 1;
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    return `${date.getFullYear()}-${mon > 9 ? mon : `0${mon}`}-${
+      day > 9 ? day : `0${day}`
+    }T${hours > 9 ? hours : `0${hours}`}:${
+      minutes > 9 ? minutes : `0${minutes}`
+    }`;
+  };
+  const startFormatDate = (date) => {
+    const mon = date.getMonth() + 1;
+    const day = date.getDate() - 1;
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    return `${date.getFullYear()}-${mon > 9 ? mon : `0${mon}`}-${
+      day > 9 ? day : `0${day}`
+    }T${hours > 9 ? hours : `0${hours}`}:${
+      minutes > 9 ? minutes : `0${minutes}`
+    }`;
+  };
 
-        }
-        else{
-          h = dayDifference;
-        }
+  const calculateDayDifference = (startDate, endDate) => {
+    const millisecondsInADay = 24 * 60 * 60 * 1000;
+    return (endDate - startDate) / millisecondsInADay;
+  };
 
-      }
-
-      setFormData((prev) => ({ ...prev, durationHours: h * 8 }));
+  const checkMondaysAndFridays = (startDate, setFormData) => {
+    const mondaysAndFridays = checkMondayOrFriday(startDate);
+    if (mondaysAndFridays > 0) {
+      setFormData((prev) => ({
+        ...prev,
+        sandwitchLeave: true,
+        sandwitchLeaveData: {
+          type: "paid",
+          paidLeaves: 1,
+          both: false,
+          unpaidLeaves: 0,
+          message: `false`,
+        },
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        sandwitchLeave: false,
+        sandwitchLeaveData: {},
+      }));
     }
-  }, [val]);
+    return mondaysAndFridays;
+  };
+
+  const handleSandwichLeave = (fridayCounts, setFormData, count) => {
+    let sandwitchLeave = false;
+    let sandwitchLeaveData = {};
+
+    if (count === 0) {
+        if (fridayCounts === 0) {
+            sandwitchLeave = false;
+        } else if (fridayCounts === 1) {
+            sandwitchLeave = true;
+            sandwitchLeaveData = {
+                type: "paid",
+                paidLeaves: 1,
+                both: false,
+                unpaidLeaves: 0,
+                message: "1 paid"
+            };
+        } else if (fridayCounts > 1) {
+            sandwitchLeave = true;
+            sandwitchLeaveData = {
+                type: "paid",
+                paidLeaves: 10,
+                both: true,
+                unpaidLeaves: fridayCounts - 1,
+                message: `1 paid and ${fridayCounts - 1} unpaid`
+            };
+        }
+    } else if (count === 1) {
+        if (fridayCounts === 0) {
+            sandwitchLeave = false;
+        } else if (fridayCounts === 1) {
+            sandwitchLeave = true;
+            sandwitchLeaveData = {
+                type: "unpaid",
+                paidLeaves: 1,
+                both: false,
+                unpaidLeaves: 0,
+                message: "1 unpaid"
+            };
+        } else if (fridayCounts > 1) {
+            sandwitchLeave = true;
+            sandwitchLeaveData = {
+                type: "unpaid",
+                paidLeaves: 0,
+                both: false,
+                unpaidLeaves: fridayCounts - 1,
+                message: `${fridayCounts - 1} unpaid`
+            };
+        }
+    }
+
+    setFormData(prev => ({
+        ...prev,
+        sandwitchLeave,
+        sandwitchLeaveData
+    }));
+};
+
+
+  useEffect(() => {
+    if (!formData?.duration) return;
+    const { duration, durationDate } = formData;
+    let durationHours = 8;
+
+    switch (duration) {
+      case "Half Day":
+        durationHours = 4;
+        break;
+      case "Full Day":
+        const checkMondaysAndFriday = checkMondaysAndFridays(
+          durationDate,
+          setFormData
+        );
+        setSandwitchCount(checkMondaysAndFriday);
+        break;
+      case "Short Leave":
+        durationHours = 2.5;
+        break;
+      case "Other":
+        const date1 = new Date(fromDate || "");
+        const date2 = new Date(toDate || "");
+        const formattedDate1 = new Date(startFormatDate(date1));
+        const formattedDate2 = new Date(endformatDate(date2));
+        const dayDifference = calculateDayDifference(
+          formattedDate1,
+          formattedDate2
+        );
+        const fridayCounts = countFridays(formattedDate1, formattedDate2);
+        setSandwitchCount(fridayCounts);
+        handleSandwichLeave(
+          fridayCounts,
+          setFormData,
+          sandwitchLeavesData?.count > 0
+        );
+        durationHours = dayDifference * 8;
+        break;
+      default:
+        break;
+    }
+
+    const sandwitchLeaveMessage = formData?.sandwitchLeaveData?.message;
+    console.log(formData?.sandwitchLeaveData?.both);
+    if (
+      sandwitchLeavesData?.count > 0 &&
+      sandwitchCount > 0 &&
+      formData?.sandwitchLeaveData?.both === false
+    ) {
+      console.log("Maa");
+      setFormData((prev) => ({
+        ...prev,
+        sandwitchLeave: true,
+        sandwitchLeaveData: {
+          type: "unpaid",
+          paidLeaves: 0,
+          both: false,
+          unpaidLeaves: sandwitchCount,
+          message:
+            sandwitchLeaveMessage !== "false"
+              ? `${sandwitchCount} unpaid`
+              : "false",
+        },
+      }));
+    } else if (formData?.sandwitchLeaveData?.both) {
+      console.log(formData);
+    } else {
+      console.log("Teri");
+      setFormData((prev) => ({
+        ...prev,
+        sandwitchLeave: false,
+        sandwitchLeaveData: {},
+      }));
+    }
+    setFormData((prev) => ({ ...prev, durationHours }));
+  }, [val, sandwitchCount, sandwitchLeavesData?.count]);
+  useEffect(() => {
+    if (sandwitchCount > 0) {
+      fetch(`/api/dashboard/leaves/Sandwich-leaves?email=${userData.email}`)
+        .then((res) => res.json())
+        .then((res) => {
+          setSandwitchLeavesData({
+            ...sandwitchLeavesData,
+            count: res?.sandwitchLeaves?.length || 0,
+          });
+        })
+        .catch((error) => {
+          console.error("Error fetching Sandwich leaves:", error);
+        });
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        sandwitchLeave: false,
+        sandwitchLeaveData: {},
+      }));
+    }
+  }, [sandwitchCount]);
   const formErrorClass = "block text-xs mt-1 text-red-500";
 
   return (
@@ -289,13 +445,13 @@ const Leaves = () => {
                     <Wrapper className="relative w-full flex gap-4">
                       <DateTimeInput
                         label="From"
-                        value={from || today}
+                        value={from || ""}
                         onChange={getFrom}
                         error={errors.from}
                       />
                       <DateTimeInput
                         label="To"
-                        value={to || today}
+                        value={to || ""}
                         onChange={getTo}
                         error={errors.to}
                       />
@@ -472,23 +628,26 @@ export const LeaveItem = ({ item, index }) => {
 };
 
 export const DateTimeInput = ({ label, value, onChange, error }) => (
-  <Wrapper className="flex flex-col w-full">
+  <Wrapper className="relative w-full flex-1">
     <Input
       label={label}
       placeholder={label}
       setData={(e) => onChange(e.target.value)}
-      type="datetime-local"
-      required
+      type="date"
+      required={true}
       value={value}
       name={label.toLowerCase()}
       className="border-light-600 border"
-      inputClasses="!pl-[30px] !pr-0"
-    />
-    {error && (
-      <span className="block text-xs mt-1 text-red-500">
-        This field is required.
-      </span>
-    )}
+    >
+      <IconDate size="24px" color="stroke-light-400" />
+    </Input>
+    <label
+      className={`absolute left-[48px] top-[38px] pointer-events-none text-light-600 ${
+        value ? "text-text-dark" : "text-light-600"
+      }`}
+    >
+      {value || "Date"}
+    </label>
   </Wrapper>
 );
 

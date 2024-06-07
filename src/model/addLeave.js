@@ -48,7 +48,13 @@ const userSchema = new Schema({
         },
         unPaidLeaves:{
             type:Number
-        }                 
+        },
+        sandwitchLeave:{
+            type:Boolean
+        },
+        sandwitchLeaveData:{
+            type:Object
+        }         
 
 },{timestamps:true})
 

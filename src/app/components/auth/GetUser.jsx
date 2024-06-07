@@ -21,7 +21,7 @@ const GetUserData = (session) => {
           .then(async function (data) {
             setTimeout(() => {
             getUsers();
-            getUserRoles();
+            getUserRoles(data?.user?._id);
             getUserNotifications();
             getLeaves(data?.user?.userID)            
             setUserData(data?.user);
