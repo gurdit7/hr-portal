@@ -46,9 +46,11 @@ export const POST = async (request) => {
             const result = await person.save();
             if (result) {
               const totalLeaves = 12;
+              const dateNow = new Date();
               const currentMonth = new Date().getMonth();
               const totalLeave = totalLeaves - currentMonth;
-              const balancedSandwichLeaves = Math.ceil(totalLeaves / 3);
+              const monthRound = Math.round((dateNow.getMonth() + 2) - 0.5);              
+              const balancedSandwichLeaves = Math.ceil(monthRound / 3);
               const userDataPerson = new UsersData({
                 email: payload?.email,
                 userType: payload?.userType,

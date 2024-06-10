@@ -22,6 +22,10 @@ export const getEmailsByRoleAndDepartment = async (roles, department) => {
   const users = await UsersData.find({ department, role: { $in: roles } });
   return users.map((user) => user.email);
 };
+export const getEmailsByRole = async (roles) => {
+  const users = await UsersData.find({ role: { $in: roles } });
+  return users.map((user) => user.email);
+};
 
 export const getHrAndAdminEmails = async () => {
   const users = await UsersData.find({ role: { $in: ["hr", "admin"] } });
@@ -166,7 +170,8 @@ export const PUT = async (request) => {
   try {
     await connect();
     const payload = await request.json();
-
+    let updatedLeave,
+    updatedUser = 0;
     if (payload.update === "leaves") {
       await UsersData.updateOne(
         { email: payload.email },
@@ -177,7 +182,7 @@ export const PUT = async (request) => {
           balancedSandwichLeavesTaken: payload.balancedSandwichLeavesTaken,
         }
       );
-      const updatedUser = await UsersData.findOne({ email: payload.email });
+       updatedUser = await UsersData.findOne({ email: payload.email });
       return new NextResponse(JSON.stringify(updatedUser), { status: 200 });
     }
 
@@ -192,7 +197,7 @@ export const PUT = async (request) => {
           balancedSandwichLeavesTaken: payload.balancedSandwichLeavesTaken,
         }
       );
-      const updatedUser = await UsersData.findOne({ email: payload.email });
+      updatedUser = await UsersData.findOne({ email: payload.email });
       await sendEmail(
         payload.email,
         `HR Portal - Your Leave is canceled.`,
@@ -211,13 +216,12 @@ export const PUT = async (request) => {
       await notifications.save();
       return new NextResponse(JSON.stringify(updatedUser), { status: 200 });
     }
-    if(payload.update === "approve"){
-    
+    if(payload.update === "approve"){    
     await Leaves.updateOne(
       { _id: payload.id },
       { status: payload.status, reason: payload.reason }
     );
-    const updatedLeave = await Leaves.findById(payload.id);
+     updatedLeave = await Leaves.findById(payload.id);
     await sendEmail(
       payload.email,
       `HR Portal - Your leave is ${payload.status}`,
@@ -237,7 +241,24 @@ export const PUT = async (request) => {
     });
 
     await notifications.save();
-    const updatedUser = await UsersData.updateOne(
+    if(payload?.totalUnpaidLeaveTaken){
+      updatedUser = await UsersData.updateOne(
+        { email: payload.email },
+        {
+          totalUnpaidLeaveTaken: payload.totalUnpaidLeaveTaken
+        }
+      );
+    }
+    else if(payload?.unpaidSandwichLeavesTaken){
+      updatedUser = await UsersData.updateOne(
+        { email: payload.email },
+        {
+          unpaidSandwichLeavesTaken: payload.unpaidSandwichLeavesTaken
+        }
+      );
+    }
+    else{
+     updatedUser = await UsersData.updateOne(
       { email: payload.email },
       {
         totalLeaveTaken: payload.totalLeaveTaken,
@@ -246,6 +267,7 @@ export const PUT = async (request) => {
         balancedSandwichLeavesTaken: payload.balancedSandwichLeavesTaken,
       }
     );
+  }
   }
     return new NextResponse(
       JSON.stringify({ leave: updatedLeave, user: updatedUser }),

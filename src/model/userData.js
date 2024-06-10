@@ -50,6 +50,9 @@ const userSchema = new Schema({
         totalLeaveTaken:{
             type:Number
         },
+        totalUnpaidLeaveTaken:{
+            type:Number
+        },
         balancedLeaves:{
             type:Number
         },
@@ -59,6 +62,9 @@ const userSchema = new Schema({
         balancedSandwichLeavesTaken:{
             type:Number
         },
+        unpaidSandwichLeavesTaken:{
+            type:Number
+        },        
         coverImage:{
             type:String
         },

@@ -19,7 +19,7 @@ const GetUserData = (session) => {
             return res.json();
           })
           .then(async function (data) {
-            setTimeout(() => {
+             setTimeout(() => {
             getUsers();
             getUserRoles(data?.user?._id);
             getUserNotifications();

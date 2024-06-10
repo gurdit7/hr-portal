@@ -11,24 +11,43 @@ const BalancedLeaves = () => {
     setUser(userData);
   },[userData])
   return (
+    <Wrapper>
     <Wrapper className="flex justify-between gap-[15px]">
     <LeaveSummaryCard
       title="Balance Leaves"
       count={user?.balancedLeaves || 12}
     />
     <LeaveSummaryCard
-      title="Total Leaves Taken"
+      title="Paid Leaves Taken"
       count={user?.totalLeaveTaken || 0}
     />
+     {user?.totalUnpaidLeaveTaken && (
+     <LeaveSummaryCard
+     className="border border-red-600"
+      title="Unpaid Leaves Taken"
+      count={user?.totalUnpaidLeaveTaken || 4}
+      tooltip="Employees are granted four extra leave days annually, one per quarter, strategically aligned with weekends or public holidays."
+    />
+  )}
     <LeaveSummaryCard
       title="Balance Sandwich Leaves"
       count={user?.balancedSandwichLeaves || 4}
       tooltip="Employees are granted four extra leave days annually, one per quarter, strategically aligned with weekends or public holidays."
     />
+   
     <LeaveSummaryCard
       title="Sandwich Leaves Taken"
       count={user?.balancedSandwichLeavesTaken || 0}
     />
+   {user?.unpaidSandwichLeavesTaken && (
+     <LeaveSummaryCard
+     className="border border-red-600"
+      title="Unpaid Sandwich Taken"
+      count={(user?.unpaidSandwichLeavesTaken / 3) || 4}      
+    />
+  )}
+
+    </Wrapper>
   </Wrapper>
   );
 }
