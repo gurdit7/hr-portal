@@ -10,7 +10,7 @@ import H2 from "../../Ui/H2/H2";
 import IconSort from "../../Icons/IconSort";
 import { LeaveItem } from "./Leaves";
 
-const LeavesRecord = () => {
+const LeavesRecord = ({loader, setLoader}) => {
   const [load, setLoad] = useState(false);
   const { userPermissions, leaves, userData } = useAuth();
   const [allLeaves, setAllLeaves] = useState(false);
@@ -19,60 +19,73 @@ const LeavesRecord = () => {
   const array = [0, 1, 2, 3, 4];
   const getSort = (e) => {
     setError(false);
-    if (e.target.value !== "all") {
-      if (userPermissions && userPermissions?.includes("user-leaves")) {
-        fetch(`/api/dashboard/leaves?all=true&value=${e.target.value}&key=f6bb694916a535eecf64c585d4d879ad_${userData?._id}`)
-          .then((res) => res.json())
-          .then((data) => {
-            setAllLeaves(data || []);
-            setTimeout(() => {
-              setStatus(true);
-              if (data.length === 0) {
-                setError(true);
-              }
-            }, 500);
-          });
+    if (userData) {
+      if (e.target.value !== "all") {
+        if (userPermissions && userPermissions?.includes("user-leaves")) {
+          fetch(
+            `/api/dashboard/leaves?all=true&value=${e.target.value}&key=f6bb694916a535eecf64c585d4d879ad_${userData?._id}`
+          )
+            .then((res) => res.json())
+            .then((data) => {
+              setAllLeaves(data || []);
+              setTimeout(() => {
+                setStatus(true);
+                if (data.length === 0) {
+                  setError(true);
+                }
+              }, 500);
+            });
+        } else {
+          fetch(
+            `/api/dashboard/leaves?email=${userData?.email}&value=${e.target.value}&key=f6bb694916a535eecf64c585d4d879ad_${userData?._id}`
+          )
+            .then((res) => res.json())
+            .then((data) => {
+              setAllLeaves(data.leaves || []);
+              setTimeout(() => {
+                if (data.leaves.length === 0) {
+                  setError(true);
+                }
+                setStatus(true);
+              }, 500);
+            });
+        }
       } else {
-        fetch(
-          `/api/dashboard/leaves?email=${userData?.email}&value=${e.target.value}&key=f6bb694916a535eecf64c585d4d879ad_${userData?._id}`
-        )
-          .then((res) => res.json())
-          .then((data) => {
-            setAllLeaves(data.leaves || []);
-            setTimeout(() => {
-              if (data.leaves.length === 0) {
-                setError(true);
-              }
-              setStatus(true);
-            }, 500);
-          });
+        setLoad(true);
       }
-    } else {
-      setLoad(true);
     }
   };
   useEffect(() => {
     setLoad(false);
-    if (userPermissions && userPermissions?.includes("user-leaves")) {
-      fetch(`/api/dashboard/leaves?all=true&key=f6bb694916a535eecf64c585d4d879ad_${userData?._id}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.length === 0) {
-            setError(true);
-          }
-          setAllLeaves(data || []);
-        });
-    } else {
-      fetch(`/api/dashboard/leaves?email=${userData?.email}&key=f6bb694916a535eecf64c585d4d879ad_${userData?._id}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.leaves.length === 0) {
-            setError(true);
-          }
-          setAllLeaves(data.leaves || []);
-        });
+    if (userData) {
+      if (userPermissions && userPermissions?.includes("user-leaves")) {
+        fetch(
+          `/api/dashboard/leaves?all=true&key=f6bb694916a535eecf64c585d4d879ad_${userData?._id}`
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.length === 0) {
+              setError(true);
+            }
+            setAllLeaves(data || []);
+            setLoader(false);
+          });
+      } else {
+        fetch(
+          `/api/dashboard/leaves?email=${userData?.email}&key=f6bb694916a535eecf64c585d4d879ad_${userData?._id}`
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.leaves.length === 0) {
+              setError(true);
+
+            }
+            setAllLeaves(data.leaves || []);
+            setLoader(false);
+          });
+      }
     }
-  }, [leaves, userData.email, load]);
+  }, [leaves, userData.email, load, loader]);
   return (
     <Wrapper className="bg-white rounded-[10px] p-5 w-full">
       <Wrapper className="flex flex-col gap-[15px] mb-4">

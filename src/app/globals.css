@@ -196,7 +196,7 @@ body{
     -webkit-text-fill-color: transparent;
     }
     ::-webkit-inner-spin-button, ::-webkit-outer-spin-button{
-        opacity: 0;
+    display: none;
     }
 
 

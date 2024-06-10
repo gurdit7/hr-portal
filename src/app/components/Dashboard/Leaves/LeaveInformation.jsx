@@ -31,22 +31,24 @@ const LeaveInformation = () => {
   const [prevLeaves, setPrevLeaves] = useState(false);
   const paraRef = useRef(null);
   const id = path.replace("/dashboard/leaves/", "");
-  useEffect(()=>{
+  useEffect(() => {
     fetch(`/api/dashboard/paid-leaves?email=${user?.email}`)
-      .then((res) => {  
+      .then((res) => {
         return res.json();
-      }).then((res) => {
-        setPrevLeaves(res);   
       })
-  },[user])
+      .then((res) => {
+        setPrevLeaves(res);
+      });
+  }, [user]);
   useEffect(() => {
     const fetchLeaveData = async () => {
       try {
-        const response = await fetch(`/api/dashboard/leaves?id=${id}&key=f6bb694916a535eecf64c585d4d879ad_${userData?._id}`);
+        const response = await fetch(
+          `/api/dashboard/leaves?id=${id}&key=f6bb694916a535eecf64c585d4d879ad_${userData?._id}`
+        );
         const result = await response.json();
-          setUser(result?.user);
-          setLeaves(result?.leaves);
-
+        setUser(result?.user);
+        setLeaves(result?.leaves);
 
         const balancedSandwichLeaves =
           result?.leaves?.durationDay === "Friday" ||
@@ -79,9 +81,10 @@ const LeaveInformation = () => {
         console.error("Error fetching leave data:", error);
       }
     };
-
-    fetchLeaveData();
-  }, [id, value, userData]);
+    if (userData) {
+      fetchLeaveData();
+    }
+  }, [value, userData]);
 
   const handleFormChange = (e) => {
     setFormData((prevData) => ({
@@ -217,8 +220,8 @@ const LeaveInformation = () => {
                 <ApproveLeave
                   id={id}
                   setValue={setValue}
-                  user={leaves}
-                  leaves={user}
+                  user={user}
+                  leave={leaves}
                   prevLeaves={prevLeaves}
                 />
               </Wrapper>

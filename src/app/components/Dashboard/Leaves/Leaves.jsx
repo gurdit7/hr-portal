@@ -80,6 +80,7 @@ const Leaves = () => {
   };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    setVal(value);
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -106,72 +107,69 @@ const Leaves = () => {
   };
 
   const handleSubmit = async (e) => {
-    // setLoading(true);
     e.preventDefault();
     if (!validateForm()) return;
-
-    // setLoading(true);
+    setLoading(true);
     const formDataCopy = {
       ...formData,
       email: userData.email,
       userID: userData.userID,
       name: userData.name,
     };
-    console.log(formData);
-    // if (file) {
-    //   try {
-    //     const random = Math.floor(Math.random() * 1000000 + 1);
-    //     const imageFormData = new FormData();
-    //     imageFormData.append("folder", userData.userID);
-    //     imageFormData.append(
-    //       "name",
-    //       `${userData.userID}-${random}-leave-image.jpg`
-    //     );
-    //     imageFormData.append("file", file);
+    if (file) {
+      try {
+        const random = Math.floor(Math.random() * 1000000 + 1);
+        const imageFormData = new FormData();
+        imageFormData.append("folder", userData.userID);
+        imageFormData.append(
+          "name",
+          `${userData.userID}-${random}-leave-image.jpg`
+        );
+        imageFormData.append("file", file);
 
-    //     const response = await axios.post(
-    //       "https://thefabcode.org/hr-portal/upload.php",
-    //       imageFormData,
-    //       {
-    //         headers: { "Content-Type": "multipart/form-data" },
-    //       }
-    //     );
+        const response = await axios.post(
+          "https://thefabcode.org/hr-portal/upload.php",
+          imageFormData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
 
-    //     formDataCopy.attachment = response.data.url;
-    //   } catch (err) {
-    //     setLoading(false);
-    //     return;
-    //   }
-    // }
-    // try {
-    //   const response = await fetch("/api/dashboard/leaves", {
-    //     method: "POST",
-    //     body: JSON.stringify(formDataCopy),
-    //   });
+        formDataCopy.attachment = response.data.url;
+      } catch (err) {
+        setLoading(false);
+        return;
+      }
+    }
+    try {
+      const response = await fetch("/api/dashboard/leaves", {
+        method: "POST",
+        body: JSON.stringify(formDataCopy),
+      });
 
-    //   const data = await response.json();
-    //   setSuccess(true);
-    //   setSuccessMessage("Your leave request is sent.");
-    //   setSuccessAnimation(true);
-    //   setLoad(true);
-    //   setTimeout(() => {
-    //     setSuccessAnimation(false);
-    //     setSuccess(false);
-    //     setLoading(false);
-    //     setFormData("");
-    //     setDescription("");
-    //     setAttachment("");
-    //   }, 3000);
-    // } catch (err) {
-    //   setError(true);
-    //   setErrorMessage("Something went wrong! please try again later");
-    //   setErrorAnimation(true);
-    //   setTimeout(() => {
-    //     setErrorAnimation(false);
-    //     setError(false);
-    //     setLoading(false);
-    //   }, 3000);
-    // }
+      const data = await response.json();
+      setSuccess(true);
+      setSuccessMessage("Your leave request is sent.");
+      setSuccessAnimation(true);
+      setLoad(true);
+      setTimeout(() => {
+        setSuccessAnimation(false);
+        setSuccess(false);
+        setLoading(false);
+        setFormData("");
+        setDescription("");
+        setAttachment("");
+      }, 3000);
+    } catch (err) {
+      setError(true);
+      setErrorMessage("Something went wrong! please try again later");
+      setErrorAnimation(true);
+      setTimeout(() => {
+        setErrorAnimation(false);
+        setError(false);
+        setLoading(false);
+      }, 3000);
+    }
   };
 
   const endformatDate = (date) => {
@@ -208,17 +206,22 @@ const Leaves = () => {
       setFormData((prev) => ({
         ...prev,
         sandwitchLeave: true,
+        from: false,
+        to: false,
         sandwitchLeaveData: {
-          type: "paid",
-          paidLeaves: 1,
+          type: sandwitchLeavesData?.thisMonthLeaves > 0 ? "unpaid" : "paid",
+          paidLeaves: sandwitchLeavesData?.thisMonthLeaves > 0 ? 0 : 1,
           both: false,
-          unpaidLeaves: 0,
-          message: `false`,
+          unpaidLeaves: sandwitchLeavesData?.thisMonthLeaves > 0 ? 1 : 0,
+          message:
+            sandwitchLeavesData?.thisMonthLeaves > 0 ? "1 unpaid" : "1 paid",
         },
       }));
     } else {
       setFormData((prev) => ({
         ...prev,
+        from: false,
+        to: false,
         sandwitchLeave: false,
         sandwitchLeaveData: {},
       }));
@@ -229,68 +232,72 @@ const Leaves = () => {
   const handleSandwichLeave = (fridayCounts, setFormData, count) => {
     let sandwitchLeave = false;
     let sandwitchLeaveData = {};
-
     if (count === 0) {
-        if (fridayCounts === 0) {
-            sandwitchLeave = false;
-        } else if (fridayCounts === 1) {
-            sandwitchLeave = true;
-            sandwitchLeaveData = {
-                type: "paid",
-                paidLeaves: 1,
-                both: false,
-                unpaidLeaves: 0,
-                message: "1 paid"
-            };
-        } else if (fridayCounts > 1) {
-            sandwitchLeave = true;
-            sandwitchLeaveData = {
-                type: "paid",
-                paidLeaves: 10,
-                both: true,
-                unpaidLeaves: fridayCounts - 1,
-                message: `1 paid and ${fridayCounts - 1} unpaid`
-            };
-        }
+      if (fridayCounts === 0) {
+        sandwitchLeave = false;
+      } else if (fridayCounts === 1) {
+        sandwitchLeave = true;
+        sandwitchLeaveData = {
+          type: "paid",
+          paidLeaves: 1,
+          both: false,
+          unpaidLeaves: 0,
+          message: "1 paid",
+        };
+      } else if (fridayCounts > 1) {
+        sandwitchLeave = true;
+        sandwitchLeaveData = {
+          type: "paid",
+          paidLeaves: 1,
+          both: true,
+          unpaidLeaves: fridayCounts - 1,
+          message: `1 paid and ${fridayCounts - 1} unpaid`,
+        };
+      }
     } else if (count === 1) {
-        if (fridayCounts === 0) {
-            sandwitchLeave = false;
-        } else if (fridayCounts === 1) {
-            sandwitchLeave = true;
-            sandwitchLeaveData = {
-                type: "unpaid",
-                paidLeaves: 1,
-                both: false,
-                unpaidLeaves: 0,
-                message: "1 unpaid"
-            };
-        } else if (fridayCounts > 1) {
-            sandwitchLeave = true;
-            sandwitchLeaveData = {
-                type: "unpaid",
-                paidLeaves: 0,
-                both: false,
-                unpaidLeaves: fridayCounts - 1,
-                message: `${fridayCounts - 1} unpaid`
-            };
-        }
+      if (fridayCounts === 0) {
+        sandwitchLeave = false;
+      } else if (fridayCounts === 1) {
+        sandwitchLeave = true;
+        sandwitchLeaveData = {
+          type: "unpaid",
+          paidLeaves: 0,
+          both: false,
+          unpaidLeaves: 1,
+          message: "1 unpaid",
+        };
+      } else if (fridayCounts > 1) {
+        sandwitchLeave = true;
+        sandwitchLeaveData = {
+          type: "unpaid",
+          paidLeaves: 0,
+          both: false,
+          unpaidLeaves: fridayCounts - 1,
+          message: `${fridayCounts - 1} unpaid`,
+        };
+      }
     }
 
-    setFormData(prev => ({
-        ...prev,
-        sandwitchLeave,
-        sandwitchLeaveData
+    setFormData((prev) => ({
+      ...prev,
+      sandwitchLeave,
+      sandwitchLeaveData,
     }));
-};
-
+  };
 
   useEffect(() => {
     if (!formData?.duration) return;
     const { duration, durationDate } = formData;
     let durationHours = 8;
-
     switch (duration) {
       case "Half Day":
+        setFormData((prev) => ({
+          ...prev,
+          sandwitchLeave: false,
+          from: false,
+          to: false,
+          sandwitchLeaveData: {},
+        }));
         durationHours = 4;
         break;
       case "Full Day":
@@ -302,12 +309,31 @@ const Leaves = () => {
         break;
       case "Short Leave":
         durationHours = 2.5;
+        setFormData((prev) => ({
+          ...prev,
+          sandwitchLeave: false,
+          from: false,
+          to: false,
+          sandwitchLeaveData: {},
+        }));
         break;
       case "Other":
         const date1 = new Date(fromDate || "");
         const date2 = new Date(toDate || "");
-        const formattedDate1 = new Date(startFormatDate(date1));
-        const formattedDate2 = new Date(endformatDate(date2));
+        const formattedDate1 = new Date(
+          date1.getFullYear() +
+            "-" +
+            (date1.getMonth() + 1) +
+            "-" +
+            (date1.getDate() - 1)
+        );
+        const formattedDate2 = new Date(
+          date2.getFullYear() +
+            "-" +
+            (date2.getMonth() + 1) +
+            "-" +
+            date2.getDate()
+        );
         const dayDifference = calculateDayDifference(
           formattedDate1,
           formattedDate2
@@ -317,7 +343,7 @@ const Leaves = () => {
         handleSandwichLeave(
           fridayCounts,
           setFormData,
-          sandwitchLeavesData?.count > 0
+          sandwitchLeavesData?.count || 0
         );
         durationHours = dayDifference * 8;
         break;
@@ -325,47 +351,17 @@ const Leaves = () => {
         break;
     }
 
-    const sandwitchLeaveMessage = formData?.sandwitchLeaveData?.message;
-    console.log(formData?.sandwitchLeaveData?.both);
-    if (
-      sandwitchLeavesData?.count > 0 &&
-      sandwitchCount > 0 &&
-      formData?.sandwitchLeaveData?.both === false
-    ) {
-      console.log("Maa");
-      setFormData((prev) => ({
-        ...prev,
-        sandwitchLeave: true,
-        sandwitchLeaveData: {
-          type: "unpaid",
-          paidLeaves: 0,
-          both: false,
-          unpaidLeaves: sandwitchCount,
-          message:
-            sandwitchLeaveMessage !== "false"
-              ? `${sandwitchCount} unpaid`
-              : "false",
-        },
-      }));
-    } else if (formData?.sandwitchLeaveData?.both) {
-      console.log(formData);
-    } else {
-      console.log("Teri");
-      setFormData((prev) => ({
-        ...prev,
-        sandwitchLeave: false,
-        sandwitchLeaveData: {},
-      }));
-    }
     setFormData((prev) => ({ ...prev, durationHours }));
   }, [val, sandwitchCount, sandwitchLeavesData?.count]);
   useEffect(() => {
     if (sandwitchCount > 0) {
-      fetch(`/api/dashboard/leaves/Sandwich-leaves?email=${userData.email}`)
+      fetch(`/api/dashboard/leaves/sandwich-leaves?email=${userData.email}`)
         .then((res) => res.json())
         .then((res) => {
+          console.log(res);
           setSandwitchLeavesData({
             ...sandwitchLeavesData,
+            thisMonthLeaves: res?.sandwichLeaves?.length || 0,
             count: res?.sandwitchLeaves?.length || 0,
           });
         })
@@ -390,7 +386,7 @@ const Leaves = () => {
         )}
 
         <Wrapper className="flex justify-between gap-[15px] mt-[15px]">
-          <LeavesRecord load={load} />
+          <LeavesRecord loader={load} setLoader={setLoad} />
           {userPermissions && userPermissions?.includes("balance-leaves") && (
             <Wrapper className="w-full  max-w-[600px]">
               <Wrapper className="bg-white sticky top-4 rounded-[10px] p-5 w-full ">
@@ -577,15 +573,15 @@ const Leaves = () => {
   );
 };
 
-export const LeaveSummaryCard = ({ title, count, tooltip }) => (
-  <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full items-center">
+export const LeaveSummaryCard = ({ title, count, tooltip, className }) => (
+  <Wrapper className={className + " p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full items-center" }>
     <H1 className="text-light-500 text-[64px] leading-none">{count}</H1>
-    <H3 className="text-center text-light-400 mt-[5px] flex gap-2 items-center">
+    <H3 className="text-center text-light-400 mt-[5px] flex gap-2 items-center text-sm">
       {title}
       {tooltip && (
         <span className="relative cursor-pointer group">
           <IconInfo size="18px" color="fill-dark-blue" />
-          <Text className="absolute left-full top-1/2 translate-y-[-40%] bg-white border border-blue rounded-lg text-xs p-3 w-60 text-left opacity-0  invisible group-hover:opacity-100 group-hover:visible group-hover:translate-y-[-50%]">
+          <Text className="absolute left-full top-1/2 translate-y-[-40%] bg-white border border-blue rounded-lg !text-xs p-3 w-60 text-left opacity-0  invisible group-hover:opacity-100 group-hover:visible group-hover:translate-y-[-50%]">
             {tooltip}
           </Text>
         </span>

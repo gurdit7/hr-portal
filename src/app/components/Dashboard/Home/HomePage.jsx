@@ -17,6 +17,7 @@ const HomePage = () => {
   const [male, setMale] = useState("");
   const [female, setFemale] = useState("");
   useEffect(() => {
+    console.log(userPermissions)
     const maleCount = users?.filter((item) => {
       return item?.gender === "male";
     });
@@ -29,7 +30,7 @@ const HomePage = () => {
   }, [users]);
   return (
     <>
-      {userPermissions && userPermissions?.includes("view-employee") && (
+      {userPermissions && userPermissions?.employee?.includes("view") && (
         <Container heading={`Welcome, ${userData?.name?.split(" ")[0]}`}>
           <Wrapper className="flex justify-between gap-[15px]">
             <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full items-center">
@@ -59,7 +60,7 @@ const HomePage = () => {
           </Wrapper>
         </Container>
       )}
-      {userPermissions && userPermissions?.includes("balance-leaves") && (
+      {userPermissions && userPermissions?.leaves?.includes("balance-leaves") && (
         <Container heading={`Welcome, ${userData?.name}`}>
           <BalancedLeaves user={userData} />
           <Wrapper className="flex justify-between gap-[15px] mt-[15px] items-start">

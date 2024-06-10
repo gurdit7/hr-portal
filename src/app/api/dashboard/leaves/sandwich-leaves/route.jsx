@@ -10,8 +10,10 @@ export const GET = async (request) => {
     const date = new Date();
     const lastThirdMonth = new Date(date.getFullYear(), date.getMonth() - 3, 0);
     const lastMonth = new Date(date.getFullYear(), date.getMonth() - 3, 0);
+    const thisMonth = new Date(date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + 1);
     const sandwitchLeaves = await Leaves.find({email:email, sandwitchLeave : true, 'sandwitchLeaveData.type': 'paid', updatedAt: { $gte: lastThirdMonth, $lt: date }});
-    return new NextResponse(JSON.stringify({ sandwitchLeaves }), {
+    const sandwichLeaves = await Leaves.find({email, status: 'approved', updatedAt: { $gte: thisMonth, $lt: date }});
+    return new NextResponse(JSON.stringify({ sandwitchLeaves, sandwichLeaves }), {
       status: 200,
     });
   }
