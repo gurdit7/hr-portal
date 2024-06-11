@@ -5,11 +5,22 @@ import Cover from "../../../../assets/images/profile/cover.jpg";
 import { useEffect, useState } from "react";
 import useAuth from "@/app/contexts/Auth/auth";
 import axios from "axios";
+import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 
 const CoverImage = () => {
   const { userData, setUserData } = useAuth();
   const [loading, setLoading] = useState(false);
   const [coverImage, setCoverImage] = useState(Cover.src);
+  const { setBreadcrumbs } = useThemeConfig();
+  useEffect(() => {
+    const breadcrumbs = [
+      {
+        href: "/dashboard/profile",
+        label: "My Profile",
+      }
+    ];
+    setBreadcrumbs(breadcrumbs);
+  }, []);
   useEffect(() => { 
         setCoverImage(userData?.coverImage);
     }, [userData]);

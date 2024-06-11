@@ -10,12 +10,19 @@ import BalancedLeaves from "../Leaves/BalancedLeaves";
 import LeavesRecord from "../Leaves/LeavesRecord";
 import AllHolidays from "../Holidays/AllHolidays";
 import H2 from "../../Ui/H2/H2";
+import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 
 const HomePage = () => {
   const { users, userData, userPermissions } = useAuth();
   const [total, setTotal] = useState("");
   const [male, setMale] = useState("");
   const [female, setFemale] = useState("");
+  const { setBreadcrumbs } = useThemeConfig();
+  useEffect(() => {
+    const breadcrumbs = [
+    ];
+    setBreadcrumbs(breadcrumbs);
+  }, []);
   useEffect(() => {
     console.log(userPermissions)
     const maleCount = users?.filter((item) => {

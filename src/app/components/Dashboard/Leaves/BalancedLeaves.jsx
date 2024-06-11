@@ -21,7 +21,7 @@ const BalancedLeaves = () => {
       title="Paid Leaves Taken"
       count={user?.totalLeaveTaken || 0}
     />
-     {user?.totalUnpaidLeaveTaken && (
+     {user?.totalUnpaidLeaveTaken !== 0 && (
      <LeaveSummaryCard
      className="border border-red-600"
       title="Unpaid Leaves Taken"
@@ -39,11 +39,11 @@ const BalancedLeaves = () => {
       title="Sandwich Leaves Taken"
       count={user?.balancedSandwichLeavesTaken || 0}
     />
-   {user?.unpaidSandwichLeavesTaken && (
+   {user?.unpaidSandwichLeavesTaken !== 0 && (
      <LeaveSummaryCard
      className="border border-red-600"
       title="Unpaid Sandwich Taken"
-      count={(user?.unpaidSandwichLeavesTaken / 3) || 4}      
+      count={(user?.unpaidSandwichLeavesTaken) || 4}      
     />
   )}
 

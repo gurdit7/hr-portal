@@ -14,6 +14,7 @@ const LeavesRecord = ({loader, setLoader}) => {
   const [load, setLoad] = useState(false);
   const { userPermissions, leaves, userData } = useAuth();
   const [allLeaves, setAllLeaves] = useState(false);
+  const [allLeavesLength, setAllLeavesLength] = useState(-1);
   const [status, setStatus] = useState(false);
   const [error, setError] = useState(false);
   const array = [0, 1, 2, 3, 4];
@@ -29,6 +30,7 @@ const LeavesRecord = ({loader, setLoader}) => {
             .then((data) => {
               setAllLeaves(data || []);
               setTimeout(() => {
+                setAllLeavesLength(data.length)
                 setStatus(true);
                 if (data.length === 0) {
                   setError(true);
@@ -43,6 +45,7 @@ const LeavesRecord = ({loader, setLoader}) => {
             .then((data) => {
               setAllLeaves(data.leaves || []);
               setTimeout(() => {
+                setAllLeavesLength(data.length)
                 if (data.leaves.length === 0) {
                   setError(true);
                 }
@@ -67,6 +70,8 @@ const LeavesRecord = ({loader, setLoader}) => {
             if (data.length === 0) {
               setError(true);
             }
+            setAllLeavesLength(data.length);
+            setStatus(true);
             setAllLeaves(data || []);
             setLoader(false);
           });
@@ -80,6 +85,8 @@ const LeavesRecord = ({loader, setLoader}) => {
               setError(true);
 
             }
+            setAllLeavesLength(data.length);
+            setStatus(true);
             setAllLeaves(data.leaves || []);
             setLoader(false);
           });
@@ -102,9 +109,9 @@ const LeavesRecord = ({loader, setLoader}) => {
             <IconSort size="24px" color="fill-light-400" />
           </DropDown>
         </Wrapper>
-        {allLeaves.length > 0 ? (
+        {allLeaves && allLeaves?.length > 0 ? (
           <>
-            {allLeaves.map((item, index) => (
+            {allLeaves?.map((item, index) => (
               <LeaveItem item={item} key={index} index={index} />
             ))}
           </>
@@ -117,8 +124,8 @@ const LeavesRecord = ({loader, setLoader}) => {
             )}
           </>
         )}
-      </Wrapper>
-      {!allLeaves.length &&
+      </Wrapper>  
+      {allLeavesLength < 0 &&
         !status &&
         array.map((index) => (
           <Wrapper key={index} className="border border-light-500 relative">

@@ -14,6 +14,7 @@ import { duration } from "@/app/data/default";
 import {
   checkMondayOrFriday,
   countFridays,
+  countMondays,
   formatDate,
   getMondaysAndFridays,
 } from "@/app/utils/DateFormat";
@@ -34,11 +35,13 @@ import ErrorNotification from "../../Ui/notification/loader/LoaderNotification";
 import SkeletonLoader from "../../Ui/skeletonLoader/skeletonLoader";
 import BalancedLeaves from "./BalancedLeaves";
 import LeavesRecord from "./LeavesRecord";
+import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 
 const Leaves = () => {
   const date = new Date();
   const mon = date.getMonth() + 1;
   const day = date.getDate();
+  const {setBreadcrumbs} = useThemeConfig();
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [val, setVal] = useState(false);
@@ -137,6 +140,15 @@ const Leaves = () => {
 
         formDataCopy.attachment = response.data.url;
       } catch (err) {
+        setError(true)
+        setErrorMessage("Something Went Wrong! Try again later.")
+        setErrorAnimation(true)
+
+        setTimeout(() => {
+          setErrorAnimation(false);
+          setError(false);
+          setLoading(false);
+        }, 3000);
         setLoading(false);
         return;
       }
@@ -170,29 +182,6 @@ const Leaves = () => {
         setLoading(false);
       }, 3000);
     }
-  };
-
-  const endformatDate = (date) => {
-    const mon = date.getMonth() + 1;
-    const day = date.getDate() - 1;
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    return `${date.getFullYear()}-${mon > 9 ? mon : `0${mon}`}-${
-      day > 9 ? day : `0${day}`
-    }T${hours > 9 ? hours : `0${hours}`}:${
-      minutes > 9 ? minutes : `0${minutes}`
-    }`;
-  };
-  const startFormatDate = (date) => {
-    const mon = date.getMonth() + 1;
-    const day = date.getDate() - 1;
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    return `${date.getFullYear()}-${mon > 9 ? mon : `0${mon}`}-${
-      day > 9 ? day : `0${day}`
-    }T${hours > 9 ? hours : `0${hours}`}:${
-      minutes > 9 ? minutes : `0${minutes}`
-    }`;
   };
 
   const calculateDayDifference = (startDate, endDate) => {
@@ -232,6 +221,7 @@ const Leaves = () => {
   const handleSandwichLeave = (fridayCounts, setFormData, count) => {
     let sandwitchLeave = false;
     let sandwitchLeaveData = {};
+    
     if (count === 0) {
       if (fridayCounts === 0) {
         sandwitchLeave = false;
@@ -277,6 +267,18 @@ const Leaves = () => {
         };
       }
     }
+  if(formData.durationHours > 24){
+    setFormData((prev) => ({
+      ...prev,
+      unPaidLeaves: (formData.durationHours / 8) - (fridayCounts * 3)
+    }));
+  }
+  else{
+    setFormData((prev) => ({
+      ...prev,
+      unPaidLeaves:0
+    }));
+  }
 
     setFormData((prev) => ({
       ...prev,
@@ -327,6 +329,13 @@ const Leaves = () => {
             "-" +
             (date1.getDate() - 1)
         );
+        const formattedDate0 = new Date(
+          date1.getFullYear() +
+            "-" +
+            (date1.getMonth() + 1) +
+            "-" +
+            date1.getDate()
+        );
         const formattedDate2 = new Date(
           date2.getFullYear() +
             "-" +
@@ -334,17 +343,43 @@ const Leaves = () => {
             "-" +
             date2.getDate()
         );
+        const formattedDate3 = new Date(
+          date2.getFullYear() +
+            "-" +
+            (date2.getMonth() + 1) +
+            "-" +
+            (date2.getDate() - 1)
+        );
         const dayDifference = calculateDayDifference(
           formattedDate1,
           formattedDate2
         );
-        const fridayCounts = countFridays(formattedDate1, formattedDate2);
-        setSandwitchCount(fridayCounts);
-        handleSandwichLeave(
-          fridayCounts,
-          setFormData,
-          sandwitchLeavesData?.count || 0
-        );
+        if (date1.getDay() === 5 || date1.getDay() === 5) {
+          const fridayCounts = countFridays(formattedDate1, formattedDate2);
+          setSandwitchCount(fridayCounts);
+          handleSandwichLeave(
+            fridayCounts,
+            setFormData,
+            sandwitchLeavesData?.count || 0
+          );
+        } else if (date1.getDay() === 1 || date2.getDay() === 1) {
+          const mondaysCounts = countMondays(formattedDate1, formattedDate3);
+          setSandwitchCount(mondaysCounts);
+          handleSandwichLeave(
+            mondaysCounts,
+            setFormData,
+            sandwitchLeavesData?.count || 0
+          );
+        }  else {
+          const fridayCounts = countFridays(formattedDate0, formattedDate3);
+          setSandwitchCount(fridayCounts);
+          handleSandwichLeave(
+            fridayCounts,
+            setFormData,
+            sandwitchLeavesData?.count || 0
+          );
+        }
+
         durationHours = dayDifference * 8;
         break;
       default:
@@ -358,7 +393,6 @@ const Leaves = () => {
       fetch(`/api/dashboard/leaves/sandwich-leaves?email=${userData.email}`)
         .then((res) => res.json())
         .then((res) => {
-          console.log(res);
           setSandwitchLeavesData({
             ...sandwitchLeavesData,
             thisMonthLeaves: res?.sandwichLeaves?.length || 0,
@@ -366,7 +400,15 @@ const Leaves = () => {
           });
         })
         .catch((error) => {
-          console.error("Error fetching Sandwich leaves:", error);
+          setError(true)
+          setErrorMessage("Something Went Wrong! Try again later.")
+          setErrorAnimation(true)
+  
+          setTimeout(() => {
+            setErrorAnimation(false);
+            setError(false);
+            setLoading(false);
+          }, 3000);
         });
     } else {
       setFormData((prev) => ({
@@ -377,145 +419,154 @@ const Leaves = () => {
     }
   }, [sandwitchCount]);
   const formErrorClass = "block text-xs mt-1 text-red-500";
-
+  useEffect(() => {
+    const breadcrumbs = [
+      {
+        href: "/dashboard/leaves",
+        label: "Leaves",
+      }
+    ];
+    setBreadcrumbs(breadcrumbs);
+  }, []);
   return (
     <>
-      <Container heading="Leave Information">
-        {userPermissions && userPermissions?.includes("balance-leaves") && (
-          <BalancedLeaves />
-        )}
-
-        <Wrapper className="flex justify-between gap-[15px] mt-[15px]">
-          <LeavesRecord loader={load} setLoader={setLoad} />
+      {userPermissions && (
+        <Container heading="Leaves">
           {userPermissions && userPermissions?.includes("balance-leaves") && (
-            <Wrapper className="w-full  max-w-[600px]">
-              <Wrapper className="bg-white sticky top-4 rounded-[10px] p-5 w-full ">
-                <H2>Request For Leave</H2>
-                <form
-                  className="mt-[15px] gap-[15px] flex flex-col"
-                  onSubmit={handleSubmit}
-                >
-                  <Wrapper>
-                    <DropDown
-                      items={duration}
-                      required
-                      setData={handleInputChange}
-                      value={formData.duration || ""}
-                      name="duration"
-                      placeholder="Duration"
-                    >
-                      <IconClock size="24px" color="stroke-light-400" />
-                    </DropDown>
-                    {errors.duration && (
-                      <span className={formErrorClass}>
-                        This field is required.
-                      </span>
-                    )}
-                  </Wrapper>
-                  {formData.duration && formData.duration !== "Other" && (
-                    <Wrapper className="relative w-full flex-1">
-                      <Input
-                        label="Date"
-                        placeholder="Date"
+            <BalancedLeaves />
+          )}
+
+          <Wrapper className="flex justify-between gap-[15px] mt-[15px]">
+            <LeavesRecord loader={load} setLoader={setLoad} />
+            {userPermissions && userPermissions?.includes("balance-leaves") && (
+              <Wrapper className="w-full  max-w-[600px]">
+                <Wrapper className="bg-white sticky top-4 rounded-[10px] p-5 w-full ">
+                  <H2>Request For Leave</H2>
+                  <form
+                    className="mt-[15px] gap-[15px] flex flex-col"
+                    onSubmit={handleSubmit}
+                  >
+                    <Wrapper>
+                      <DropDown
+                        items={duration}
+                        required
                         setData={handleInputChange}
-                        type="date"
-                        required={true}
-                        value={formData?.durationDate || ""}
-                        name="durationDate"
+                        value={formData.duration || ""}
+                        name="duration"
+                        placeholder="Duration"
+                      >
+                        <IconClock size="24px" color="stroke-light-400" />
+                      </DropDown>
+                      {errors.duration && (
+                        <span className={formErrorClass}>
+                          This field is required.
+                        </span>
+                      )}
+                    </Wrapper>
+                    {formData.duration && formData.duration !== "Other" && (
+                      <Wrapper className="relative w-full flex-1">
+                        <Input
+                          label="Date"
+                          placeholder="Date"
+                          setData={handleInputChange}
+                          type="date"
+                          required={true}
+                          value={formData?.durationDate || ""}
+                          name="durationDate"
+                          className="border-light-600 border"
+                        >
+                          <IconDate size="24px" color="stroke-light-400" />
+                        </Input>
+                        <label
+                          className={`absolute left-[48px] top-[38px] pointer-events-none text-light-600 font-medium ${
+                            formData?.durationDate
+                              ? "text-text-dark"
+                              : "text-light-600"
+                          }`}
+                        >
+                          {formData?.durationDate || "Date"}
+                        </label>
+                      </Wrapper>
+                    )}
+                    {formData.duration === "Other" && (
+                      <Wrapper className="relative w-full flex gap-4">
+                        <DateTimeInput
+                          label="From"
+                          value={from || ""}
+                          onChange={getFrom}
+                          error={errors.from}
+                        />
+                        <DateTimeInput
+                          label="To"
+                          value={to || ""}
+                          onChange={getTo}
+                          error={errors.to}
+                        />
+                      </Wrapper>
+                    )}
+
+                    <Wrapper>
+                      <Input
+                        label="Subject"
+                        placeholder="Subject"
+                        setData={handleInputChange}
+                        type="text"
+                        required
+                        value={formData.subject || ""}
+                        name="subject"
                         className="border-light-600 border"
                       >
-                        <IconDate size="24px" color="stroke-light-400" />
+                        <IconSubject size="24px" color="fill-light-400" />
                       </Input>
-                      <label
-                        className={`absolute left-[48px] top-[38px] pointer-events-none text-light-600 font-medium ${
-                          formData?.durationDate
-                            ? "text-text-dark"
-                            : "text-light-600"
-                        }`}
+                      {errors.subject && (
+                        <span className={formErrorClass}>
+                          This field is required.
+                        </span>
+                      )}
+                    </Wrapper>
+
+                    <Wrapper>
+                      <ReactQuill
+                        theme="snow"
+                        value={description}
+                        onChange={handleDescriptionChange}
+                      />
+                      {errors.description && (
+                        <span className={formErrorClass}>
+                          This field is required.
+                        </span>
+                      )}
+                    </Wrapper>
+
+                    <Wrapper>
+                      <Input
+                        label="Add Attachment"
+                        placeholder={attachment}
+                        setData={handleFileChange}
+                        type="file"
+                        value=""
+                        name="attachment"
+                        multiple={false}
+                        className="border-light-600 border"
                       >
-                        {formData?.durationDate || "Date"}
-                      </label>
+                        <IconAttachment size="24px" color="fill-light-400" />
+                      </Input>
                     </Wrapper>
-                  )}
-                  {formData.duration === "Other" && (
-                    <Wrapper className="relative w-full flex gap-4">
-                      <DateTimeInput
-                        label="From"
-                        value={from || ""}
-                        onChange={getFrom}
-                        error={errors.from}
-                      />
-                      <DateTimeInput
-                        label="To"
-                        value={to || ""}
-                        onChange={getTo}
-                        error={errors.to}
-                      />
-                    </Wrapper>
-                  )}
 
-                  <Wrapper>
-                    <Input
-                      label="Subject"
-                      placeholder="Subject"
-                      setData={handleInputChange}
-                      type="text"
-                      required
-                      value={formData.subject || ""}
-                      name="subject"
-                      className="border-light-600 border"
-                    >
-                      <IconSubject size="24px" color="fill-light-400" />
-                    </Input>
-                    {errors.subject && (
-                      <span className={formErrorClass}>
-                        This field is required.
-                      </span>
-                    )}
-                  </Wrapper>
-
-                  <Wrapper>
-                    <ReactQuill
-                      theme="snow"
-                      value={description}
-                      onChange={handleDescriptionChange}
+                    <FormButton
+                      type="submit"
+                      loadingText="Sending..."
+                      loading={loading}
+                      label="Send"
+                      btnType="solid"
                     />
-                    {errors.description && (
-                      <span className={formErrorClass}>
-                        This field is required.
-                      </span>
-                    )}
-                  </Wrapper>
-
-                  <Wrapper>
-                    <Input
-                      label="Add Attachment"
-                      placeholder={attachment}
-                      setData={handleFileChange}
-                      type="file"
-                      value=""
-                      name="attachment"
-                      multiple={false}
-                      className="border-light-600 border"
-                    >
-                      <IconAttachment size="24px" color="fill-light-400" />
-                    </Input>
-                  </Wrapper>
-
-                  <FormButton
-                    type="submit"
-                    loadingText="Sending..."
-                    loading={loading}
-                    label="Send"
-                    btnType="solid"
-                  />
-                </form>
+                  </form>
+                </Wrapper>
               </Wrapper>
-            </Wrapper>
-          )}
-        </Wrapper>
-      </Container>
-
+            )}
+          </Wrapper>
+        </Container>
+      )}
       {!userPermissions && (
         <Container heading={false}>
           <Wrapper className="flex justify-between gap-[15px] mt-[15px]">
@@ -574,7 +625,12 @@ const Leaves = () => {
 };
 
 export const LeaveSummaryCard = ({ title, count, tooltip, className }) => (
-  <Wrapper className={className + " p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full items-center" }>
+  <Wrapper
+    className={
+      className +
+      " p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full items-center"
+    }
+  >
     <H1 className="text-light-500 text-[64px] leading-none">{count}</H1>
     <H3 className="text-center text-light-400 mt-[5px] flex gap-2 items-center text-sm">
       {title}
