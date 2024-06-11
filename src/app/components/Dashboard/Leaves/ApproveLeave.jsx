@@ -11,6 +11,8 @@ import IconEdit from "../../Icons/IconEdit";
 
 const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
   const [approvePopup, setApprovePopup] = useState(false);
+  const [declinePopup, setDeclinePopup] = useState(false);
+  const [declineForm, setDeclineForm] = useState('');
   const [approveForm, setApproveForm] = useState();
   const [approveButtonLoading, setApproveButtonLoading] = useState(false);
   const [paidLeaves, setPaidLeaves] = useState({});
@@ -19,18 +21,32 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
   const [success, setSuccess] = useState(false);
   const closeApproveModal = (e) => {
     setApprovePopup(false);
+    setDeclinePopup(false);
   };
   const declineModal = (e) => {
-    setApprovePopup(true);
-    setApproveForm({
-      ...approveForm,
+    setDeclinePopup(true);
+    setDeclineForm({
+      ...declineForm,
+      id:id,
       status: "not-approved",
     });
   };
   const handleApproveChange = (e) => {
     const hour = user?.balancedLeaves * 8 - leave?.durationHours;
-    if(paidLeaves?.unPaidLeaves > 0 && !leave?.sandwitchLeave){
-      alert()
+    if (leave?.unPaidLeaves && leave?.paidLeaves) {
+      setApproveForm({
+        ...approveForm,
+        id: id,
+        email: leave?.email,
+        balancedLeaves: (hour + leave?.unPaidLeaves * 8) / 8,
+        totalLeaveTaken:
+          (user?.totalLeaveTaken * 8 +
+            (leave?.durationHours - leave?.unPaidLeaves * 8)) /
+          8,
+        totalUnpaidLeaveTaken: leave?.unPaidLeaves,
+        [e.target.name]: e.target.value,
+      });
+    } else if (paidLeaves?.unPaidLeaves > 0 && !leave?.sandwitchLeave) {
       setApproveForm({
         ...approveForm,
         id: id,
@@ -38,8 +54,11 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
         totalUnpaidLeaveTaken: paidLeaves?.unPaidLeaves,
         [e.target.name]: e.target.value,
       });
-    } 
-    else if(paidLeaves?.unPaidLeaves > 0 && leave?.sandwitchLeave){
+    } else if (
+      paidLeaves?.unPaidLeaves > 0 &&
+      leave?.sandwitchLeave &&
+      !leave?.unPaidLeaves
+    ) {
       setApproveForm({
         ...approveForm,
         id: id,
@@ -47,18 +66,100 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
         unpaidSandwichLeavesTaken: paidLeaves?.unPaidLeaves,
         [e.target.name]: e.target.value,
       });
-    }
-    else{
+    } else if (leave?.sandwitchLeave) {
+      if (leave?.sandwitchLeaveData?.both && !leave?.unPaidLeaves) {
+        setApproveForm({
+          ...approveForm,
+          id: id,
+          email: leave?.email,
+          sandwitchLeave: true,
+          sandwitchLeaveType: "both",
+          totalLeaves:
+            leave?.sandwitchLeaveData?.paidLeaves +
+            leave?.sandwitchLeaveData?.unpaidLeaves,
+          balancedSandwichLeavesTaken: leave?.sandwitchLeaveData?.paidLeaves,
+          unpaidSandwichLeavesTaken: leave?.sandwitchLeaveData?.unpaidLeaves,
+          [e.target.name]: e.target.value,
+        });
+      } else if (
+        leave?.sandwitchLeaveData.type === "paid" &&
+        leave?.unPaidLeaves &&
+        leave?.sandwitchLeaveData.both === false
+      ) {
+        setApproveForm({
+          ...approveForm,
+          id: id,
+          email: leave?.email,
+          sandwitchLeave: true,
+          sandwitchLeaveType: "paid&Leave",
+          totalUnpaidLeaveTaken: leave?.unPaidLeaves,
+          balancedSandwichLeavesTaken: leave?.sandwitchLeaveData?.paidLeaves,
+          [e.target.name]: e.target.value,
+        });
+      } else if (
+        leave?.sandwitchLeaveData.type === "unpaid" &&
+        leave?.unPaidLeaves &&
+        leave?.sandwitchLeaveData.both === false
+      ) {
+        setApproveForm({
+          ...approveForm,
+          id: id,
+          email: leave?.email,
+          sandwitchLeave: true,
+          sandwitchLeaveType: "unpaidLeave",
+          totalUnpaidLeaveTaken: leave?.unPaidLeaves,
+          unpaidSandwichLeavesTaken: leave?.sandwitchLeaveData?.unpaidLeaves,
+          [e.target.name]: e.target.value,
+        });
+      }
+      
+      else if (
+        leave?.sandwitchLeaveData.type === "paid" &&
+        leave?.unPaidLeaves &&
+        leave?.sandwitchLeaveData.both
+      ) {
+        setApproveForm({
+          ...approveForm,
+          id: id,
+          email: leave?.email,
+          sandwitchLeave: true,
+          sandwitchLeaveType: "paidLeaveBoth",
+          totalUnpaidLeaveTaken: leave?.unPaidLeaves,
+          unpaidSandwichLeavesTaken: leave?.sandwitchLeaveData?.unpaidLeaves,
+          balancedSandwichLeavesTaken: leave?.sandwitchLeaveData?.paidLeaves,
+          [e.target.name]: e.target.value,
+        });
+      } else if (leave?.sandwitchLeaveData?.type === "paid") {
+        setApproveForm({
+          ...approveForm,
+          id: id,
+          email: leave?.email,
+          sandwitchLeave: true,
+          sandwitchLeaveType: "paid",
+          balancedSandwichLeavesTaken: leave?.sandwitchLeaveData?.paidLeaves,
+          [e.target.name]: e.target.value,
+        });
+      } else if (leave?.sandwitchLeaveData?.type === "unpaid") {
+        setApproveForm({
+          ...approveForm,
+          id: id,
+          email: leave?.email,
+          sandwitchLeave: true,
+          sandwitchLeaveType: "unpaid",
+          unpaidSandwichLeavesTaken: leave?.sandwitchLeaveData?.unpaidLeaves,
+          [e.target.name]: e.target.value,
+        });
+      }
+    } else {
       setApproveForm({
         ...approveForm,
         id: id,
         email: leave?.email,
-        balancedLeaves:  hour / 8,
+        balancedLeaves: hour / 8,
         totalLeaveTaken: (user?.totalLeaveTaken * 8 + leave?.durationHours) / 8,
         [e.target.name]: e.target.value,
       });
     }
-
   };
   const approveAction = () => {
     setApprovePopup(true);
@@ -71,7 +172,7 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
   const addReason = (e) => {
     setApproveButtonLoading(true);
     e.preventDefault();
-    fetch("/api/dashboard/leaves", {
+    fetch("/api/dashboard/leaves/approve", {
       method: "PUT",
       body: JSON.stringify(approveForm),
     })
@@ -97,6 +198,10 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
           active: true,
           message: `Something went wrong try again later.`,
         });
+        setTimeout(() => {
+          setApproveButtonLoading(false);
+          setError(false);
+        }, 3000);
       });
   };
   const getEditLeaves = (e) => {
@@ -105,11 +210,45 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
       [e.target.name]: e.target.value,
     });
   };
+  const addDeclineReason = (e) => {
+    setApproveButtonLoading(true);
+    e.preventDefault();    
+    fetch("/api/dashboard/leaves/decline", {
+      method: "PUT",
+      body: JSON.stringify(declineForm),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        setSuccess({
+          status: true,
+          active: true,
+          message: `The leave is decline. We will notify ${user?.name}.`,
+        });
+        setTimeout(() => {
+          setValue(true);
+          setApproveButtonLoading(false);
+          closeApproveModal();
+          setSuccess(false);
+        }, 3000);
+      })
+      .catch((error) => {
+        setError({
+          status: true,
+          active: true,
+          message: `Something went wrong try again later.`,
+        });
+        setTimeout(() => {
+          setApproveButtonLoading(false);
+          setError(false);
+        }, 3000);
+      });
+  }
   useEffect(() => {
     const requestedLeaves = leave?.durationHours / 8;
-    console.log(leave)
     if (leave.sandwitchLeave) {
-      if (leave?.sandwitchLeaveData?.both) {
+      if (leave?.sandwitchLeaveData?.both && !leave?.unPaidLeaves) {
         setPaidLeaves({
           ...paidLeaves,
           paidLeaves: leave?.sandwitchLeaveData?.paidLeaves * 3,
@@ -120,8 +259,48 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
             leave?.sandwitchLeaveData?.unpaidLeaves,
           message: `${leave?.sandwitchLeaveData?.paidLeaves} paid sandwich, ${leave?.sandwitchLeaveData?.unpaidLeaves} unpaid sandwich, ${requestedLeaves} total leaves `,
         });
+      } else if (
+        leave?.sandwitchLeaveData.type === "paid" &&
+        leave?.sandwitchLeaveData?.both &&
+        leave?.unPaidLeaves
+      ) {
+        setPaidLeaves({
+          ...paidLeaves,
+          paidLeaves: leave?.sandwitchLeaveData?.paidLeaves * 3 || 0,
+          unPaidLeaves:
+            leave?.sandwitchLeaveData?.unpaidLeaves * 3 + leave?.unPaidLeaves ||
+            0,
+          sandwitchLeave:
+            leave?.sandwitchLeaveData?.paidLeaves + leave?.unPaidLeaves,
+          message: `${leave?.sandwitchLeaveData?.message} sandwich, ${leave?.unPaidLeaves} unpaid leave, ${requestedLeaves} total leaves`,
+        });
+      } 
+      else if (
+        leave?.sandwitchLeaveData.type === "unpaid" &&
+        leave?.unPaidLeaves
+      ) {
+        setPaidLeaves({
+          ...paidLeaves,
+          paidLeaves:  0,
+          unPaidLeaves: (leave?.sandwitchLeaveData?.unpaidLeaves * 3)  + leave?.unPaidLeaves,
+          sandwitchLeave:
+            (leave?.sandwitchLeaveData?.unpaidLeaves * 3) + leave?.unPaidLeaves,
+          message: `${leave?.sandwitchLeaveData?.message} sandwich, ${leave?.unPaidLeaves} unpaid leave`,
+        });
+      }
+      else if (
+        leave?.sandwitchLeaveData.type === "paid" &&
+        leave?.unPaidLeaves
+      ) {
+        setPaidLeaves({
+          ...paidLeaves,
+          paidLeaves: leave?.sandwitchLeaveData?.paidLeaves * 3 || 0,
+          unPaidLeaves: leave?.unPaidLeaves || 0,
+          sandwitchLeave:
+            leave?.sandwitchLeaveData?.paidLeaves + leave?.unPaidLeaves,
+          message: `${leave?.sandwitchLeaveData?.message} sandwich, ${leave?.unPaidLeaves} unpaid leave`,
+        });
       } else {
-        
         setPaidLeaves({
           ...paidLeaves,
           paidLeaves: leave?.sandwitchLeaveData?.paidLeaves * 3,
@@ -132,6 +311,35 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
           message: `${leave?.sandwitchLeaveData?.message} sandwich `,
         });
       }
+    } else if (leave?.unPaidLeaves && leave?.paidLeaves) {
+      setPaidLeaves({
+        ...paidLeaves,
+        paidLeaves: leave?.paidLeaves,
+        unPaidLeaves: leave?.unPaidLeaves,
+        message: `${leave?.paidLeaves} ${
+          leave?.paidLeaves > 1 ? "days" : "day"
+        } will be paid, ${leave?.unPaidLeaves} ${
+          leave?.unPaidLeaves > 1 ? "days" : "day"
+        } will be unpaid.`,
+      });
+    } else if (leave?.unPaidLeaves) {
+      setPaidLeaves({
+        ...paidLeaves,
+        paidLeaves: 0,
+        unPaidLeaves: leave?.unPaidLeaves,
+        message: `${leave?.unPaidLeaves} ${
+          leave?.unPaidLeaves > 1 ? "days" : "day"
+        } will be unpaid.`,
+      });
+    } else if (leave?.paidLeaves) {
+      setPaidLeaves({
+        ...paidLeaves,
+        paidLeaves: leave?.paidLeaves,
+        unPaidLeaves: 0,
+        message: `${leave?.paidLeaves} ${
+          leave?.paidLeaves > 1 ? "days" : "day"
+        } will be paid.`,
+      });
     } else if (requestedLeaves > prevLeaves?.paidLeaves) {
       const unPaidLeaves = requestedLeaves - prevLeaves?.paidLeaves;
       setPaidLeaves({
@@ -146,49 +354,25 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
               unPaidLeaves > 1 ? "days" : "day"
             } will be unpaid.`,
       });
-    } else if (requestedLeaves < prevLeaves?.paidLeaves) { 
+    } else if (requestedLeaves < prevLeaves?.paidLeaves) {
       let message = `${requestedLeaves || 0} ${
-          requestedLeaves > 1 ? "days" : "day"
-            } will be paid `;
-      if(requestedLeaves === 0.5){
+        requestedLeaves > 1 ? "days" : "day"
+      } will be paid `;
+      if (requestedLeaves === 0.5) {
         message = `Half day leave will be paid `;
       }
-      if(requestedLeaves === 0.3125){
+      if (requestedLeaves === 0.3125) {
         message = `Short leave will be paid `;
       }
-      
+
       setPaidLeaves({
         ...paidLeaves,
         paidLeaves: requestedLeaves || 0,
         unPaidLeaves: 0,
-        message
+        message,
       });
     }
   }, [leave]);
-  useEffect(() => {
-    const requestedLeaves = user?.durationHours / 8;
-    // console.log(prevLeaves);
-    // if (requestedLeaves > prevLeaves?.paidLeaves) {
-    //   const unPaidLeaves = requestedLeaves - prevLeaves?.paidLeaves;
-    //   setPaidLeaves({
-    //     ...paidLeaves,
-    //     paidLeaves: prevLeaves?.paidLeaves,
-    //     unPaidLeaves,
-    //     message: `${prevLeaves?.paidLeaves || 0} ${
-    //       prevLeaves?.paidLeaves > 1 ? "days" : "day"
-    //     } will be paid and ${unPaidLeaves} ${
-    //       unPaidLeaves > 1 ? "days" : "day"
-    //     } will be unpaid.`,
-    //   });
-    // } else {
-    //   setPaidLeaves({
-    //     ...paidLeaves,
-    //     paidLeaves: requestedLeaves,
-    //     unPaidLeaves: 0,
-    //     message: "This will be paid leave.",
-    //   });
-    // }
-  }, [prevLeaves]);
   return (
     <Wrapper className="flex gap-4">
       <FormButton
@@ -298,8 +482,53 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
                 <FormButton
                   type="submit"
                   loading={approveButtonLoading}
-                  loadingText="Adding reason"
-                  label="Add reason"
+            loadingText="Submitting"
+                  label="Submit"
+                  btnType="solid"
+                  additionalCss="px-12"
+                />
+              </Wrapper>
+            </form>
+          </Wrapper>
+          {success?.status && (
+            <Notification
+              active={success?.active}
+              message={success?.message}
+            ></Notification>
+          )}
+          {error?.status && (
+            <ErrorNotification
+              active={error?.active}
+              message={error?.message}
+            ></ErrorNotification>
+          )}
+        </Modal>
+      )}
+       {declinePopup && (
+        <Modal
+          opened={declinePopup}
+          hideModal={closeApproveModal}
+          heading="Reason to Decline"
+        >
+          <Wrapper className="max-w-[510px] m-auto">
+            <form onSubmit={addDeclineReason}>
+              <Wrapper className="flex flex-col gap-4">
+                <textarea
+                  required
+                  onChange={(e) => setDeclineForm({
+                    ...declineForm,
+                    email: leave?.email,
+                    reason:e.target.value})}
+                  name="reason"
+                  className="w-full rounded-lg h-72 p-4 bg-transparent text-white border border-light-500 focus-visible:shadow-none focus-visible:outline-none"
+                  value={declineForm?.reason}
+                ></textarea>             
+
+                <FormButton
+                  type="submit"
+                  loading={approveButtonLoading}
+                  loadingText="Submitting"
+                  label="Submit"
                   btnType="solid"
                   additionalCss="px-12"
                 />

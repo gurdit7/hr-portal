@@ -1,8 +1,20 @@
 'use client';
 import useAuth from "@/app/contexts/Auth/auth";
+import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 import Link from "next/link";
+import { useEffect } from "react";
 const CreateSalaryButton = () => {
     const {userPermissions} = useAuth();
+    const { setBreadcrumbs } = useThemeConfig();
+    useEffect(() => {
+      const breadcrumbs = [
+        {
+          href: "/dashboard/salary",
+          label: "Salary",
+        }
+      ];
+      setBreadcrumbs(breadcrumbs);
+    }, []);
   return (
     <>
     {userPermissions && userPermissions?.includes("create-salary") && (

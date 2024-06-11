@@ -17,8 +17,10 @@ import FormButton from "../../Form/FormButton/FormButton";
 import Input from "../../Form/Input/Input";
 import IconNumber from "../../Icons/IconNumber";
 import SkeletonLoader from "../../Ui/skeletonLoader/skeletonLoader";
+import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 
 const LeaveInformation = () => {
+  const { setBreadcrumbs } = useThemeConfig();
   const [formData, setFormData] = useState({});
   const [formDataCancel, setFormDataCancel] = useState({});
   const { userPermissions, userData } = useAuth();
@@ -50,33 +52,151 @@ const LeaveInformation = () => {
         setUser(result?.user);
         setLeaves(result?.leaves);
 
-        const balancedSandwichLeaves =
-          result?.leaves?.durationDay === "Friday" ||
-          result?.leaves?.durationDay === "Monday"
-            ? result?.user?.balancedSandwichLeaves + 1
-            : result?.user?.balancedSandwichLeaves;
-
         setFormData({
           update: "leaves",
+          id,
           email: result?.user?.email,
           balancedLeaves: result?.user?.balancedLeaves,
           totalLeaveTaken: result?.user?.totalLeaveTaken,
-          balancedSandwichLeaves,
+          balancedSandwichLeaves: result?.user?.balancedSandwichLeaves,
           balancedSandwichLeavesTaken:
             result?.user?.balancedSandwichLeavesTaken,
+          totalUnpaidLeaveTaken: result?.user?.totalUnpaidLeaveTaken,
+          unpaidSandwichLeavesTaken: result?.user?.unpaidSandwichLeavesTaken,
         });
 
-        setFormDataCancel({
-          update: "cancel",
-          id,
-          status: "canceled",
-          email: result?.user?.email,
-          balancedLeaves: result?.user?.balancedLeaves,
-          balancedSandwichLeaves,
-          balancedSandwichLeavesTaken:
-            result?.user?.balancedSandwichLeavesTaken,
-          totalLeaveTaken: result?.user?.totalLeaveTaken,
-        });
+        const leave = result?.leaves;
+        if (leave?.paidLeaves > 0 && !leave?.sandwitchLeave) {
+          setFormDataCancel({
+            update: "cancel",
+            id,
+            status: "canceled",
+            type: "paidLeaves",
+            email: result?.user?.email,
+            balancedLeaves: result?.user?.balancedLeaves + leave?.paidLeaves,
+            totalLeaveTaken: result?.user?.totalLeaveTaken - leave?.paidLeaves,
+          });
+        } else if (leave?.unPaidLeaves > 0 && !leave?.sandwitchLeave) {
+          setFormDataCancel({
+            update: "cancel",
+            id,
+            status: "canceled",
+            type: "unpaidLeaves",
+            email: result?.user?.email,
+            totalUnpaidLeaveTaken:
+              result?.user?.totalUnpaidLeaveTaken - leave?.unPaidLeaves,
+          });
+        } else if (leave?.sandwitchLeave) {
+          if (leave?.sandwitchLeaveData?.both && !leave?.unPaidLeaves) {
+            setFormDataCancel({
+              update: "cancel",
+              id,
+              status: "canceled",
+              sandwitchLeave: true,
+              type: "notUnPaidSandwichLeaves",
+              email: result?.user?.email,
+              balancedSandwichLeaves:
+                result?.user?.balancedSandwichLeaves +
+                leave?.sandwitchLeaveData?.paidLeaves,
+              balancedSandwichLeavesTaken:
+                result?.user?.balancedSandwichLeavesTaken -
+                leave?.sandwitchLeaveData?.paidLeaves,
+              unpaidSandwichLeavesTaken:
+                result?.user?.unpaidSandwichLeavesTaken -
+                leave?.sandwitchLeaveData?.unpaidLeaves,
+            });
+          } else if (
+            leave?.sandwitchLeaveData.type === "paid" &&
+            leave?.unPaidLeaves &&
+            leave?.sandwitchLeaveData.both === false
+          ) {
+            setFormDataCancel({
+              update: "cancel",
+              id,
+              status: "canceled",
+              sandwitchLeave: true,
+              type: "notPaidSandwichLeaves",
+              email: result?.user?.email,
+              balancedSandwichLeaves:
+                result?.user?.balancedSandwichLeaves +
+                leave?.sandwitchLeaveData?.paidLeaves,
+              totalUnpaidLeaveTaken:
+                result?.user?.totalUnpaidLeaveTaken - leave?.unPaidLeaves,
+              balancedSandwichLeavesTaken:
+                result?.user?.balancedSandwichLeavesTaken -
+                leave?.sandwitchLeaveData?.paidLeaves,
+            });
+          } else if (
+            leave?.sandwitchLeaveData.type === "paid" &&
+            leave?.unPaidLeaves &&
+            leave?.sandwitchLeaveData.both
+          ) {
+            setFormDataCancel({
+              update: "cancel",
+              id,
+              status: "canceled",
+              sandwitchLeave: true,
+              type: "paidSandwichLeaves",
+              email: result?.user?.email,
+              balancedSandwichLeaves:
+                result?.user?.balancedSandwichLeaves +
+                leave?.sandwitchLeaveData?.paidLeaves,
+              totalUnpaidLeaveTaken:
+                result?.user?.totalUnpaidLeaveTaken - leave?.unPaidLeaves,
+              balancedSandwichLeavesTaken:
+                result?.user?.balancedSandwichLeavesTaken -
+                leave?.sandwitchLeaveData?.paidLeaves,
+              unpaidSandwichLeavesTaken:
+                result?.user?.unpaidSandwichLeavesTaken -
+                leave?.sandwitchLeaveData?.unpaidLeaves,
+            });
+          } else if (
+            leave?.sandwitchLeaveData.type === "unpaid" &&
+            leave?.unPaidLeaves &&
+            leave?.sandwitchLeaveData.both === false
+          ) {
+            setFormDataCancel({
+              update: "cancel",
+              id,
+              status: "canceled",
+              sandwitchLeave: true,
+              type: "unpaidLeavesSandwich",
+              email: result?.user?.email,
+              totalUnpaidLeaveTaken:
+                result?.user?.totalUnpaidLeaveTaken - leave?.unPaidLeaves,
+              unpaidSandwichLeavesTaken:
+                result?.user?.unpaidSandwichLeavesTaken -
+                leave?.sandwitchLeaveData?.unpaidLeaves,
+            });
+          } else if (leave?.sandwitchLeaveData?.type === "paid") {
+            setFormDataCancel({
+              update: "cancel",
+              id,
+              status: "canceled",
+              email: result?.user?.email,
+              sandwitchLeave: true,
+              type: "paid",
+              balancedSandwichLeaves:
+                result?.user?.balancedSandwichLeaves +
+                leave?.sandwitchLeaveData?.paidLeaves,
+              balancedSandwichLeavesTaken:
+                result?.user?.balancedSandwichLeavesTaken -
+                leave?.sandwitchLeaveData?.paidLeaves,
+            });
+          } else if (leave?.sandwitchLeaveData?.type === "unpaid") {
+            setFormDataCancel({
+              update: "cancel",
+              id,
+              status: "canceled",
+              sandwitchLeave: true,
+              type: "unpaid",
+              email: result?.user?.email,
+              unpaidSandwichLeavesTaken:
+                result?.user?.unpaidSandwichLeavesTaken -
+                leave?.sandwitchLeaveData?.unpaidLeaves,
+            });
+          }
+        }
       } catch (error) {
         console.error("Error fetching leave data:", error);
       }
@@ -97,7 +217,7 @@ const LeaveInformation = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch("/api/dashboard/leaves", {
+      const response = await fetch("/api/dashboard/leaves/cancel", {
         method: "PUT",
         body: JSON.stringify(formDataCancel),
       });
@@ -120,14 +240,30 @@ const LeaveInformation = () => {
       });
       await response.json();
       setValue(true);
-      setShow(false);
       setLoading(false);
+      setShow(false);
     } catch (error) {
       console.error("Error updating leaves:", error);
       setLoading(false);
     }
   };
+  const updateLeaves = () => {
+    setShow(true);
+  };
 
+  useEffect(() => {
+    const breadcrumbs = [
+      {
+        href: "/dashboard/leaves/",
+        label: "Leaves",
+      },
+      {
+        href: `/dashboard/leaves/${id}`,
+        label: leaves?.subject,
+      },
+    ];
+    setBreadcrumbs(breadcrumbs);
+  }, [leaves]);
   return (
     <>
       <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full relative">
@@ -244,10 +380,26 @@ const LeaveInformation = () => {
                 </Wrapper>
               </Wrapper>
             )}
+          {userPermissions &&
+            userPermissions?.includes("approve-decline-leaves") &&
+            leaves?.status === "not-approved" && (
+              <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+                <Text className="!text-light-400">Take Action:</Text>
+                <Wrapper>
+                  <FormButton
+                    type="button"
+                    label="Update"
+                    btnType="solid"
+                    additionalCss="px-12 !bg-red-800"
+                    event={updateLeaves}
+                  />
+                </Wrapper>
+              </Wrapper>
+            )}
           {leaves?.reason && (
             <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Comment</Text>
-              <Text>
+              <Text className="max-w-[50%] text-right">
                 {leaves?.status === "canceled"
                   ? "Your leave is canceled."
                   : leaves?.reason}
@@ -282,27 +434,50 @@ const LeaveInformation = () => {
           heading="Balanced Leaves"
         >
           <Wrapper>
-            <Wrapper className="flex justify-between gap-[15px] max-w-[1200px] px-4 mx-auto">
-              <LeaveSummaryCard
-                title="Balance Leaves"
-                count={user?.balancedLeaves}
-              />
-              <LeaveSummaryCard
-                title="Total Leaves Taken"
-                count={user?.totalLeaveTaken}
-              />
-              <LeaveSummaryCard
-                title="Balance Sandwich Leaves"
-                count={user?.balancedSandwichLeaves}
-                tooltip="Employees are granted four extra leave days annually, one per quarter, strategically aligned with weekends or public holidays."
-              />
-              <LeaveSummaryCard
-                title="Sandwich Leaves Taken"
-                count={user?.balancedSandwichLeavesTaken}
-              />
+            <Wrapper className="flex flex-col max-w-[576px] px-4 mx-auto">
+              <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
+                <Text className="!text-light-400">Balance Leaves:</Text>
+                <Text className="text-white">{user?.balancedLeaves}</Text>
+              </Wrapper>
+              <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
+                <Text className="!text-light-400">Paid Leaves Taken:</Text>
+                <Text className="text-white">{user?.totalLeaveTaken}</Text>
+              </Wrapper>
+              {user?.totalUnpaidLeaveTaken !== 0 && (
+                <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
+                  <Text className="!text-light-400">Unpaid Leaves Taken:</Text>
+                  <Text className="text-white">
+                    {user?.totalUnpaidLeaveTaken}
+                  </Text>
+                </Wrapper>
+              )}
+              <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
+                <Text className="!text-light-400">
+                  Balance Sandwich Leaves:
+                </Text>
+                <Text className="text-white">
+                  {user?.balancedSandwichLeaves}
+                </Text>
+              </Wrapper>
+              <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
+                <Text className="!text-light-400">Sandwich Leaves Taken:</Text>
+                <Text className="text-white">
+                  {user?.balancedSandwichLeavesTaken}
+                </Text>
+              </Wrapper>
+              {user?.unpaidSandwichLeavesTaken !== 0 && (
+                <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
+                  <Text className="!text-light-400">
+                    Unpaid Sandwich Taken:
+                  </Text>
+                  <Text className="text-white">
+                    {user?.unpaidSandwichLeavesTaken}
+                  </Text>
+                </Wrapper>
+              )}
             </Wrapper>
             <form
-              className="flex flex-col gap-4 max-w-[1200px] px-4 mx-auto mt-5"
+              className="flex flex-col gap-4 max-w-[576px] px-4 mx-auto mt-5"
               onSubmit={handleUpdateLeaves}
             >
               <H2 className="text-center text-white">Change Leaves</H2>
@@ -315,7 +490,7 @@ const LeaveInformation = () => {
                   required={true}
                   value={formData?.balancedLeaves || ""}
                   name="balancedLeaves"
-                  className="border-light-600 border"
+                  className="border-light-600 border !text-base !bg-transparent !text-white"
                 >
                   <IconNumber size="24px" color="fill-light-400" />
                 </Input>
@@ -325,12 +500,14 @@ const LeaveInformation = () => {
                   setData={handleFormChange}
                   type="number"
                   required={true}
-                  value={formData?.totalLeaveTaken || ""}
+                  value={formData?.totalLeaveTaken || 0}
                   name="totalLeaveTaken"
-                  className="border-light-600 border"
+                  className="border-light-600 border !text-base !bg-transparent !text-white"
                 >
                   <IconNumber size="24px" color="fill-light-400" />
                 </Input>
+              </Wrapper>
+              <Wrapper className="flex gap-4">
                 <Input
                   label="Balanced Sandwich Leaves"
                   placeholder="Balanced Sandwich Leaves"
@@ -339,7 +516,7 @@ const LeaveInformation = () => {
                   required={true}
                   value={formData?.balancedSandwichLeaves || ""}
                   name="balancedSandwichLeaves"
-                  className="border-light-600 border"
+                  className="border-light-600 border !text-base !bg-transparent !text-white"
                 >
                   <IconNumber size="24px" color="fill-light-400" />
                 </Input>
@@ -349,12 +526,59 @@ const LeaveInformation = () => {
                   setData={handleFormChange}
                   type="number"
                   required={true}
-                  value={formData?.balancedSandwichLeavesTaken || ""}
+                  value={formData?.balancedSandwichLeavesTaken || 0}
                   name="balancedSandwichLeavesTaken"
-                  className="border-light-600 border"
+                  className="border-light-600 border !text-base !bg-transparent !text-white"
                 >
                   <IconNumber size="24px" color="fill-light-400" />
                 </Input>
+              </Wrapper>
+              <Wrapper className="flex gap-4">
+                {user?.totalUnpaidLeaveTaken !== 0 && (
+                  <Input
+                    label="Unpaid Leave Taken"
+                    placeholder="Unpaid Leave Taken"
+                    setData={handleFormChange}
+                    type="number"
+                    required={true}
+                    value={formData?.totalUnpaidLeaveTaken || ""}
+                    name="totalUnpaidLeaveTaken"
+                    className="border-light-600 border !text-base !bg-transparent !text-white"
+                  >
+                    <IconNumber size="24px" color="fill-light-400" />
+                  </Input>
+                )}
+                {user?.unpaidSandwichLeavesTaken !== 0 && (
+                  <Input
+                    label="Unpaid Sandwich Leaves"
+                    placeholder="Unpaid Sandwich Leaves"
+                    setData={handleFormChange}
+                    type="number"
+                    required={true}
+                    value={formData?.unpaidSandwichLeavesTaken || ""}
+                    name="unpaidSandwichLeavesTaken"
+                    className="border-light-600 border !text-base !bg-transparent !text-white"
+                  >
+                    <IconNumber size="24px" color="fill-light-400" />
+                  </Input>
+                )}
+                <Wrapper className="w-full">
+                  <span className="text-light-400 text-xs block mb-1">
+                    Reason
+                  </span>
+                  <textarea
+                    required
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        reason: e.target.value,
+                      })
+                    }
+                    name="reason"
+                    className="w-full rounded-lg h-24 p-4 text-base bg-transparent text-white border border-light-500 focus-visible:shadow-none focus-visible:outline-none"
+                    value={formData?.reason}
+                  ></textarea>
+                </Wrapper>
               </Wrapper>
               <Wrapper className="flex">
                 <FormButton

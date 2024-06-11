@@ -12,6 +12,7 @@ export const ThemeConfiger =  ({children}) => {
   const [sidebarCollapse, setSidebarCollapse] = useState(false);
   const [activePage, setActivePage] = useState('home');
   const [themeMode, setThemeMode] = useState('light');
+  const [breadcrumbs, setBreadcrumbs] = useState(false);
   const getPageTitle = (title) => {
     setPagetitle(title);
   };
@@ -31,7 +32,9 @@ export const ThemeConfiger =  ({children}) => {
     headerStyle,
     setHeaderStyle,
     sidebarCollapse,
-    setSidebarCollapse    
+    setSidebarCollapse,
+    breadcrumbs,
+    setBreadcrumbs    
   };
 
   return (

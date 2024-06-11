@@ -5,7 +5,6 @@ import UsersData from "@/model/userData";
 import Notifications from "@/model/notifications";
 import addRole from "@/model/addRole";
 import sendEmail from "@/app/mailer/mailer";
-import userData from "@/model/userData";
 
 export const getUserByEmail = async (email) => {
   const user = await UsersData.findOne({ email });
@@ -36,9 +35,27 @@ export const POST = async (request) => {
   try {
     await connect();
     const payload = await request.json();
+    const date = new Date();
+    const thisMonth = date.getMonth() + 1;
+    const user = await getUserByEmail(payload?.email);
+    const balancedLeaves = user?.balancedLeaves - thisMonth;
+    const paidOrnot = balancedLeaves - payload?.durationHours / 8;
+    const totalLeaves = payload?.durationHours / 8;
+    if (payload.sandwitchLeave === false) {
+      if (totalLeaves > balancedLeaves) {
+        payload.paidLeaves = balancedLeaves;
+        payload.unPaidLeaves = totalLeaves - balancedLeaves;
+      } else {
+        if (paidOrnot >= 0 && balancedLeaves) {
+          payload.paidLeaves = paidOrnot > 0 ? paidOrnot : 1;
+        } else {
+          payload.unPaidLeaves = payload?.durationHours / 8;
+        }
+      }
+    }
     const leaves = new Leaves({ ...payload, status: "pending" });
     const result = await leaves.save();
-    const user = await getUserByEmail(result.email);
+
     const roles = await getRolesWithPermission("view-users-notifications");
     const departmentEmails = await getEmailsByRoleAndDepartment(
       roles,
@@ -90,76 +107,80 @@ export const GET = async (request) => {
     const all = url.searchParams.get("all");
     const value = url.searchParams.get("value");
     const key = url.searchParams.get("key");
-    if(key){
-    const apiKey = key.replace("f6bb694916a535eecf64c585d4d879ad_","");
-    const user = await userData.findOne({_id:apiKey});
- 
-    if(user){
-    if (all === "true" && !value) {
-      const leaves = await Leaves.find().sort({ $natural: -1 });
-      return new NextResponse(JSON.stringify(leaves), { status: 200 });
-    }
-    if (all === "true" && value) {
-      const leaves = await Leaves.find({ status: value }).sort({
-        $natural: -1,
-      });
-      return new NextResponse(JSON.stringify(leaves), { status: 200 });
-    }
-    if (all === "salary") {
-      const date = new Date();
-      const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-      const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-      const leaves = await Leaves.find({
-        createdAt: { $gte: firstDay, $lt: lastDay },
-      }).sort({
-        $natural: -1,
-      });
-      return new NextResponse(JSON.stringify(leaves), { status: 200 });
-    }
-    if (!id && !email) {
-      return new NextResponse(JSON.stringify({ error: "Email not provided" }), {
-        status: 400,
-      });
-    }
+    if (key) {
+      const apiKey = key.replace("f6bb694916a535eecf64c585d4d879ad_", "");
+      const user = await UsersData.findOne({ _id: apiKey });
 
-    if (email && !value) {
-      const leaves = await Leaves.find({ email }).sort({ $natural: -1 });
-      const user = await UsersData.findOne({ email });
-      return new NextResponse(JSON.stringify({ leaves, user }), {
-        status: 200,
-      });
+      if (user) {
+        if (all === "true" && !value) {
+          const leaves = await Leaves.find().sort({ $natural: -1 });
+          return new NextResponse(JSON.stringify(leaves), { status: 200 });
+        }
+        if (all === "true" && value) {
+          const leaves = await Leaves.find({ status: value }).sort({
+            $natural: -1,
+          });
+          return new NextResponse(JSON.stringify(leaves), { status: 200 });
+        }
+        if (all === "salary") {
+          const date = new Date();
+          const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+          const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+          const leaves = await Leaves.find({
+            createdAt: { $gte: firstDay, $lt: lastDay },
+          }).sort({
+            $natural: -1,
+          });
+          return new NextResponse(JSON.stringify(leaves), { status: 200 });
+        }
+        if (!id && !email) {
+          return new NextResponse(
+            JSON.stringify({ error: "Email not provided" }),
+            {
+              status: 400,
+            }
+          );
+        }
+
+        if (email && !value) {
+          const leaves = await Leaves.find({ email }).sort({ $natural: -1 });
+          const user = await UsersData.findOne({ email });
+          return new NextResponse(JSON.stringify({ leaves, user }), {
+            status: 200,
+          });
+        }
+        if (email && value) {
+          const leaves = await Leaves.find({ email, status: value }).sort({
+            $natural: -1,
+          });
+          const user = await UsersData.findOne({ email });
+          return new NextResponse(JSON.stringify({ leaves, user }), {
+            status: 200,
+          });
+        }
+        if (id) {
+          const leaves = await Leaves.findById(id);
+          const user = await UsersData.findOne({ email: leaves.email }).sort({
+            $natural: -1,
+          });
+          return new NextResponse(JSON.stringify({ leaves, user }), {
+            status: 200,
+          });
+        }
+      } else {
+        return new NextResponse(JSON.stringify({ error: "Invalid api key." }), {
+          status: 200,
+        });
+      }
+    } else {
+      return new NextResponse(
+        JSON.stringify({ error: "Please add a API key." }),
+        {
+          status: 200,
+        }
+      );
     }
-    if (email && value) {
-      const leaves = await Leaves.find({ email, status: value }).sort({
-        $natural: -1,
-      });
-      const user = await UsersData.findOne({ email });
-      return new NextResponse(JSON.stringify({ leaves, user }), {
-        status: 200,
-      });
-    }
-    if (id) {
-      const leaves = await Leaves.findById(id);
-      const user = await UsersData.findOne({ email: leaves.email }).sort({
-        $natural: -1,
-      });
-      return new NextResponse(JSON.stringify({ leaves, user }), {
-        status: 200,
-      });
-    } 
-  }  
-  else{
-    return new NextResponse(JSON.stringify({ error:"Invalid api key." }), {
-      status: 200,
-    });
-  }
-}
-else{
-  return new NextResponse(JSON.stringify({ error:"Please add a API key." }), {
-    status: 200,
-  });
-}
-  console.log("apiKey",apiKey)
+    console.log("apiKey", apiKey);
   } catch (error) {
     console.error("Error:", error);
     return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });
@@ -171,106 +192,28 @@ export const PUT = async (request) => {
     await connect();
     const payload = await request.json();
     let updatedLeave,
-    updatedUser = 0;
+      updatedUser = 0;
+    const user = await UsersData.findOne({ email: payload?.email });
     if (payload.update === "leaves") {
+      await Leaves.updateOne({ _id: payload.id }, { status: "updated",  reason: payload.reason });
       await UsersData.updateOne(
         { email: payload.email },
         {
           totalLeaveTaken: payload.totalLeaveTaken,
           balancedLeaves: payload.balancedLeaves,
           balancedSandwichLeaves: payload.balancedSandwichLeaves,
-          balancedSandwichLeavesTaken: payload.balancedSandwichLeavesTaken,
-        }
-      );
-       updatedUser = await UsersData.findOne({ email: payload.email });
-      return new NextResponse(JSON.stringify(updatedUser), { status: 200 });
-    }
-
-    if (payload.update === "cancel") {
-      await Leaves.updateOne({ _id: payload.id }, { status: payload.status });
-      await UsersData.updateOne(
-        { email: payload.email },
-        {
-          totalLeaveTaken: payload.totalLeaveTaken,
-          balancedLeaves: payload.balancedLeaves,
-          balancedSandwichLeaves: payload.balancedSandwichLeaves,
-          balancedSandwichLeavesTaken: payload.balancedSandwichLeavesTaken,
+          balancedSandwichLeavesTaken: payload.balancedSandwichLeavesTaken || 0,
+          totalUnpaidLeaveTaken: payload.totalUnpaidLeaveTaken || 0,
+          unpaidSandwichLeavesTaken: payload.unpaidSandwichLeavesTaken || 0,
         }
       );
       updatedUser = await UsersData.findOne({ email: payload.email });
-      await sendEmail(
-        payload.email,
-        `HR Portal - Your Leave is canceled.`,
-        `Your Leave is canceled.`
-      );
-      const notifications = new Notifications({
-        ...payload,
-        subject: "Your Leave is Canceled.",
-        name: "HR",
-        toEmails: payload.email,
-        type: "info",
-        id: payload.id,
-        viewed: [{ mail: payload.email, status: false }],
-      });
-
-      await notifications.save();
       return new NextResponse(JSON.stringify(updatedUser), { status: 200 });
     }
-    if(payload.update === "approve"){    
-    await Leaves.updateOne(
-      { _id: payload.id },
-      { status: payload.status, reason: payload.reason }
-    );
-     updatedLeave = await Leaves.findById(payload.id);
-    await sendEmail(
-      payload.email,
-      `HR Portal - Your leave is ${payload.status}`,
-      `
-      ${payload.reason}
-      `
-    );
-    const notifications = new Notifications({
-      ...payload,
-      subject: `Your leave is ${payload.status}`,
-      description: `${payload.reason}`,
-      name: "HR",
-      toEmails: payload.email,
-      type: "info",
-      id: payload.id,
-      viewed: [{ mail: payload.email, status: false }],
-    });
-
-    await notifications.save();
-    if(payload?.totalUnpaidLeaveTaken){
-      updatedUser = await UsersData.updateOne(
-        { email: payload.email },
-        {
-          totalUnpaidLeaveTaken: payload.totalUnpaidLeaveTaken
-        }
-      );
-    }
-    else if(payload?.unpaidSandwichLeavesTaken){
-      updatedUser = await UsersData.updateOne(
-        { email: payload.email },
-        {
-          unpaidSandwichLeavesTaken: payload.unpaidSandwichLeavesTaken
-        }
-      );
-    }
-    else{
-     updatedUser = await UsersData.updateOne(
-      { email: payload.email },
-      {
-        totalLeaveTaken: payload.totalLeaveTaken,
-        balancedLeaves: payload.balancedLeaves,
-        balancedSandwichLeaves: payload.balancedSandwichLeaves,
-        balancedSandwichLeavesTaken: payload.balancedSandwichLeavesTaken,
-      }
-    );
-  }
-  }
+    await UsersData.updateOne({ email: payload.email }, updateUserFields);
+    const User = await UsersData.findOne({ email: payload.email });
     return new NextResponse(
-      JSON.stringify({ leave: updatedLeave, user: updatedUser }),
+      JSON.stringify({ leave: updatedLeave, user: User }),
       { status: 200 }
     );
   } catch (error) {

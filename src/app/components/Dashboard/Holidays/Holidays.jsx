@@ -7,8 +7,10 @@ import useAuth from "@/app/contexts/Auth/auth";
 import Container from "../../Ui/DashboardContainer/Container";
 import FormButton from "../../Form/FormButton/FormButton";
 import AllHolidays from "./AllHolidays";
+import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 
 const Holidays = () => {
+  const { setBreadcrumbs } = useThemeConfig();
   const { userPermissions } = useAuth();
   const [approvePopup, setApprovePopup] = useState(false);
   const closeApproveModal = (e) => {
@@ -17,7 +19,15 @@ const Holidays = () => {
   const getApprovePopup = (e) => {
     setApprovePopup(true);
   };
-
+  useEffect(() => {
+    const breadcrumbs = [
+      {
+        href: "/dashboard/holidays",
+        label: "Holidays",
+      }
+    ];
+    setBreadcrumbs(breadcrumbs);
+  }, []);
   return (
     <Container heading="Holidays" className="relative">
       {userPermissions && userPermissions?.includes("add-holidays") && (

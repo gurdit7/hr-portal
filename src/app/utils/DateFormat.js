@@ -119,7 +119,18 @@ export function countFridays(startDate, endDate) {
   }
     return fridayCount;
 }
-
+export function countMondays(startDate, endDate) {  
+  let start = new Date(startDate.getFullYear() + "-" + (startDate.getMonth() + 1) + "-" + (startDate.getDate() - 1));
+  let end = new Date(endDate.getFullYear() + "-" + (endDate.getMonth() + 1) + "-" + (endDate.getDate() + 1));  
+  let fridayCount = 0;
+  while (start <= end) {
+      if (start.getDay() === 1) {
+          fridayCount++;
+      }
+      start.setDate(start.getDate() + 1);
+  }
+    return fridayCount;
+}
 
 export function checkMondayOrFriday(date) {
   const result = [];

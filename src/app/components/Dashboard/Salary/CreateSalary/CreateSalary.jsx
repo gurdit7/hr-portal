@@ -1,11 +1,13 @@
 "use client";
 import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
 import useAuth from "@/app/contexts/Auth/auth";
+import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 import { formatMonthName, formatYear } from "@/app/utils/DateFormat";
 import { useEffect, useState, useCallback } from "react";
 import { CSVLink } from "react-csv";
 
 const CreateSalary = () => {
+  const {setBreadcrumbs} = useThemeConfig();
   const {userData} = useAuth();
   const [users, setUsers] = useState([]);
   const [leaves, setLeaves] = useState([]);
@@ -14,17 +16,29 @@ const CreateSalary = () => {
   const [data, setData] = useState([]);
   const month = "Employees-Salary-" + formatMonthName(new Date()) + "-" + formatYear(new Date());
   useEffect(() => {
+    if(userData){
     fetchUsers(setUsers);
     fetchLeaves(setLeaves,userData?._id);
+    }
   }, [userData]);
-
+  useEffect(() => {
+    const breadcrumbs = [
+      {
+        href: "/dashboard/create-salary",
+        label: "Create Salary",
+      }
+    ];
+    setBreadcrumbs(breadcrumbs);
+  }, []);
   const calculateLeaves = useCallback((mail, currentSalary) => {
+    if(leaves && leaves.length > 0){
     const date = new Date();
     const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
     const leaveHours = leaves.filter(leave => leave.email === mail).reduce((acc, leave) => acc + leave.durationHours, 0);
     const oneDaySalary = currentSalary / daysInMonth;
     const leaveDays = leaveHours / 8;
     return leaveDays * oneDaySalary;
+    }
   }, [leaves]);
 
   const getFinalSalary = (total, bonus, deducted) => {

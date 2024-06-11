@@ -16,8 +16,10 @@ import Text from "../../Ui/Text/Text";
 import EditEmployee from "../../Form/EditEmployee/EditEmployee";
 import Pagination from "../../Ui/Pagination/Pagination";
 import { formatDate } from "@/app/utils/DateFormat";
+import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 
 const AllEmployees = () => {
+  const {setBreadcrumbs} = useThemeConfig();
   const [sortby, setSortBy] = useState("");
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState([]);
@@ -116,6 +118,15 @@ const AllEmployees = () => {
   const getIndex = (e) => {
     setIndex(e);
   };
+  useEffect(() => {
+    const breadcrumbs = [
+      {
+        href: "/dashboard/employees",
+        label: "Employees",
+      }
+    ];
+    setBreadcrumbs(breadcrumbs);
+  }, []);
   return (
     <>
       {userPermissions && userPermissions?.includes("view-employee") && (

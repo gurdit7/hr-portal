@@ -17,6 +17,10 @@ const Badge = ({status}) => {
     ${
       status === "unpaid" ? "bg-red-900" : ""
     }
+    ${
+      status === "updated" ? "bg-red-400" : ""
+    }
+    
     `}
   >
     {status.replace('-', " ")}
