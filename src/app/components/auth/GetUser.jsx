@@ -2,9 +2,11 @@
 import { useEffect } from "react";
 import { useRouter,usePathname } from "next/navigation";
 import useAuth from "@/app/contexts/Auth/auth";
+import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 
 const GetUserData = (session) => {
-    const {setUserData, setUserLoggedIn, setPermissions, getUserRoles, getUserNotifications, getUsers, getLeaves} = useAuth();
+    const {setUserData, setUserLoggedIn} = useAuth();
+    const {getDepartments, setPermissions, getUserRoles, getUsers, getLeaves, getDesignations, getTeamMembers, getEmployees} = useDashboard();
     const router = useRouter();
     const location = usePathname();
     useEffect(()=>{
@@ -22,11 +24,14 @@ const GetUserData = (session) => {
              setTimeout(() => {
             getUsers();
             getUserRoles(data?.user?._id);
-            getUserNotifications();
             getLeaves(data?.user?.userID)            
             setUserData(data?.user);
             setUserLoggedIn(true)
             setPermissions(data?.permissions);
+            getTeamMembers(data?.user?._id,0,10)
+            getEmployees(0,10)
+            getDepartments(data?.user?._id);
+            getDesignations(data?.user?._id);
           }, 2000);
             if(location === '/account/register' || location === '/account/login'){
     

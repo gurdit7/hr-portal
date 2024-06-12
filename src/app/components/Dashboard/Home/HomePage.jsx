@@ -11,9 +11,11 @@ import LeavesRecord from "../Leaves/LeavesRecord";
 import AllHolidays from "../Holidays/AllHolidays";
 import H2 from "../../Ui/H2/H2";
 import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
+import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 
 const HomePage = () => {
-  const { users, userData, userPermissions } = useAuth();
+  const { userData  } = useAuth();
+  const { users, userPermissions } = useDashboard();
   const [total, setTotal] = useState("");
   const [male, setMale] = useState("");
   const [female, setFemale] = useState("");

@@ -12,13 +12,18 @@ import IconSearch from "../../Icons/IconSearch";
 import Pagination from "../../Ui/Pagination/Pagination";
 import Item from "./Item";
 import { useEffect, useState } from "react";
+import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 
 const ItemRecentNotifications = () => {
-  const { userData, userPermissions } = useAuth();
+  const { userData } = useAuth();
+  const {
+    userPermissions,
+    userNotifications,
+    userNotificationsLength,
+    fetchNotifications,
+  } = useDashboard();
   const [emailID, setEmail] = useState("");
   const [name, setName] = useState("");
-  const [userNotifications, setUserNotifications] = useState([]);
-  const [userNotificationsLength, setUserNotificationsLength] = useState(0);
   const [limit, setLimit] = useState(5);
   const [count, setCount] = useState(0);
   const [start, setStart] = useState(0);
@@ -35,24 +40,14 @@ const ItemRecentNotifications = () => {
   }, [userNotificationsLength, limit]);
 
   useEffect(() => {
-    const fetchNotifications = async () => {
-      const all = !userPermissions?.includes("user-notifications");
-      const response = await fetch(
-        `/api/dashboard/notifications?all=${all}&limit=${start * 5 + limit}&start=${start * 5}&email=${userData?.email}`
-      );
-      
-      const data = await response.json();      
-      setUserNotifications(data?.data || []);
-      setUserNotificationsLength(data?.length || 0);
-    };
-
-    fetchNotifications();
-  }, [limit, start, userPermissions]);
+    const all = !userPermissions?.includes("user-notifications");
+    fetchNotifications(all, start, limit, userData?.email);
+  }, [limit, start, userPermissions, userData]);
 
   const handleSearchChange = (e) => setSearch(e.target.value);
   const handleSortByChange = (e) => setSortBy(e.target.value);
-  const handlePageChange = (e) => {    
-    setStart(e)
+  const handlePageChange = (e) => {
+    setStart(e);
   };
 
   return (
@@ -89,10 +84,18 @@ const ItemRecentNotifications = () => {
       )}
       <div className="flex flex-col gap-[15px]">
         {userNotifications.map((item, index) => (
-          <Item key={index} item={item} emailID={emailID} name={name} userData={userData} />
+          <Item
+            key={index}
+            item={item}
+            emailID={emailID}
+            name={name}
+            userData={userData}
+          />
         ))}
       </div>
-      {count > 1 && <Pagination count={count} getIndex={handlePageChange} index={start} />}
+      {count > 1 && (
+        <Pagination count={count} getIndex={handlePageChange} index={start} />
+      )}
       {count === 0 && (
         <Text className="text-center my-4">
           {defaultTheme?.notificationsNoRecord}

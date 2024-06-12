@@ -5,9 +5,11 @@ import useAuth from '@/app/contexts/Auth/auth';
 import FormButton from '../../Form/FormButton/FormButton';
 import { useState } from 'react';
 import sendEmail from '@/app/mailer/mailer';
+import { useDashboard } from '@/app/contexts/Dashboard/dashboard';
 
 const AccessDenied = ({permission, message}) => {
-    const {userPermissions, userData} = useAuth();
+    const {userData} = useAuth();
+    const { userPermissions } = useDashboard();
     const [loading,setLoading] = useState(false);
     const [heading,setHeading] = useState("You don't have access to this page.");
     const [hide,setHide] = useState(true);

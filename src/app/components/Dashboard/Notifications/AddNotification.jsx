@@ -3,7 +3,6 @@ import H2 from "@/app/components/Ui/H2/H2";
 import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
 import { useState } from "react";
 import sendEmail from "@/app/mailer/mailer";
-import useAuth from "@/app/contexts/Auth/auth";
 import Input from "../../Form/Input/Input";
 import IconProfile from "../../Icons/IconProfile";
 import IconNotes from "../../Icons/IconNotes";
@@ -11,13 +10,14 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import IconAttachment from "../../Icons/IconAttachment";
 import FormButton from "../../Form/FormButton/FormButton";
+import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 
 const AddNotification = () => {
   const [formData, setFromData] = useState({});
   const [loading, setLoading] = useState(false);
   const [description, setDescription] = useState('');  
   const [attachment, setAttachment] = useState('Add Attachment');  
-  const {userPermissions} = useAuth();
+  const {userPermissions} = useDashboard();
   const [success, setSuccess] = useState({
     active: false,
     animation: false,

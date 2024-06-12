@@ -18,21 +18,23 @@ import ErrorNotification from "../../Ui/notification/loader/LoaderNotification";
 import sendEmail from "@/app/mailer/mailer";
 import useAuth from "@/app/contexts/Auth/auth";
 import IconSalary from "../../Icons/IconSalary";
+import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 
 const AddEmployee = () => {
-  const { getUsers, userData } = useAuth();
+  const { userData } = useAuth();
   const [formData, setFromData] = useState({});
   const [loading, setLoading] = useState(false);
   const [__error, setErrorForm] = useState(false);
   const [show, setShow] = useState(true);
-  const { userPermissions, userRoles, setAddEmployee } = useAuth();
+  const { userPermissions, userRoles, setAddEmployee, departments, getUsers, designations } =
+    useDashboard();
   const formError = "block text-xs mt-1 text-red-500";
-  useEffect(()=>{    
+  useEffect(() => {
     setFromData({
       ...formData,
-      key:`f6bb694916a535eecf64c585d4d879ad_${userData?._id}`      
+      key: `f6bb694916a535eecf64c585d4d879ad_${userData?._id}`,
     });
-  },[userData])
+  }, [userData]);
   const [success, setSuccess] = useState({
     active: false,
     animation: false,
@@ -109,9 +111,9 @@ const AddEmployee = () => {
                 animation: true,
                 message: "User added successfully!",
               });
-              setShow(false)
+              setShow(false);
               setTimeout(() => {
-                setShow(true)
+                setShow(true);
               }, 10);
               setFromData({});
             });
@@ -231,7 +233,7 @@ const AddEmployee = () => {
             <Wrapper className="flex gap-[15px]">
               <Wrapper className="flex-1">
                 <DropDown
-                  items={designation}
+                  items={designations?.length > 0 ? designations :  designation}
                   required={true}
                   setData={addItemForm}
                   value={formData?.designation || ""}
@@ -264,7 +266,7 @@ const AddEmployee = () => {
             <Wrapper className="flex gap-[15px]">
               <Wrapper className="flex-1">
                 <DropDown
-                  items={department}
+                  items={departments?.length > 0 ? departments : department}
                   required={true}
                   setData={addItemForm}
                   value={formData?.department || ""}

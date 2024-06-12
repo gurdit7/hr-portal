@@ -44,7 +44,7 @@ const Item = ({ item, emailID, name, userData }) => {
     setStatus(viewedStatus);    
   },[load,userData])
   return (
-    <Wrapper className={ `border border-light-500 relative ${status ? "" : " bg-green-50"}`}>
+    <Wrapper className={ `border border-light-500 relative ${!status ? " bg-green-50" : " "}`}>
       <div className="p-[10px]"  onClick={()=>click(item?._id)}>
         {item?.type === 'document' && <Text className="!text-light-400">Document Requested</Text>}
         {item?.type === 'leaves' && <Text className="!text-light-400">Requested Leave</Text>}

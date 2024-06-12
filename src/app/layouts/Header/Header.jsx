@@ -4,6 +4,7 @@ import IconNotification from "@/app/components/Icons/IconNotification";
 import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
 import SkeletonLoader from "@/app/components/Ui/skeletonLoader/skeletonLoader";
 import useAuth from "@/app/contexts/Auth/auth";
+import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -12,8 +13,9 @@ import { useState } from "react";
 const Header = () => {
   const { sidebarCollapse, setSidebarCollapse } = useThemeConfig();
   const [loader, setLoader] = useState(false);
-  const { userLoggedIn, setUserLoggedIn, setUserData, setPermissions } =
+  const { userLoggedIn, setUserLoggedIn, setUserData  } =
     useAuth();
+    const { setPermissions } = useDashboard();
   const router = useRouter();
   const path = usePathname();
   const collapse = () => {

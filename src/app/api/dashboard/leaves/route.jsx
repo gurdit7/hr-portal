@@ -127,6 +127,10 @@ export const GET = async (request) => {
           const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
           const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
           const leaves = await Leaves.find({
+            $or: [
+              { status: "approved" },
+              { status: "updated" },         
+            ],
             createdAt: { $gte: firstDay, $lt: lastDay },
           }).sort({
             $natural: -1,

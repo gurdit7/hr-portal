@@ -12,11 +12,13 @@ import { formatDate } from "@/app/utils/DateFormat";
 import FormButton from "../../../Form/FormButton/FormButton";
 import SkeletonLoader from "../../../Ui/skeletonLoader/skeletonLoader";
 import Approve from "./Approve";
+import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 
 const AppraisalInformation = () => {
   const [formData, setFormData] = useState({});
   const [formDataCancel, setFormDataCancel] = useState({});
-  const { userPermissions, userLoggedIn } = useAuth();
+  const { userLoggedIn } = useAuth();
+  const { userPermissions } = useDashboard();
   const path = usePathname();
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);

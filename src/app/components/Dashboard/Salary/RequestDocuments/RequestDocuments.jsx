@@ -7,6 +7,7 @@ import H2 from "@/app/components/Ui/H2/H2";
 import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
 import Notification from "@/app/components/Ui/notification/success/Notification";
 import useAuth from "@/app/contexts/Auth/auth";
+import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 import { defaultTheme } from "@/app/data/default";
 import sendEmail from "@/app/mailer/mailer";
 import { formatMonthName } from "@/app/utils/DateFormat";
@@ -20,7 +21,7 @@ const RequestDocuments = () => {
     "Experience Letter",
     "Other Documents",
   ];
-  const {userData, getUserNotifications} = useAuth();
+  const {userData} = useAuth();
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -84,8 +85,7 @@ const RequestDocuments = () => {
             `,      
           ).then(function (data) {
             setLoading(false);
-            setSuccess(true);
-            getUserNotifications();
+            setSuccess(true);        
             setDocument('Salary Slip - Last Three Months')
             setDescription('')
             setFormData({

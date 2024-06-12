@@ -17,6 +17,7 @@ import EditEmployee from "../../Form/EditEmployee/EditEmployee";
 import Pagination from "../../Ui/Pagination/Pagination";
 import { formatDate } from "@/app/utils/DateFormat";
 import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
+import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 
 const AllEmployees = () => {
   const {setBreadcrumbs} = useThemeConfig();
@@ -24,7 +25,7 @@ const AllEmployees = () => {
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState([]);
-  const { userPermissions, addEmployee, setAddEmployee } = useAuth();
+  const { userPermissions, addEmployee, getEmployees,  allEmployeesData } = useDashboard();
   const [view, setView] = useState(false);
   const [editEmployee, setEditEmployee] = useState(false);
   const [index, setIndex] = useState(0);
@@ -32,25 +33,11 @@ const AllEmployees = () => {
   const [error, setError] = useState(false);
   const limit = 10;
   useEffect(() => {
-    fetch("/api/dashboard/all-employee", {
-      method: "POST",
-      body: JSON.stringify({ index: index, limit: limit }),
-    })
-      .then(function (res) {
-        return res.json();
-      })
-      .then(async function (data) {
-        setCount(data?.count);
-        setUsers(data?.data);
 
-        if (data?.data.length === 0) {
-          setError(true);
-        } else {
-          setError(false);
-        }
-        setAddEmployee(false);
-      });
-  }, [editEmployee, index, addEmployee]);
+    if(allEmployeesData?.data){
+      setUsers(allEmployeesData?.data)
+    }
+  }, [editEmployee, index, addEmployee, allEmployeesData]);
 
   const getSortBy = (e) => {
     setSortBy(e.target.value);
@@ -307,7 +294,7 @@ const AllEmployees = () => {
           hideModal={closeEditModal}
           heading={"Edit Employee - " + user?.name}
         >
-          <Wrapper className="max-w-[510px] m-auto">
+          <Wrapper className="max-w-[710px] m-auto">
             <EditEmployee user={user} closePopup={closeEditModal} />
           </Wrapper>
         </Modal>
