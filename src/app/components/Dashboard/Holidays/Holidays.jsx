@@ -30,7 +30,7 @@ const Holidays = () => {
   }, []);
   return (
     <Container heading="Holidays" className="relative">
-      {userPermissions && userPermissions?.includes("add-holidays") && (
+      {userPermissions && userPermissions?.includes("read-holidays") && (
         <FormButton
           type="button"
           label="Add Holiday"
@@ -43,7 +43,7 @@ const Holidays = () => {
       <AllHolidays />
       </Wrapper>
       {userPermissions &&
-        userPermissions?.includes("add-holidays") &&
+        userPermissions?.includes("read-holidays") &&
         approvePopup && (
           <Modal
             opened={approvePopup}

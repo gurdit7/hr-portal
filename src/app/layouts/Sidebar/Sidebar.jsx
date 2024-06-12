@@ -68,7 +68,7 @@ const Sidebar = () => {
       label: "Employees",
       icon: IconEmployee,
       isActive: path === "/dashboard/employees",
-      requiresPermission: "view-employee",
+      requiresPermission: "read-employees",
     },
     {
       href: "/dashboard/notifications",
@@ -91,10 +91,18 @@ const Sidebar = () => {
       requiresPermission: "read-designation",
     },
     {
+      href: "/dashboard/roles",
+      label: "Roles",
+      icon: IconDesignation,
+      isActive: path === "/dashboard/roles",
+      requiresPermission: "read-roles",
+    },
+    {
       href: "/dashboard/holidays",
       label: "Holidays",
       icon: IconCalander,
       isActive: path === "/dashboard/holidays",
+      requiresPermission: "read-holidays",
     },
   ];
   return (

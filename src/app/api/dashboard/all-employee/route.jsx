@@ -17,7 +17,8 @@ export const POST = async (request) => {
     });
     
     const data = await UsersData.find().limit(payload?.limit).skip(payload?.limit * payload?.index).sort({$natural:-1});
-    return new NextResponse(JSON.stringify({data:data,count:count}), { status: 200 });
+    const all = await UsersData.find().sort({$natural:-1});
+    return new NextResponse(JSON.stringify({data:data,count:count, all:all, length:all?.length}), { status: 200 });
   } catch (error) {
     console.log("error>>", error);
     return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });

@@ -149,7 +149,7 @@ const AddEmployee = () => {
   };
   return (
     <>
-      {userPermissions && userPermissions.includes("add-employee") && show && (
+      {userPermissions && userPermissions.includes("write-employees") && show && (
         <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full max-w-[550px]">
           <H2>Add Employee</H2>
           <form className="flex flex-col gap-[15px]">
