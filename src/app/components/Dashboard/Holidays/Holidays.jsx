@@ -3,15 +3,15 @@ import { useEffect, useState } from "react";
 import AddHolidays from "./AddHolidays";
 import Modal from "../../Ui/Modal/Modal";
 import Wrapper from "../../Ui/Wrapper/Wrapper";
-import useAuth from "@/app/contexts/Auth/auth";
 import Container from "../../Ui/DashboardContainer/Container";
 import FormButton from "../../Form/FormButton/FormButton";
 import AllHolidays from "./AllHolidays";
 import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
+import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 
 const Holidays = () => {
   const { setBreadcrumbs } = useThemeConfig();
-  const { userPermissions } = useAuth();
+  const { userPermissions } = useDashboard();
   const [approvePopup, setApprovePopup] = useState(false);
   const closeApproveModal = (e) => {
     setApprovePopup(false);

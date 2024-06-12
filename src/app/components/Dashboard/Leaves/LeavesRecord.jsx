@@ -9,10 +9,12 @@ import Text from "../../Ui/Text/Text";
 import H2 from "../../Ui/H2/H2";
 import IconSort from "../../Icons/IconSort";
 import { LeaveItem } from "./Leaves";
+import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 
 const LeavesRecord = ({loader, setLoader}) => {
   const [load, setLoad] = useState(false);
-  const { userPermissions, leaves, userData } = useAuth();
+  const { userData } = useAuth();
+  const { userPermissions, leaves } = useDashboard();
   const [allLeaves, setAllLeaves] = useState(false);
   const [allLeavesLength, setAllLeavesLength] = useState(-1);
   const [status, setStatus] = useState(false);

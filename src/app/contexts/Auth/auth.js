@@ -9,78 +9,14 @@ export default function useAuth (){
 }
 
 export function AuthProvider({ children }) {    
-    const [userLoggedIn, setUserLoggedIn] = useState(false);
-    const [addEmployee, setAddEmployee] = useState(false);
+    const [userLoggedIn, setUserLoggedIn] = useState(false);    
     const [userData, setUserData] = useState(false);
-    const [userPermissions, setPermissions] = useState(false);
-    const [users, setUsers] = useState([]);
-    const [leaves, setLeaves] = useState([]);
-    const [userRoles, setuserRoles] = useState(['hr','employee','admin', 'manager' , 'tl']);
-    const [userNotifications, setUserNotifications] = useState('');
-    const [userNotificationsLength, setUserNotificationsLength] = useState('');
-    const getUserRoles = (key) =>{
-      fetch(`/api/dashboard/roles/get?key=f6bb694916a535eecf64c585d4d879ad_${key}`)
-        .then(function (res) {
-          return res.json();
-        })
-        .then(async function (data) {
-          const values = [];
-          data?.role.forEach((e)=>{
-            values.push(e.role)
-          })
-          setuserRoles(values)
-        });      
-    }
-    const getUserNotifications = () =>{
-      fetch(`/api/dashboard/notifications?all=true&limit=3&start=0`)
-        .then(function (res) {
-          return res.json();
-        })
-        .then(async function (data) {
-          setUserNotifications(data?.data);
-          setUserNotificationsLength(data?.length);
-        });      
-    }  
-    const getUsers = () =>{
-      fetch("/api/dashboard/all-employee",{
-        method: "POST",
-        body: JSON.stringify({ index: 0, limit: 100000 })
-      })
-        .then(function (res) {
-          return res.json();
-        })
-        .then(async function (data) {
-          setUsers(data?.data)
-        });      
-    }    
-    const getLeaves = (userID)=>{
-      fetch(`/api/dashboard/user-data?userID=${userID}`, {
-        method: 'GET',
-    }).then((res) => {
-        return res.json();
-    }).then((res) => {
-      setLeaves(res);
-    }).catch((error) => {
-        console.error('Error fetching user data:', error);
-    });
-    }    
+    
     const value = {
         setUserLoggedIn,
         userLoggedIn,
         userData,
-        setUserData,
-        setPermissions,
-        userPermissions,
-        getUserRoles,
-        userRoles,
-        addEmployee,
-        setAddEmployee,
-        userNotifications,
-        getUserNotifications,
-        users,
-        getUsers,
-        leaves,
-        getLeaves
+        setUserData    
       };
     return (
         <AuthContext.Provider value={value}>

@@ -1,26 +1,19 @@
 "use client";
 
-import { userType } from "@/app/data/default";
-import DropDown from "../../Form/DropDown/select";
-import H2 from "../../Ui/H2/H2";
 import Wrapper from "../../Ui/Wrapper/Wrapper";
 import { useEffect, useState } from "react";
-import IconSort from "../../Icons/IconSort";
-import Input from "../../Form/Input/Input";
-import IconSearch from "../../Icons/IconSearch";
-import useAuth from "@/app/contexts/Auth/auth";
 import Modal from "../../Ui/Modal/Modal";
 import Text from "../../Ui/Text/Text";
 import EditEmployee from "../../Form/EditEmployee/EditEmployee";
-import Pagination from "../../Ui/Pagination/Pagination";
 import ItemRecentNotifications from "./ItemRecentNotifications";
+import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 
 const RecentNotifications = () => {
   const [sortby, setSortBy] = useState("");
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState([]);
-  const { userPermissions, addEmployee, setAddEmployee } = useAuth();
+  const { userPermissions, addEmployee, setAddEmployee } = useDashboard();
   const [view, setView] = useState(false);
   const [editEmployee, setEditEmployee] = useState(false);
   const [index, setIndex] = useState(0);

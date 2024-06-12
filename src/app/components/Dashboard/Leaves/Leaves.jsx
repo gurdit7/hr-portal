@@ -36,6 +36,7 @@ import SkeletonLoader from "../../Ui/skeletonLoader/skeletonLoader";
 import BalancedLeaves from "./BalancedLeaves";
 import LeavesRecord from "./LeavesRecord";
 import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
+import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 
 const Leaves = () => {
   const date = new Date();
@@ -46,7 +47,8 @@ const Leaves = () => {
   const [loading, setLoading] = useState(false);
   const [val, setVal] = useState(false);
   const [load, setLoad] = useState(false);
-  const { userPermissions, userData } = useAuth();
+  const { userData } = useAuth();
+  const { userPermissions } = useDashboard();
   const [description, setDescription] = useState("");
   const [file, setFile] = useState(null);
   const [attachment, setAttachment] = useState("Add Attachment");

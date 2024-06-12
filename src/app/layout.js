@@ -7,6 +7,7 @@ import { AuthProvider } from "./contexts/Auth/auth";
 import Sidebar from "./layouts/Sidebar/Sidebar";
 import Header from "./layouts/Header/Header";
 import Birthday from "./components/Modals/Birthday/Birthday";
+import { DashboardConfiger } from "./contexts/Dashboard/dashboard";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,19 +17,21 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  const session = await GetSession(); 
+  const session = await GetSession();
   return (
     <html lang="en">
       <body className={inter.className}>
-      <ThemeConfiger>        
-      <AuthProvider>
-      <GetUserData session={JSON.stringify(session)}></GetUserData>
-        <Sidebar/>
-        <Header/>
-        {children}
-        <Birthday/>
-       </AuthProvider>
-      </ThemeConfiger>
+        <ThemeConfiger>
+          <DashboardConfiger>
+            <AuthProvider>
+              <GetUserData session={JSON.stringify(session)}></GetUserData>
+              <Sidebar />
+              <Header />
+              {children}
+              <Birthday />
+            </AuthProvider>
+          </DashboardConfiger>
+        </ThemeConfiger>
       </body>
     </html>
   );

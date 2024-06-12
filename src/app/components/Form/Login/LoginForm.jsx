@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import useAuth from "@/app/contexts/Auth/auth";
 import Notification from "../../Ui/notification/success/Notification";
 import ErrorNotification from "../../Ui/notification/loader/LoaderNotification";
+import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 const LoginForm = () => {
   const route = useRouter();
   const {userData} = useAuth();
@@ -27,7 +28,8 @@ const LoginForm = () => {
     animation: false,
     message: "",
   });
-  const { setUserData, setUserLoggedIn, setPermissions } = useAuth();
+  const { setUserData, setUserLoggedIn} = useAuth();
+  const {  setPermissions  } = useDashboard();
   const setFormValues = (e) => {
     setFormData({
       ...formData,

@@ -18,12 +18,14 @@ import Input from "../../Form/Input/Input";
 import IconNumber from "../../Icons/IconNumber";
 import SkeletonLoader from "../../Ui/skeletonLoader/skeletonLoader";
 import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
+import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 
 const LeaveInformation = () => {
   const { setBreadcrumbs } = useThemeConfig();
   const [formData, setFormData] = useState({});
   const [formDataCancel, setFormDataCancel] = useState({});
-  const { userPermissions, userData } = useAuth();
+  const { userData } = useAuth();
+  const { userPermissions } = useDashboard();
   const path = usePathname();
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);

@@ -1,10 +1,10 @@
 'use client';
-import useAuth from "@/app/contexts/Auth/auth";
+import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 import Link from "next/link";
 import { useEffect } from "react";
 const CreateSalaryButton = () => {
-    const {userPermissions} = useAuth();
+    const {userPermissions} = useDashboard();
     const { setBreadcrumbs } = useThemeConfig();
     useEffect(() => {
       const breadcrumbs = [
