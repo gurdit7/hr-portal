@@ -22,6 +22,7 @@ import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 import IconCategory from "@/app/components/Icons/IconCategory";
 import IconDesignation from "@/app/components/Icons/IconDesignation";
 import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
+import IconCircleUser from "@/app/components/Icons/IconCircleUser";
 
 const Sidebar = () => {
   const { sidebarCollapse } = useThemeConfig();
@@ -68,7 +69,7 @@ const Sidebar = () => {
       label: "Employees",
       icon: IconEmployee,
       isActive: path === "/dashboard/employees",
-      requiresPermission: "view-employee",
+      requiresPermission: "read-employees",
     },
     {
       href: "/dashboard/notifications",
@@ -91,10 +92,18 @@ const Sidebar = () => {
       requiresPermission: "read-designation",
     },
     {
+      href: "/dashboard/roles",
+      label: "Roles",
+      icon: IconCircleUser,
+      isActive: path === "/dashboard/roles",
+      requiresPermission: "read-roles",
+    },
+    {
       href: "/dashboard/holidays",
       label: "Holidays",
       icon: IconCalander,
       isActive: path === "/dashboard/holidays",
+      requiresPermission: "read-holidays",
     },
   ];
   return (

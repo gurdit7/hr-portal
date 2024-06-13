@@ -20,6 +20,7 @@ const LeavesRecord = ({loader, setLoader}) => {
   const [status, setStatus] = useState(false);
   const [error, setError] = useState(false);
   const array = [0, 1, 2, 3, 4];
+
   const getSort = (e) => {
     setError(false);
     if (userData) {

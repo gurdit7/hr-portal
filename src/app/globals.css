@@ -199,6 +199,10 @@ body{
     display: none;
     }
 
-
+    .arrow-down{
+        background: url(./assets/images/icons/downArrow.svg) no-repeat right 25px center;    
+        appearance: none;
+        background-size: 18px;
+    }
 
     

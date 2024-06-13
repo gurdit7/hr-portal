@@ -144,7 +144,7 @@ if(userLoggedIn){
           )}
          
           {userPermissions &&
-            userPermissions?.includes("update-appraisal") &&
+            userPermissions?.includes("write-appraisal") &&
             leaves?.status === "pending" && (
               <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
                 <Text className="!text-light-400">Take Action:</Text>

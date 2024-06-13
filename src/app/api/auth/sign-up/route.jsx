@@ -16,7 +16,7 @@ export const POST = async (request) => {
       const user = await userData.findOne({ _id: apiKey });
       const data = await Roles.find({
         role: user?.role,
-        permissions: "add-employee",
+        permissions: "write-employees",
       });
       if (data && data.length > 0) {
         if (user) {

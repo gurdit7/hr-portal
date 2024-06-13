@@ -8,14 +8,15 @@ import IconDelete from "@/app/components/Icons/IconDelete";
 import IconEdit from "@/app/components/Icons/IconEdit";
 import H2 from "@/app/components/Ui/H2/H2";
 import Modal from "@/app/components/Ui/Modal/Modal";
+import Pagination from "@/app/components/Ui/Pagination/Pagination";
 import Text from "@/app/components/Ui/Text/Text";
 import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
 import ErrorNotification from "@/app/components/Ui/notification/loader/LoaderNotification";
 import Notification from "@/app/components/Ui/notification/success/Notification";
 import useAuth from "@/app/contexts/Auth/auth";
 import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
-import { Designation, designation } from "@/app/data/default";
-import { useState } from "react";
+import {  designation } from "@/app/data/default";
+import { useEffect, useState } from "react";
 
 const All = () => {
   const { userData } = useAuth();
@@ -25,6 +26,20 @@ const All = () => {
   const [formData, setFormData] = useState("");
   const [formDataDelete, setFormDataDelete] = useState("");
   const [btnLoader, setBtnLoader] = useState(false);
+  const limit = 10;
+  const [allDesignations, setDesignations] = useState([]);
+  const [count, setCount] = useState(0);
+  const [start, setStart] = useState(0);
+  const handlePageChange = (e) => {
+    setStart(e); 
+  };
+  useEffect(() => {
+    console.log(Math.ceil(designations.length / limit))
+    setCount(Math.ceil(designations.length / limit));
+    setDesignations(
+      designations.slice(start * limit,  (start + 1) * limit)
+    );
+  }, [start,designations]);
   const [success, setSuccess] = useState({
     active: false,
     message: "",
@@ -164,8 +179,8 @@ const All = () => {
         </Wrapper>
       </Wrapper>
       <Wrapper className="border border-light-500 border-t-0">
-        {designations &&
-          designations.map((name, i) => (
+        {allDesignations &&
+          allDesignations.map((name, i) => (
             <Wrapper
               key={i}
               className={` flex items-center ${i} ${
@@ -173,7 +188,7 @@ const All = () => {
               }`}
             >
               <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
-                {i + 1}
+              {start > 0 ? i + 1 + limit * start : i + 1}
               </Wrapper>
               <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark uppercase">
                 {name}
@@ -185,7 +200,7 @@ const All = () => {
                 >
                   <IconEdit size="16px" color="fill-white" />
                 </span>
-                {designations.length > 1 && (
+                {allDesignations.length > 1 && (
                 <span
                   onClick={() => showModalDelete(name)}
                   className="rounded-full w-[30px] h-[30px] bg-red-600 flex justify-center items-center cursor-pointer hover:scale-110"
@@ -197,6 +212,12 @@ const All = () => {
             </Wrapper>
           ))}
       </Wrapper>
+      {allDesignations?.length === 0 && (
+          <Text className="text-center my-4">No Record Found.</Text>
+        )}
+        {allDesignations?.length > 0 && count > 1 && (
+          <Pagination count={count} getIndex={handlePageChange} index={start} />
+        )}
       {showEditModal && (
         <Modal
           opened={showEditModal}

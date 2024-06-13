@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import IconSort from "../../Icons/IconSort";
 import Input from "../../Form/Input/Input";
 import IconSearch from "../../Icons/IconSearch";
-import useAuth from "@/app/contexts/Auth/auth";
 import IconEdit from "../../Icons/IconEdit";
 import IconView from "../../Icons/IconView";
 import Modal from "../../Ui/Modal/Modal";
@@ -25,67 +24,51 @@ const AllEmployees = () => {
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState([]);
-  const { userPermissions, addEmployee, getEmployees,  allEmployeesData } = useDashboard();
+  const { userPermissions, addEmployee, allEmployeesData } = useDashboard();
   const [view, setView] = useState(false);
   const [editEmployee, setEditEmployee] = useState(false);
   const [index, setIndex] = useState(0);
   const [count, setCount] = useState("");
-  const [error, setError] = useState(false);
   const limit = 10;
   useEffect(() => {
-
     if(allEmployeesData?.data){
+      setCount(allEmployeesData?.length / limit);
       setUsers(allEmployeesData?.data)
     }
-  }, [editEmployee, index, addEmployee, allEmployeesData]);
-
-  const getSortBy = (e) => {
-    setSortBy(e.target.value);
-    fetch("/api/dashboard/filter-employee", {
-      method: "POST",
-      body: JSON.stringify({
-        userType: e.target.value,
-        index: index,
-        sort: true,
-        limit: 10,
-      }),
-    })
-      .then(function (res) {
-        return res.json();
-      })
-      .then(async function (data) {
-        setCount(data?.count);
-        setUsers(data?.data);
-        if (data?.data.length === 0) {
-          setError(true);
-        } else {
-          setError(false);
-        }
+  }, [editEmployee, addEmployee, allEmployeesData]);
+  useEffect(() => {
+    if (search !== "") {
+      let filteredUsers = allEmployeesData?.all.filter((user) => {
+        return (
+          user.userType.includes(search) ||
+          user.name.includes(search) ||
+          user.email.includes(search) ||
+          user.department.includes(search) ||
+          user.designation.includes(search) ||
+          user.gender.includes(search)
+        );
       });
+      setCount(Math.ceil(filteredUsers.length / limit));
+      setUsers(
+        filteredUsers.slice(index * 2, index * (index + 1) + limit)
+      );
+    } else {
+      setCount(Math.ceil(allEmployeesData.length / limit));
+      setUsers(allEmployeesData?.data);
+    }
+  }, [search, index, allEmployeesData]);
+  const getSortBy = (e) => {
+    setSortBy(e.target.value);   
+    if(e.target.value === 'all'){
+      setSearch('');
+    }
+    else{
+      setSearch(e.target.value);
+    }
+    
   };
   const getSearch = (e) => {
     setSearch(e.target.value);
-    fetch("/api/dashboard/filter-employee", {
-      method: "POST",
-      body: JSON.stringify({
-        search: e.target.value,
-        index: index,
-        sort: false,
-        limit: 10,
-      }),
-    })
-      .then(function (res) {
-        return res.json();
-      })
-      .then(async function (data) {
-        setCount(data?.count);
-        setUsers(data?.data);
-        if (data?.data.length === 0) {
-          setError(true);
-        } else {
-          setError(false);
-        }
-      });
   };
 
   const closeViewModal = (e) => {
@@ -116,7 +99,7 @@ const AllEmployees = () => {
   }, []);
   return (
     <>
-      {userPermissions && userPermissions?.includes("view-employee") && (
+      {userPermissions && userPermissions?.includes("read-employees") && (
         <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full">
           <Wrapper className="flex justify-between items-center">
             <H2>All Employees</H2>
@@ -159,9 +142,10 @@ const AllEmployees = () => {
               <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white">
                 Increment Date
               </Wrapper>
+              {userPermissions && userPermissions?.includes("write-employees") && (      
               <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white">
                 Actions
-              </Wrapper>
+              </Wrapper>)}
             </Wrapper>
             <Wrapper className="border border-light-500 border-t-0">
               {users &&
@@ -187,6 +171,7 @@ const AllEmployees = () => {
                     <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
                       {formatDate(user.incrementDate)}
                     </Wrapper>
+                    {userPermissions && userPermissions?.includes("write-employees") && (   
                     <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark flex gap-[2px]">
                       <span
                         onClick={() => editEmployeeModal(i)}
@@ -200,15 +185,15 @@ const AllEmployees = () => {
                       >
                         <IconView size="16px" color="fill-white" />
                       </span>
-                    </Wrapper>
+                    </Wrapper>)}
                   </Wrapper>
                 ))}
                 
             </Wrapper>
-            {error && (
+            {count === 0 && (
               <Text className="text-center my-4">No Record Found.</Text>
             )}
-            {count > 0 && (
+            {count > 1 && (
               <Pagination count={count} getIndex={getIndex} index={index} />
             )}
           </Wrapper>
