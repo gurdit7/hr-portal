@@ -9,12 +9,10 @@ import IconSearch from "../../Icons/IconSearch";
 import H2 from "../../Ui/H2/H2";
 import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 import Pagination from "../../Ui/Pagination/Pagination";
-import useAuth from "@/app/contexts/Auth/auth";
 import Text from "../../Ui/Text/Text";
 
 const Team = () => {
-  const { userData } = useAuth();
-  const { teamMembers, getTeamMembers } = useDashboard();
+  const { teamMembers } = useDashboard();
   const { setBreadcrumbs } = useThemeConfig();
   const limit = 10;
   const [allMembers, setAllMembers] = useState([]);
@@ -30,22 +28,16 @@ const Team = () => {
     ];
     setBreadcrumbs(breadcrumbs);
   }, []);
-  useEffect(() => {
-    setCount(Math.ceil(teamMembers.totalMembers / limit));
-    setAllMembers(teamMembers?.members);
-  }, [teamMembers]);
+
   const handlePageChange = (e) => {
     setStart(e);
-    if (search === "") {
-      getTeamMembers(userData?._id, e, limit);
-    }
   };
   const getSearch = (e) => {
     setSearch(e.target.value);
   };
   useEffect(() => {
     if (search !== "") {
-      let filteredUsers = teamMembers?.all.filter((user) => {
+      let filteredUsers = teamMembers?.members.filter((user) => {
         return (
           user.userType.includes(search) ||
           user.name.includes(search) ||
@@ -55,12 +47,14 @@ const Team = () => {
         );
       });
       setCount(Math.ceil(filteredUsers.length / limit));
-      setAllMembers(
-        filteredUsers.slice(start * 2, start * (start + 1) + limit)
+      setAllMembers(     
+        filteredUsers.slice(start * limit,  (start + 1) * limit)
       );
     } else {
-      setCount(Math.ceil(teamMembers.totalMembers / limit));
-      setAllMembers(teamMembers?.members);
+      if(teamMembers){
+      setCount(Math.ceil(teamMembers?.members.length / limit));
+      setAllMembers(teamMembers?.members.slice(start * limit,  (start + 1) * limit));
+      }
     }
   }, [search, start, teamMembers]);
   return (

@@ -12,6 +12,7 @@ import AllHolidays from "../Holidays/AllHolidays";
 import H2 from "../../Ui/H2/H2";
 import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
+import RecentNotifications from "../Notifications/RecentNotifications";
 
 const HomePage = () => {
   const { userData  } = useAuth();
@@ -20,13 +21,13 @@ const HomePage = () => {
   const [male, setMale] = useState("");
   const [female, setFemale] = useState("");
   const { setBreadcrumbs } = useThemeConfig();
+  const [load, setLoad] = useState(false);
   useEffect(() => {
     const breadcrumbs = [
     ];
     setBreadcrumbs(breadcrumbs);
   }, []);
   useEffect(() => {
-    console.log(userPermissions)
     const maleCount = users?.filter((item) => {
       return item?.gender === "male";
     });
@@ -39,7 +40,7 @@ const HomePage = () => {
   }, [users]);
   return (
     <>
-      {userPermissions && userPermissions?.employee?.includes("view") && (
+      {userPermissions && userPermissions?.includes("write-employees") && (
         <Container heading={`Welcome, ${userData?.name?.split(" ")[0]}`}>
           <Wrapper className="flex justify-between gap-[15px]">
             <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full items-center">
@@ -69,11 +70,11 @@ const HomePage = () => {
           </Wrapper>
         </Container>
       )}
-      {userPermissions && userPermissions?.leaves?.includes("balance-leaves") && (
+      {userPermissions && userPermissions?.includes("balance-leaves") && (
         <Container heading={`Welcome, ${userData?.name}`}>
           <BalancedLeaves user={userData} />
-          <Wrapper className="flex justify-between gap-[15px] mt-[15px] items-start">
-            <LeavesRecord />
+          <Wrapper className="flex justify-between gap-[15px] mt-[15px] items-start">          
+            <RecentNotifications/>
            <Wrapper className='max-w-[600px] w-full bg-white rounded-[10px] p-5'>
               <H2 className='mb-[5px]'>Holidays</H2>
              <AllHolidays/>

@@ -26,7 +26,7 @@ const AddEmployee = () => {
   const [loading, setLoading] = useState(false);
   const [__error, setErrorForm] = useState(false);
   const [show, setShow] = useState(true);
-  const { userPermissions, userRoles, setAddEmployee, departments, getUsers, designations } =
+  const { userPermissions, userRoles, setAddEmployee, departments, getUsers, designations} =
     useDashboard();
   const formError = "block text-xs mt-1 text-red-500";
   useEffect(() => {

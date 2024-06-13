@@ -36,7 +36,7 @@ const Holidays = () => {
           label="Add Holiday"
           btnType="solid"
           event={getApprovePopup}
-          additionalCss="absolute right-[25px] top-4 max-w-[250px]"
+          additionalCss="!absolute right-[25px] top-4 max-w-[250px]"
         ></FormButton>
       )}
       <Wrapper className=' bg-white rounded-[10px] p-5'>

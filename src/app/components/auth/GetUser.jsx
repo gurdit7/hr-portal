@@ -14,7 +14,8 @@ const GetUserData = (session) => {
     getLeaves,
     getDesignations,
     getTeamMembers,
-    getEmployees,
+    getEmployees,        
+    getHolidays
   } = useDashboard();
   const router = useRouter();
   const location = usePathname();
@@ -36,12 +37,15 @@ const GetUserData = (session) => {
             getLeaves(data?.user?.userID);
             setUserData(data?.user);
             setUserLoggedIn(true);
-            setPermissions(data?.permissions);
+            setPermissions(data?.permissions);       
             if(data?.permissions.includes('read-team')){
-            getTeamMembers(data?.user?._id, 0, 10);
+            getTeamMembers(data?.user?._id);
             }
             if(data?.permissions.includes('read-employees')){
             getEmployees(0, 10);
+            }
+            if(data?.permissions.includes('read-holidays')){
+            getHolidays(data?.user?._id)
             }
             getDepartments(data?.user?._id);
             getDesignations(data?.user?._id);

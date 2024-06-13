@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import connect from "@/app/libs/mongo";
 import Holidays from "@/model/holidays";
+import Roles from "@/model/addRole";
+import userData from "@/model/userData";
 
 export const POST = async (request) => {
     try { 
@@ -30,3 +32,62 @@ export const POST = async (request) => {
       return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });
     }
   };
+
+  export const DELETE = async (request) => {
+    try {
+      await connect();
+      const payload = await request.json();
+      if (payload?.key) {
+        const apiKey = payload?.key.replace(
+          "f6bb694916a535eecf64c585d4d879ad_",
+          ""
+        );
+        const user = await userData.findOne({ _id: apiKey, status: "active" });        
+        const data = await Roles.find({
+          role: user?.role,
+          permissions: "write-holidays",
+        });
+        if (data && data.length > 0) { 
+          const departments = await Holidays.deleteOne({ _id: payload?.name });
+          if (departments?.deletedCount > 0) {
+            return new NextResponse(
+              JSON.stringify({ status: 200, deleted: true }),
+              {
+                status: 200,
+              }
+            );
+          }
+        } else {
+          return new NextResponse(
+            JSON.stringify({ error: "You Don't have permissions." }),
+            {
+              status: 403,
+            }
+          );
+        }
+      } else {
+        return new NextResponse(
+          JSON.stringify({ error: "Please add API key." }),
+          {
+            status: 401,
+          }
+        );
+      }
+    } catch (error) {
+      if (error?.path === "_id") {
+        return new NextResponse(JSON.stringify({ error: "Invalid api key." }), {
+          status: 401,
+        });
+      } else {
+        return new NextResponse(
+          "ERROR" +
+            JSON.stringify({
+              error: "Please add required fields.",
+              errors: JSON.stringify(error),
+            }),
+          { status: 500 }
+        );
+      }
+    }
+  };
+  

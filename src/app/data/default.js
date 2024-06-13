@@ -72,9 +72,13 @@ export const rolesPermissions = {
         { 
             "item":"Cron Notifications",
             "value":"sandwich-leaves-update-cron-notifications"
-        }
+        },
+        { 
+            "item":"User will read only his notifications",
+            "value":"user-notifications"
+        }        
     ],
-    "create-salary": [
+    "createSalary": [
         { 
             "item":"Write",
             "value":"create-salary"
@@ -88,7 +92,11 @@ export const rolesPermissions = {
         { 
             "item":"Approve & decline Other Users leaves",
             "value":"approve-decline-leaves"
-        }
+        },
+        { 
+            "item":"User will read only his  balance leaves",
+            "value":"balance-leaves"
+        }        
     ],
     "holidays": [
         { 
@@ -99,6 +107,23 @@ export const rolesPermissions = {
             "item":"Write",
             "value":"write-holidays"
         }
+    ],
+    "roles": [
+        { 
+            "item":"Read",
+            "value":"read-roles"
+        },
+        { 
+            "item":"Write",
+            "value":"write-roles"
+        }
+    ],
+    "team": [
+        { 
+            "item":"Read",
+            "value":"read-team"
+        }     
     ]
+    
 }
 

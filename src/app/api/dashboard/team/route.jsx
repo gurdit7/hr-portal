@@ -13,38 +13,47 @@ export const GET = async (request) => {
     if (key) {
       const apiKey = key.replace("f6bb694916a535eecf64c585d4d879ad_", "");
       const user = await userData.findOne({ _id: apiKey });
-      
+
       if (user) {
         const result = await Roles.findOne({
           role: user.role,
           permissions: "read-team",
         });
         if (result) {
-          const members = await userData.find({
-            department: user?.department,
-            status: "active",
-            designation: { $not: { $regex: user?.designation } },
-          }).limit(limit)
-          .skip(limit * start)
-          .sort({ $natural: -1 });
-          
-          const allMembers = members.map(({ userType, email, name, joinDate, designation, gender, department, DOB, incrementDate }) => ({
-            userType,
-            email,
-            name,
-            joinDate,
-            designation,
-            gender,
-            department,
-            DOB,
-            incrementDate,
-          }));
-          const totalMembers = await userData.find({
-            department: user?.department,
-            status: "active",
-            designation: { $not: { $regex: user?.designation } },
+          const members = await userData
+            .find({
+              department: user?.department,
+              status: "active",
+              designation: { $not: { $regex: user?.designation } },
+            })
+            .sort({ $natural: -1 });
+
+          const allMembers = members.map(
+            ({
+              userType,
+              email,
+              name,
+              joinDate,
+              designation,
+              gender,
+              department,
+              DOB,
+              incrementDate,
+            }) => ({
+              userType,
+              email,
+              name,
+              joinDate,
+              designation,
+              gender,
+              department,
+              DOB,
+              incrementDate,
+            })
+          );
+          return new NextResponse(JSON.stringify({ members: allMembers }), {
+            status: 200,
           });
-          return new NextResponse(JSON.stringify({members:allMembers, totalMembers:totalMembers.length, all:totalMembers}), { status: 200 });
         } else {
           return new NextResponse(
             JSON.stringify({
