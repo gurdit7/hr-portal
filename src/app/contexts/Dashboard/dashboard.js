@@ -12,8 +12,9 @@ export const DashboardConfiger = ({ children }) => {
   const [userPermissions, setPermissions] = useState(false);
   const [allEmployeesData, setAllEmployees] = useState(false);
   const [holidays, setHolidays] = useState(false);
-  const [users, setUsers] = useState([]);
-  const [leaves, setLeaves] = useState([]);
+  const [appraisals, setAppraisals] = useState([]);
+  const [individualUserLeaves, setIndividualUserLeaves] = useState([]);
+  const [allUsersLeaves, setAllUsersLeaves] = useState([]);
   const [userRoles, setuserRoles] = useState([
     "hr",
     "employee",
@@ -23,9 +24,8 @@ export const DashboardConfiger = ({ children }) => {
   ]);
   const [allPermissions, setAllPermissions] = useState([]);
   const [userNotifications, setUserNotifications] = useState([]);
-  const [userNotificationsLength, setUserNotificationsLength] = useState(0);
   const getHolidays = (key) => {
-    fetch(`/api/dashboard/holidays?key=f6bb694916a535eecf64c585d4d879ad_${key}`)
+    fetch(`/api/dashboard/holidays?key=${key}`)
       .then((res) => {
         return res.json();
       })
@@ -34,9 +34,7 @@ export const DashboardConfiger = ({ children }) => {
       });
   };
   const getDepartments = (key) => {
-    fetch(
-      `/api/dashboard/departments?key=f6bb694916a535eecf64c585d4d879ad_${key}`
-    )
+    fetch(`/api/dashboard/departments?key=${key}`)
       .then((res) => {
         return res.json();
       })
@@ -51,7 +49,7 @@ export const DashboardConfiger = ({ children }) => {
       });
   };
   const getTeamMembers = (key) => {
-    fetch(`/api/dashboard/team?key=f6bb694916a535eecf64c585d4d879ad_${key}`)
+    fetch(`/api/dashboard/team?key=${key}`)
       .then((res) => {
         return res.json();
       })
@@ -60,9 +58,7 @@ export const DashboardConfiger = ({ children }) => {
       });
   };
   const getDesignations = (key) => {
-    fetch(
-      `/api/dashboard/designations?key=f6bb694916a535eecf64c585d4d879ad_${key}`
-    )
+    fetch(`/api/dashboard/designations?key=${key}`)
       .then((res) => {
         return res.json();
       })
@@ -77,9 +73,7 @@ export const DashboardConfiger = ({ children }) => {
       });
   };
   const getUserRoles = (key) => {
-    fetch(
-      `/api/dashboard/roles/get?key=f6bb694916a535eecf64c585d4d879ad_${key}`
-    )
+    fetch(`/api/dashboard/roles/get?key=${key}`)
       .then(function (res) {
         return res.json();
       })
@@ -89,59 +83,65 @@ export const DashboardConfiger = ({ children }) => {
           values.push(e.role);
         });
         setuserRoles(values);
+
         setAllPermissions(data?.role);
       });
   };
-
-  const fetchNotifications = async (all, start, limit, email) => {
+  const getAppraisal = (key, email) => {
+    fetch(`/api/dashboard/appraisal?key=${key}&email=${email}`)
+      .then(function (res) {
+        return res.json();
+      })
+      .then(async function (data) {
+        setAppraisals(data?.appraisal);        
+      });
+  };
+  const fetchNotifications = async (key, email) => {
     const response = await fetch(
-      `/api/dashboard/notifications?all=${all}&limit=${
-        start * 5 + limit
-      }&start=${start * 5}&email=${email}`
+      `/api/dashboard/notifications?key=${key}&email=${email}`
     );
     const data = await response.json();
     setUserNotifications(data?.data || []);
-    setUserNotificationsLength(data?.length || 0);
-  };
-  const getUsers = () => {
-    fetch("/api/dashboard/all-employee", {
-      method: "POST",
-      body: JSON.stringify({ index: 0, limit: 100000 }),
-    })
-      .then(function (res) {
-        return res.json();
-      })
-      .then(async function (data) {
-        setUsers(data?.data);
-      });
-  };
-  const getLeaves = (userID) => {
-    fetch(`/api/dashboard/user-data?userID=${userID}`, {
-      method: "GET",
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((res) => {
-        setLeaves(res);
-      })
-      .catch((error) => {
-        console.error("Error fetching user data:", error);
-      });
-  };
-  const getEmployees = (index, limit) => {
-    fetch("/api/dashboard/all-employee", {
-      method: "POST",
-      body: JSON.stringify({ index: index, limit: limit }),
-    })
-      .then(function (res) {
-        return res.json();
-      })
-      .then(async function (data) {
-        setAllEmployees(data);
-      });
   };
 
+  const getLeaves = (userID) => {
+    fetch(`/api/dashboard/leaves?userID=${userID}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.leaves.length === 0) {
+          setError(true);
+        }
+        setAllLeavesLength(data.length);
+        setStatus(true);
+        setAllLeaves(data.leaves || []);
+        setLoader(false);
+      });
+  };
+  const getEmployees = (key) => {
+    fetch(`/api/dashboard/employee?key=${key}`)
+      .then(function (res) {
+        return res.json();
+      })
+      .then(async function (data) {
+        setAllEmployees(data.leaves);
+      });
+  };
+  const getIndividualUserLeaves = (email, key) => {
+    fetch(`/api/dashboard/leaves?email=${email}&key=${key}`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        setIndividualUserLeaves(res?.leaves);
+      });
+  };
+  const getAllUsersLeaves = (key) => {
+    fetch(`/api/dashboard/leaves?all=true&key=${key}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setAllUsersLeaves(data);
+      });
+  };
   const value = {
     departments,
     getDepartments,
@@ -152,12 +152,7 @@ export const DashboardConfiger = ({ children }) => {
     addEmployee,
     setAddEmployee,
     userNotifications,
-    userNotificationsLength,
     fetchNotifications,
-    users,
-    getUsers,
-    leaves,
-    getLeaves,
     designations,
     getDesignations,
     teamMembers,
@@ -167,6 +162,12 @@ export const DashboardConfiger = ({ children }) => {
     allPermissions,
     holidays,
     getHolidays,
+    getIndividualUserLeaves,
+    individualUserLeaves,
+    allUsersLeaves,
+    getAllUsersLeaves,
+    appraisals,
+    getAppraisal,
   };
 
   return (

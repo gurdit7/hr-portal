@@ -18,7 +18,7 @@ const Team = () => {
   const [allMembers, setAllMembers] = useState([]);
   const [count, setCount] = useState(0);
   const [start, setStart] = useState(0);
-  const [search, setSearch] = useState("");
+  let [search, setSearch] = useState("");
   useEffect(() => {
     const breadcrumbs = [
       {
@@ -38,12 +38,18 @@ const Team = () => {
   useEffect(() => {
     if (search !== "") {
       let filteredUsers = teamMembers?.members.filter((user) => {
+        const name = user.name.toLowerCase();
+        const userType = user.userType.toLowerCase();
+        const email = user.email.toLowerCase();
+        const designation = user.designation.toLowerCase();
+        const gender = user.gender.toLowerCase();
+        search = search.toLowerCase();
         return (
-          user.userType.includes(search) ||
-          user.name.includes(search) ||
-          user.email.includes(search) ||
-          user.designation.includes(search) ||
-          user.gender.includes(search)
+          name.includes(search) ||
+          userType.includes(search) ||
+          email.includes(search) ||
+          designation.includes(search) ||
+          gender.includes(search)
         );
       });
       setCount(Math.ceil(filteredUsers.length / limit));

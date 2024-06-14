@@ -129,8 +129,7 @@ const All = () => {
       .then((response) => {
         return response.json();
       })
-      .then((response) => {
-        console.log(response);
+      .then((response) => {    
         setSuccess({
           active: true,
           message: "Department is deleted successfully.",

@@ -34,7 +34,6 @@ const Assign = () => {
   const assignDepartment = (e) => {
     e.preventDefault();
     setBtnLoader(true);
-    console.log(formData)
     fetch("/api/dashboard/designations", {
       method: "PUT",
       body: JSON.stringify(formData),

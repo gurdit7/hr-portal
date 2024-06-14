@@ -58,7 +58,7 @@ const Add = () => {
       body: JSON.stringify({
         name: name.toLowerCase(),
         permissions: selectedPermissions,
-        key: `f6bb694916a535eecf64c585d4d879ad_${userData._id}`,
+        key: `${userData._id}`,
       }),
     })
       .then((res) => {

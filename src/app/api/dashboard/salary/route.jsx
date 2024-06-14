@@ -143,8 +143,6 @@ export const POST = async (request) => {
       newSlip.thirdMonth.paidLeaves = thirdMonthLeaves || 0;
     }
 
-    console.log(newSlip);
-
     return new NextResponse(JSON.stringify({ newSlip }), { status: 200 });
   } catch (error) {
     return new NextResponse("ERROR: " + JSON.stringify(error), { status: 500 });

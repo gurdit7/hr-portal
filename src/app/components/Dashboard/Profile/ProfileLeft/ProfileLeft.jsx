@@ -62,7 +62,6 @@ const ProfileLeft = () => {
             return res.json();
           })
           .then((res) => {
-            console.log(res);
             setUserData(res);
             setLoading(false);
           });

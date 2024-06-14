@@ -19,6 +19,7 @@ import IconNumber from "../../Icons/IconNumber";
 import SkeletonLoader from "../../Ui/skeletonLoader/skeletonLoader";
 import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
+import ErrorNotification from "../../Ui/notification/loader/LoaderNotification";
 
 const LeaveInformation = () => {
   const { setBreadcrumbs } = useThemeConfig();
@@ -33,9 +34,16 @@ const LeaveInformation = () => {
   const [leaves, setLeaves] = useState(null);
   const [value, setValue] = useState(false);
   const [prevLeaves, setPrevLeaves] = useState(false);
+  const [error, setError] = useState(false);
   const paraRef = useRef(null);
   const id = path.replace("/dashboard/leaves/", "");
   useEffect(() => {
+    if(userData){
+    setFormDataCancel({
+      ...formDataCancel,
+      key:`${userData._id}`,
+    })
+  }
     fetch(`/api/dashboard/paid-leaves?email=${user?.email}`)
       .then((res) => {
         return res.json();
@@ -43,12 +51,12 @@ const LeaveInformation = () => {
       .then((res) => {
         setPrevLeaves(res);
       });
-  }, [user]);
+  }, [user, userData]);
   useEffect(() => {
     const fetchLeaveData = async () => {
       try {
         const response = await fetch(
-          `/api/dashboard/leaves?id=${id}&key=f6bb694916a535eecf64c585d4d879ad_${userData?._id}`
+          `/api/dashboard/leaves?id=${id}&key=${userData?._id}`
         );
         const result = await response.json();
         setUser(result?.user);
@@ -223,9 +231,21 @@ const LeaveInformation = () => {
         method: "PUT",
         body: JSON.stringify(formDataCancel),
       });
-      await response.json();
+      const result = await response.json();
+      if (result?.error) {
+        setError({
+          status: true,
+          active: true,
+          message: res?.error,
+        });
+        setTimeout(() => {
+          setLoading(false);
+          setError(false);
+        }, 3000);
+      } else {
       setValue(true);
       setLoading(false);
+      }
     } catch (error) {
       console.error("Error canceling leave:", error);
       setLoading(false);
@@ -596,6 +616,12 @@ const LeaveInformation = () => {
           </Wrapper>
         </Modal>
       )}
+        {error?.status && (
+            <ErrorNotification
+              active={error?.active}
+              message={error?.message}
+            ></ErrorNotification>
+          )}
     </>
   );
 };

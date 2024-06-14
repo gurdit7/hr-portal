@@ -71,8 +71,7 @@ const AddNotification = () => {
           <p style="text-align:center;">Your Password is : <strong>fc@123456</strong>.</p>
           <p style="text-align:center;">To change you password please forgot password.</p>
           `
-        ).then(function (data) {
-          console.log(data)
+        ).then(function (data) {    
           setLoading(false)
         });
       });

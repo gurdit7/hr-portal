@@ -12,8 +12,7 @@ export const POST = async (request) => {
     const payload = await request.json();
     const key = payload?.key;
     if (key) {
-      const apiKey = key.replace("f6bb694916a535eecf64c585d4d879ad_", "");
-      const user = await userData.findOne({ _id: apiKey });
+      const user = await userData.findOne({ _id: key, status:'active' });
       const data = await Roles.find({
         role: user?.role,
         permissions: "write-employees",

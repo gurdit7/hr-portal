@@ -4,7 +4,7 @@ export const designation = ['hr',  'manager', 'team lead', 'graphic designer', '
 'mern stack developer', 'full stack developer', 'frontend developer', 'node developer', 'php developer'];
 export const userStatus = ['active', 'archive'];
 export const department = ['seo', 'node', 'web development'];
-export const leaveSort = [ 'all', 'approved', 'canceled', 'not-approved', 'pending' ];
+export const leaveSort = [ 'all', 'approved', 'canceled', 'not-approved', 'pending', 'updated' ];
 export const duration = ['Full Day', 'Half Day', 'Short Leave', 'Other'];
 
 export const defaultTheme = {
@@ -16,20 +16,34 @@ export const defaultTheme = {
 
 
 export const rolesPermissions = {
+    "general": [
+        { 
+            "item":"Read profile",
+            "value":"read-profile"
+        },
+        { 
+            "item":"Write profile",
+            "value":"write-profile"
+        }    
+    ],
     "appraisal": [
         { 
-            "item":"Apply",
+            "item":"Apply appraisal",
             "value":"apply-appraisal"
         },
         { 
-            "item":"Read",
-            "value":"read-appraisal"
+            "item":"View appraisal",
+            "value":"view-appraisal"
         },
         { 
-            "item":"Write",
+            "item":"View Users appraisals",
+            "value":"view-users-appraisals"
+        },
+        { 
+            "item":"Write appraisal",
             "value":"write-appraisal"
         }
-    ],
+        ],
     "employees": [
         { 
             "item":"Read",
@@ -60,6 +74,24 @@ export const rolesPermissions = {
             "value":"write-department"
         }
     ],
+    "Request-Documents": [
+        { 
+            "item":"Apply Documents",
+            "value":"apply-documents"
+        },
+        { 
+            "item":"View Documents",
+            "value":"view-documents"
+        },
+        { 
+            "item":"View Users Documents",
+            "value":"view-users-documents"
+        },
+        { 
+            "item":"Write Documents",
+            "value":"write-documents"
+        }
+        ],
     "notifications": [
         { 
             "item":"Read Other Users Notifications",
@@ -78,13 +110,17 @@ export const rolesPermissions = {
             "value":"user-notifications"
         }        
     ],
-    "createSalary": [
+    "create-Salary": [
         { 
             "item":"Write",
             "value":"create-salary"
         }
     ],
     "leaves": [
+        { 
+            "item":"Read leaves",
+            "value":"read-leaves"
+        },
         { 
             "item":"Read Other Users leaves",
             "value":"user-leaves"

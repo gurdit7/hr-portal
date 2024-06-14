@@ -34,7 +34,6 @@ const All = () => {
     setStart(e); 
   };
   useEffect(() => {
-    console.log(Math.ceil(designations.length / limit))
     setCount(Math.ceil(designations.length / limit));
     setDesignations(
       designations.slice(start * limit,  (start + 1) * limit)
@@ -131,7 +130,6 @@ const All = () => {
         return response.json();
       })
       .then((response) => {
-        console.log(response);
         setSuccess({
           active: true,
           message: "Designation is deleted successfully.",

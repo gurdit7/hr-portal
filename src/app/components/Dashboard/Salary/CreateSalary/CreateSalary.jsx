@@ -414,7 +414,7 @@ export const fetchUsers = async (setUsers) => {
 export const fetchLeaves = async (setLeaves, key) => {
   try {
     const res = await fetch(
-      `/api/dashboard/leaves?all=salary&key=f6bb694916a535eecf64c585d4d879ad_${key}`
+      `/api/dashboard/leaves?all=salary&key=${key}`
     );
     const result = await res.json();
     setLeaves(result || []);

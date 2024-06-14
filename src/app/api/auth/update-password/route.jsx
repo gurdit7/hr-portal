@@ -27,8 +27,7 @@ export const POST = async (request) => {
                 { email: payload?.email },
                 { password: await bcrypt.hash(payload?.password, 10)
                  }
-              );
-              console.log(updateData)
+              );    
               if(updateData?.acknowledged === true){
               result = { status: 200 };
               }

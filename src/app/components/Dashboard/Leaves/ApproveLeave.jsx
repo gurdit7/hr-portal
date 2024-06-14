@@ -8,11 +8,13 @@ import ErrorNotification from "../../Ui/notification/loader/LoaderNotification";
 import Text from "../../Ui/Text/Text";
 import Input from "../../Form/Input/Input";
 import IconEdit from "../../Icons/IconEdit";
+import useAuth from "@/app/contexts/Auth/auth";
 
 const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
+  const { userData } = useAuth();
   const [approvePopup, setApprovePopup] = useState(false);
   const [declinePopup, setDeclinePopup] = useState(false);
-  const [declineForm, setDeclineForm] = useState('');
+  const [declineForm, setDeclineForm] = useState("");
   const [approveForm, setApproveForm] = useState();
   const [approveButtonLoading, setApproveButtonLoading] = useState(false);
   const [paidLeaves, setPaidLeaves] = useState({});
@@ -27,7 +29,8 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
     setDeclinePopup(true);
     setDeclineForm({
       ...declineForm,
-      id:id,
+      id: id,
+      key: `${userData._id}`,
       status: "not-approved",
     });
   };
@@ -111,9 +114,7 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
           unpaidSandwichLeavesTaken: leave?.sandwitchLeaveData?.unpaidLeaves,
           [e.target.name]: e.target.value,
         });
-      }
-      
-      else if (
+      } else if (
         leave?.sandwitchLeaveData.type === "paid" &&
         leave?.unPaidLeaves &&
         leave?.sandwitchLeaveData.both
@@ -165,6 +166,7 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
     setApprovePopup(true);
     setApproveForm({
       ...approveForm,
+      key: `${userData._id}`,
       update: "approve",
       status: "approved",
     });
@@ -180,17 +182,29 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
         return res.json();
       })
       .then((res) => {
-        setSuccess({
-          status: true,
-          active: true,
-          message: `The leave is approved. We will notify ${user?.name}.`,
-        });
-        setTimeout(() => {
-          setValue(true);
-          setApproveButtonLoading(false);
-          closeApproveModal();
-          setSuccess(false);
-        }, 3000);
+        if (res?.error) {
+          setError({
+            status: true,
+            active: true,
+            message: res?.error,
+          });
+          setTimeout(() => {
+            setApproveButtonLoading(false);
+            setError(false);
+          }, 3000);
+        } else {
+          setSuccess({
+            status: true,
+            active: true,
+            message: `The leave is approved. We will notify ${user?.name}.`,
+          });
+          setTimeout(() => {
+            setValue(true);
+            setApproveButtonLoading(false);
+            closeApproveModal();
+            setSuccess(false);
+          }, 3000);
+        }
       })
       .catch((error) => {
         setError({
@@ -212,7 +226,7 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
   };
   const addDeclineReason = (e) => {
     setApproveButtonLoading(true);
-    e.preventDefault();    
+    e.preventDefault();
     fetch("/api/dashboard/leaves/decline", {
       method: "PUT",
       body: JSON.stringify(declineForm),
@@ -221,6 +235,17 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
         return res.json();
       })
       .then((res) => {
+        if (res?.error) {
+          setError({
+            status: true,
+            active: true,
+            message: res?.error,
+          });
+          setTimeout(() => {
+            setApproveButtonLoading(false);
+            setError(false);
+          }, 3000);
+        } else {
         setSuccess({
           status: true,
           active: true,
@@ -232,6 +257,7 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
           closeApproveModal();
           setSuccess(false);
         }, 3000);
+      }
       })
       .catch((error) => {
         setError({
@@ -244,7 +270,7 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
           setError(false);
         }, 3000);
       });
-  }
+  };
   useEffect(() => {
     const requestedLeaves = leave?.durationHours / 8;
     if (leave.sandwitchLeave) {
@@ -274,21 +300,20 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
             leave?.sandwitchLeaveData?.paidLeaves + leave?.unPaidLeaves,
           message: `${leave?.sandwitchLeaveData?.message} sandwich, ${leave?.unPaidLeaves} unpaid leave, ${requestedLeaves} total leaves`,
         });
-      } 
-      else if (
+      } else if (
         leave?.sandwitchLeaveData.type === "unpaid" &&
         leave?.unPaidLeaves
       ) {
         setPaidLeaves({
           ...paidLeaves,
-          paidLeaves:  0,
-          unPaidLeaves: (leave?.sandwitchLeaveData?.unpaidLeaves * 3)  + leave?.unPaidLeaves,
+          paidLeaves: 0,
+          unPaidLeaves:
+            leave?.sandwitchLeaveData?.unpaidLeaves * 3 + leave?.unPaidLeaves,
           sandwitchLeave:
-            (leave?.sandwitchLeaveData?.unpaidLeaves * 3) + leave?.unPaidLeaves,
+            leave?.sandwitchLeaveData?.unpaidLeaves * 3 + leave?.unPaidLeaves,
           message: `${leave?.sandwitchLeaveData?.message} sandwich, ${leave?.unPaidLeaves} unpaid leave`,
         });
-      }
-      else if (
+      } else if (
         leave?.sandwitchLeaveData.type === "paid" &&
         leave?.unPaidLeaves
       ) {
@@ -482,7 +507,7 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
                 <FormButton
                   type="submit"
                   loading={approveButtonLoading}
-            loadingText="Submitting"
+                  loadingText="Submitting"
                   label="Submit"
                   btnType="solid"
                   additionalCss="px-12"
@@ -504,7 +529,7 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
           )}
         </Modal>
       )}
-       {declinePopup && (
+      {declinePopup && (
         <Modal
           opened={declinePopup}
           hideModal={closeApproveModal}
@@ -515,14 +540,17 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
               <Wrapper className="flex flex-col gap-4">
                 <textarea
                   required
-                  onChange={(e) => setDeclineForm({
-                    ...declineForm,
-                    email: leave?.email,
-                    reason:e.target.value})}
+                  onChange={(e) =>
+                    setDeclineForm({
+                      ...declineForm,
+                      email: leave?.email,
+                      reason: e.target.value,
+                    })
+                  }
                   name="reason"
                   className="w-full rounded-lg h-72 p-4 bg-transparent text-white border border-light-500 focus-visible:shadow-none focus-visible:outline-none"
                   value={declineForm?.reason}
-                ></textarea>             
+                ></textarea>
 
                 <FormButton
                   type="submit"

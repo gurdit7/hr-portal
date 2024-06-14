@@ -39,16 +39,13 @@ import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 
 const Leaves = () => {
-  const date = new Date();
-  const mon = date.getMonth() + 1;
-  const day = date.getDate();
-  const {setBreadcrumbs} = useThemeConfig();
+  const { setBreadcrumbs } = useThemeConfig();
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [val, setVal] = useState(false);
   const [load, setLoad] = useState(false);
   const { userData } = useAuth();
-  const { userPermissions } = useDashboard();
+  const { userPermissions, getIndividualUserLeaves } = useDashboard();
   const [description, setDescription] = useState("");
   const [file, setFile] = useState(null);
   const [attachment, setAttachment] = useState("Add Attachment");
@@ -142,9 +139,9 @@ const Leaves = () => {
 
         formDataCopy.attachment = response.data.url;
       } catch (err) {
-        setError(true)
-        setErrorMessage("Something Went Wrong! Try again later.")
-        setErrorAnimation(true)
+        setError(true);
+        setErrorMessage("Something Went Wrong! Try again later.");
+        setErrorAnimation(true);
 
         setTimeout(() => {
           setErrorAnimation(false);
@@ -166,6 +163,7 @@ const Leaves = () => {
       setSuccessMessage("Your leave request is sent.");
       setSuccessAnimation(true);
       setLoad(true);
+      getIndividualUserLeaves(userData?.email, userData?._id);
       setTimeout(() => {
         setSuccessAnimation(false);
         setSuccess(false);
@@ -223,7 +221,7 @@ const Leaves = () => {
   const handleSandwichLeave = (fridayCounts, setFormData, count) => {
     let sandwitchLeave = false;
     let sandwitchLeaveData = {};
-    
+
     if (count === 0) {
       if (fridayCounts === 0) {
         sandwitchLeave = false;
@@ -269,18 +267,17 @@ const Leaves = () => {
         };
       }
     }
-  if(formData.durationHours > 24){
-    setFormData((prev) => ({
-      ...prev,
-      unPaidLeaves: (formData.durationHours / 8) - (fridayCounts * 3)
-    }));
-  }
-  else{
-    setFormData((prev) => ({
-      ...prev,
-      unPaidLeaves:0
-    }));
-  }
+    if (formData.durationHours > 24) {
+      setFormData((prev) => ({
+        ...prev,
+        unPaidLeaves: formData.durationHours / 8 - fridayCounts * 3,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        unPaidLeaves: 0,
+      }));
+    }
 
     setFormData((prev) => ({
       ...prev,
@@ -372,7 +369,7 @@ const Leaves = () => {
             setFormData,
             sandwitchLeavesData?.count || 0
           );
-        }  else {
+        } else {
           const fridayCounts = countFridays(formattedDate0, formattedDate3);
           setSandwitchCount(fridayCounts);
           handleSandwichLeave(
@@ -402,10 +399,10 @@ const Leaves = () => {
           });
         })
         .catch((error) => {
-          setError(true)
-          setErrorMessage("Something Went Wrong! Try again later.")
-          setErrorAnimation(true)
-  
+          setError(true);
+          setErrorMessage("Something Went Wrong! Try again later.");
+          setErrorAnimation(true);
+
           setTimeout(() => {
             setErrorAnimation(false);
             setError(false);
@@ -426,7 +423,7 @@ const Leaves = () => {
       {
         href: "/dashboard/leaves",
         label: "Leaves",
-      }
+      },
     ];
     setBreadcrumbs(breadcrumbs);
   }, []);

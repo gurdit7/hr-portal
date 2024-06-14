@@ -8,6 +8,7 @@ import Sidebar from "./layouts/Sidebar/Sidebar";
 import Header from "./layouts/Header/Header";
 import Birthday from "./components/Modals/Birthday/Birthday";
 import { DashboardConfiger } from "./contexts/Dashboard/dashboard";
+import { SocketProvider } from "./contexts/Socket/SocketContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,11 +25,13 @@ export default async function RootLayout({ children }) {
         <ThemeConfiger>
           <DashboardConfiger>
             <AuthProvider>
+            <SocketProvider>
               <GetUserData session={JSON.stringify(session)}></GetUserData>
               <Sidebar />
               <Header />
               {children}
               <Birthday />
+              </SocketProvider>
             </AuthProvider>
           </DashboardConfiger>
         </ThemeConfiger>

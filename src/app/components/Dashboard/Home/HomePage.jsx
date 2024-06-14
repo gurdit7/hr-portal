@@ -13,13 +13,17 @@ import H2 from "../../Ui/H2/H2";
 import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 import RecentNotifications from "../Notifications/RecentNotifications";
-
+import socketio from "socket.io-client";
+import NotificationForm from "../../test";
+import TestNotifications from "../../text";
 const HomePage = () => {
+
+  const [notifications, setNotifications] = useState([]);
   const { userData  } = useAuth();
-  const { users, userPermissions } = useDashboard();
-  const [total, setTotal] = useState("");
-  const [male, setMale] = useState("");
-  const [female, setFemale] = useState("");
+  const { allEmployeesData, userPermissions } = useDashboard();
+  const [total, setTotal] = useState(0);
+  const [male, setMale] = useState(0);
+  const [female, setFemale] = useState(0);
   const { setBreadcrumbs } = useThemeConfig();
   const [load, setLoad] = useState(false);
   useEffect(() => {
@@ -28,20 +32,26 @@ const HomePage = () => {
     setBreadcrumbs(breadcrumbs);
   }, []);
   useEffect(() => {
-    const maleCount = users?.filter((item) => {
+    console.log(allEmployeesData);
+    if(allEmployeesData.length > 0){
+    const maleCount = allEmployeesData?.filter((item) => {
       return item?.gender === "male";
     });
-    const femaleCount = users?.filter((item) => {
+    const femaleCount = allEmployeesData?.filter((item) => {
       return item?.gender === "female";
     });
-    setTotal(users.length);
+    setTotal(allEmployeesData.length);
     setMale(maleCount.length);
     setFemale(femaleCount.length);
-  }, [users]);
+  }
+  }, [allEmployeesData]);
   return (
     <>
+
       {userPermissions && userPermissions?.includes("write-employees") && (
         <Container heading={`Welcome, ${userData?.name?.split(" ")[0]}`}>
+              <NotificationForm />
+              
           <Wrapper className="flex justify-between gap-[15px]">
             <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full items-center">
               <H1 className="text-light-500 text-[64px] leading-none">
@@ -82,7 +92,7 @@ const HomePage = () => {
           </Wrapper>
         </Container>
       )}
-
+<TestNotifications/>
       {!userPermissions && (
         <Container>
           <Wrapper className="flex justify-between gap-[15px]">

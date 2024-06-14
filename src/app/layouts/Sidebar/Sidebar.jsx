@@ -48,6 +48,7 @@ const Sidebar = () => {
       label: "Profile",
       icon: IconProfile,
       isActive: path === "/dashboard/profile",
+      requiresPermission: "read-profile",
     },
     {
       href: "/dashboard/leaves",

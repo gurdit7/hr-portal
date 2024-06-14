@@ -10,12 +10,14 @@ const GetUserData = (session) => {
     getDepartments,
     setPermissions,
     getUserRoles,
-    getUsers,
-    getLeaves,
     getDesignations,
     getTeamMembers,
-    getEmployees,        
-    getHolidays
+    getEmployees,
+    getHolidays,
+    getIndividualUserLeaves,
+    getAllUsersLeaves,
+    fetchNotifications,
+    getAppraisal,
   } = useDashboard();
   const router = useRouter();
   const location = usePathname();
@@ -32,21 +34,26 @@ const GetUserData = (session) => {
         })
         .then(async function (data) {
           setTimeout(() => {
-            getUsers();
             getUserRoles(data?.user?._id);
-            getLeaves(data?.user?.userID);
             setUserData(data?.user);
+            getAppraisal(data?.user?._id, data?.user?.email);
             setUserLoggedIn(true);
-            setPermissions(data?.permissions);       
-            if(data?.permissions.includes('read-team')){
-            getTeamMembers(data?.user?._id);
+            setPermissions(data?.permissions);
+            if (data?.permissions.includes("read-team")) {
+              getTeamMembers(data?.user?._id);
             }
-            if(data?.permissions.includes('read-employees')){
-            getEmployees(0, 10);
+            if (data?.permissions.includes("read-employees")) {
+              getEmployees(data?.user?._id);
             }
-            if(data?.permissions.includes('read-holidays')){
-            getHolidays(data?.user?._id)
+            if (data?.permissions.includes("read-holidays")) {
+              getHolidays(data?.user?._id);
             }
+            if (data?.permissions.includes("user-leaves")) {
+              getAllUsersLeaves(data?.user?._id);
+            }
+            fetchNotifications(data?.user?._id, data?.user?.email);
+
+            getIndividualUserLeaves(data?.user?.email, data?.user?._id);
             getDepartments(data?.user?._id);
             getDesignations(data?.user?._id);
           }, 2000);
