@@ -118,6 +118,10 @@ export const rolesPermissions = {
     ],
     "leaves": [
         { 
+            "item":"Apply leave",
+            "value":"apply-leaves"
+        },
+        { 
             "item":"Read leaves",
             "value":"read-leaves"
         },

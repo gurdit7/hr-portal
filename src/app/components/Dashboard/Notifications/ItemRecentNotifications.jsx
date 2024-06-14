@@ -78,7 +78,7 @@ const ItemRecentNotifications = () => {
       )}
  {allNotification &&
               allNotification.map((item, i) => (
-                 <Item item={item}/> 
+                 <Item item={item} key={i}/> 
               ))}
       {count > 1 && (
         <Pagination count={count} getIndex={handlePageChange} index={start} />

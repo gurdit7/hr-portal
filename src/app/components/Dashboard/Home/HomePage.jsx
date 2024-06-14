@@ -13,13 +13,8 @@ import H2 from "../../Ui/H2/H2";
 import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 import RecentNotifications from "../Notifications/RecentNotifications";
-import socketio from "socket.io-client";
-import NotificationForm from "../../test";
-import TestNotifications from "../../text";
 const HomePage = () => {
-
-  const [notifications, setNotifications] = useState([]);
-  const { userData  } = useAuth();
+  const { userData } = useAuth();
   const { allEmployeesData, userPermissions } = useDashboard();
   const [total, setTotal] = useState(0);
   const [male, setMale] = useState(0);
@@ -27,31 +22,27 @@ const HomePage = () => {
   const { setBreadcrumbs } = useThemeConfig();
   const [load, setLoad] = useState(false);
   useEffect(() => {
-    const breadcrumbs = [
-    ];
+    const breadcrumbs = [];
     setBreadcrumbs(breadcrumbs);
   }, []);
   useEffect(() => {
     console.log(allEmployeesData);
-    if(allEmployeesData.length > 0){
-    const maleCount = allEmployeesData?.filter((item) => {
-      return item?.gender === "male";
-    });
-    const femaleCount = allEmployeesData?.filter((item) => {
-      return item?.gender === "female";
-    });
-    setTotal(allEmployeesData.length);
-    setMale(maleCount.length);
-    setFemale(femaleCount.length);
-  }
+    if (allEmployeesData.length > 0) {
+      const maleCount = allEmployeesData?.filter((item) => {
+        return item?.gender === "male";
+      });
+      const femaleCount = allEmployeesData?.filter((item) => {
+        return item?.gender === "female";
+      });
+      setTotal(allEmployeesData.length);
+      setMale(maleCount.length);
+      setFemale(femaleCount.length);
+    }
   }, [allEmployeesData]);
   return (
     <>
-
       {userPermissions && userPermissions?.includes("write-employees") && (
         <Container heading={`Welcome, ${userData?.name?.split(" ")[0]}`}>
-              <NotificationForm />
-              
           <Wrapper className="flex justify-between gap-[15px]">
             <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full items-center">
               <H1 className="text-light-500 text-[64px] leading-none">
@@ -82,17 +73,16 @@ const HomePage = () => {
       )}
       {userPermissions && userPermissions?.includes("balance-leaves") && (
         <Container heading={`Welcome, ${userData?.name}`}>
-          <BalancedLeaves user={userData} />
-          <Wrapper className="flex justify-between gap-[15px] mt-[15px] items-start">          
-            <RecentNotifications/>
-           <Wrapper className='max-w-[600px] w-full bg-white rounded-[10px] p-5'>
-              <H2 className='mb-[5px]'>Holidays</H2>
-             <AllHolidays/>
-             </Wrapper>
+         {!userPermissions?.includes("write-employees")  &&  <BalancedLeaves user={userData} />}
+          <Wrapper className="flex justify-between gap-[15px] mt-[15px] items-start">
+            <RecentNotifications />
+            <Wrapper className="max-w-[600px] w-full bg-white rounded-[10px] p-5">
+              <H2 className="mb-[5px]">Holidays</H2>
+              <AllHolidays />
+            </Wrapper>
           </Wrapper>
         </Container>
       )}
-<TestNotifications/>
       {!userPermissions && (
         <Container>
           <Wrapper className="flex justify-between gap-[15px]">

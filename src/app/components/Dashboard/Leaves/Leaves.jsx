@@ -37,8 +37,10 @@ import BalancedLeaves from "./BalancedLeaves";
 import LeavesRecord from "./LeavesRecord";
 import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
+import { useSocket } from "@/app/contexts/Socket/SocketContext";
 
 const Leaves = () => {
+  const  socket  = useSocket();
   const { setBreadcrumbs } = useThemeConfig();
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -159,6 +161,12 @@ const Leaves = () => {
       });
 
       const data = await response.json();
+      if(data){
+        const rooms = 'gurdit@thefabcode.org, room2';
+        const roomArray = rooms.split(',').map(room => room.trim());
+        const message = "Test";
+        socket.emit('sendNotification', { rooms: roomArray, message });
+      }
       setSuccess(true);
       setSuccessMessage("Your leave request is sent.");
       setSuccessAnimation(true);
@@ -437,7 +445,7 @@ const Leaves = () => {
 
           <Wrapper className="flex justify-between gap-[15px] mt-[15px]">
             <LeavesRecord loader={load} setLoader={setLoad} />
-            {userPermissions && userPermissions?.includes("balance-leaves") && (
+            {userPermissions && userPermissions?.includes("apply-leaves") && (
               <Wrapper className="w-full  max-w-[600px]">
                 <Wrapper className="bg-white sticky top-4 rounded-[10px] p-5 w-full ">
                   <H2>Request For Leave</H2>

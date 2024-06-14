@@ -1,41 +1,48 @@
 const { createServer } = require('http');
-const { parse } = require('url');
 const next = require('next');
-const express = require('express'); // Add express to handle other middleware
-const { Server } = require('socket.io');
-const setupCronJobs = require('./libs/cronjobs/cronjobs');
+const { Server } = require("socket.io");
 
-const dev = process.env.NODE_ENV !== 'production';
-const app = next({ dev });
-const handle = app.getRequestHandler();
+const dev = process.env.NODE_ENV !== "production";
+const hostname = "localhost";
+const port = 3000;
+// when using middleware `hostname` and `port` must be provided below
+const app = next({ dev, hostname, port });
+const handler = app.getRequestHandler();
 
 app.prepare().then(() => {
-  setupCronJobs(); 
+  const httpServer = createServer(handler);
 
-  const server = express();
-  const httpServer = createServer(server);
   const io = new Server(httpServer);
 
-  io.on('connection', (socket) => {
-    console.log('A user connected');
+  io.on("connection", (socket) => {
+    console.log("A user connected:", socket.id);
 
-    socket.on('sendNotification', (data) => {
-      io.emit('receiveNotification', data);
+    socket.on("joinRoom", (room) => {
+      socket.join(room);
+      console.log(`User ${socket.id} joined room: ${room}`);
     });
 
-    socket.on('disconnect', () => {
-      console.log('A user disconnected');
+    socket.on("sendNotification", (data) => {
+      const { rooms, message } = data;
+
+      rooms.forEach((room) => {
+        io.to(room).emit("receiveNotification", message);
+      });
+
+      console.log(`Notification sent to rooms ${rooms.join(", ")}: ${message}`);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("A user disconnected:", socket.id);
     });
   });
 
-  server.all('*', (req, res) => {
-    const parsedUrl = parse(req.url, true);
-    handle(req, res, parsedUrl);
-  });
-
-  const port = 4000 || 3000;
-  httpServer.listen(port, (err) => {
-    if (err) throw err;
-    console.log(`> Ready on http://localhost:${port}`);
-  });
+  httpServer
+    .once("error", (err) => {
+      console.error(err);
+      process.exit(1);
+    })
+    .listen(port, () => {
+      console.log(`> Ready on http://${hostname}:${port}`);
+    });
 });
