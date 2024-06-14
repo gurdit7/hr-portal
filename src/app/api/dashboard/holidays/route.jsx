@@ -37,12 +37,8 @@ export const POST = async (request) => {
     try {
       await connect();
       const payload = await request.json();
-      if (payload?.key) {
-        const apiKey = payload?.key.replace(
-          "f6bb694916a535eecf64c585d4d879ad_",
-          ""
-        );
-        const user = await userData.findOne({ _id: apiKey, status: "active" });        
+      if (payload?.key) {   
+        const user = await userData.findOne({ _id: payload?.key, status: "active" });        
         const data = await Roles.find({
           role: user?.role,
           permissions: "write-holidays",

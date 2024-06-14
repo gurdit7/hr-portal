@@ -26,13 +26,13 @@ const AddEmployee = () => {
   const [loading, setLoading] = useState(false);
   const [__error, setErrorForm] = useState(false);
   const [show, setShow] = useState(true);
-  const { userPermissions, userRoles, setAddEmployee, departments, getUsers, designations} =
+  const { userPermissions, userRoles, setAddEmployee, departments, getEmployees, designations} =
     useDashboard();
   const formError = "block text-xs mt-1 text-red-500";
   useEffect(() => {
     setFromData({
       ...formData,
-      key: `f6bb694916a535eecf64c585d4d879ad_${userData?._id}`,
+      key: `${userData?._id}`,
     });
   }, [userData]);
   const [success, setSuccess] = useState({
@@ -105,7 +105,7 @@ const AddEmployee = () => {
               `
             ).then(function (data) {
               setAddEmployee(true);
-              getUsers();
+              getEmployees(userData?._id);
               setSuccess({
                 active: true,
                 animation: true,

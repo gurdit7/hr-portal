@@ -1,5 +1,5 @@
-'use client';
-import { useEffect, useRef, useState } from "react";
+"use client";
+import { useState } from "react";
 import Wrapper from "../../Ui/Wrapper/Wrapper";
 import Text from "../../Ui/Text/Text";
 import H3 from "../../Ui/H3/H3";
@@ -12,71 +12,65 @@ export const toHTML = (ref, content, limit) => {
   }
 };
 
-const Item = ({ item, emailID, name, userData }) => {  
-  const paraRef = useRef();
+const Item = ({ item }) => {
   const [load, setLoad] = useState(false);
   const [status, setStatus] = useState(false);
-  const click = async (id)=>{
+  const click = async (id) => {
     setStatus(true);
     try {
-      const viewedStatus = item?.viewed.map(mail => {
-        if(mail?.mail === userData?.email){
-          return {mail: mail?.mail, status:true}
-        }
-        else{
-          return {mail: mail?.mail, status:false}
+      const viewedStatus = item?.viewed.map((mail) => {
+        if (mail?.mail === userData?.email) {
+          return { mail: mail?.mail, status: true };
+        } else {
+          return { mail: mail?.mail, status: false };
         }
       });
       const response = await fetch("/api/dashboard/notifications", {
         method: "PUT",
         body: JSON.stringify({
-          id:id,
-          viewed:viewedStatus
+          id: id,
+          viewed: viewedStatus,
         }),
       });
-     const result =  await response.json();
-     setLoad(true)
-    } catch (error) {
-    }
-  }
-  useEffect(()=>{
-    const viewedStatus = item?.viewed.find(mail => mail?.mail === userData?.email)?.status;
-    setStatus(viewedStatus);    
-  },[load,userData])
+      const result = await response.json();
+      setLoad(true);
+    } catch (error) {}
+  };
   return (
-    <Wrapper className={ `border border-light-500 relative ${!status ? " bg-green-50" : " "}`}>
-      <div className="p-[10px]"  onClick={()=>click(item?._id)}>
-        {item?.type === 'document' && <Text className="!text-light-400">Document Requested</Text>}
-        {item?.type === 'leaves' && <Text className="!text-light-400">Requested Leave</Text>}
-        {item?.type === 'appraisalForm' && <Text className="!text-light-400">Requested appraisal</Text>}
-        {(item?.type === 'leaves' || item?.type === 'info')  && ( <Link
-        href={"/dashboard/leaves/" + item.id}
-        className="opacity-0 absolute top-0 left-0 w-full h-full"
+    <Wrapper
+      className={`border rounded-lg border-light-500 relative ${
+        !item?.viewedStatus ? "border-l-4 border-green-600" : " "
+      }`}
+    >
+      <div
+        className="p-[10px] flex items-center gap-3"
+        onClick={() => click(item?._id)}
       >
-      </Link>
-)}
-        {(item?.type === 'appraisalForm')  && ( <Link
-        href={"/dashboard/appraisal/" + item.id}
-        className="opacity-0 absolute top-0 left-0 w-full h-full"
-      >
-      </Link>
-)}
-        <H3>
-          {item?.subject || "Appraisal Request"} 
-        </H3>
-        {item?.description && (
-          <div
-            className="mt-[5px] text-sm font-medium font-poppins text-text-dark"
-            ref={paraRef}
-          >
-            {toHTML(paraRef, item?.description, 250)}
-          </div>
-        )}
-        <Wrapper className="flex justify-between items-center border-t border-light-500 pt-[5px] mt-[5px]">
-          <Text>{item?.name && "Applied By: " + item?.name}</Text>
-          <Text>{formatDate(item?.updatedAt)}</Text>
+        <Wrapper className="w-10 h-10 border rounded-full bg-accent flex justify-center items-center text-white font-semibold text-xl">
+          {item.name.slice(0, 1)}
         </Wrapper>
-      </div>    
+        {item?.type === "leaveRequest" && (
+          <Text>{item.name} is requested for leave.</Text>
+        )}
+        {item?.type === "document" && (
+          <Text>{item.name} is requested for leave.</Text>
+        )}        
+        {item?.type === "appraisalForm" && (
+          <Text>{item.name} is requested for appraisal.</Text>
+        )}
+        {item?.type === "appraisalForm" && (
+          <Link
+            href={"/dashboard/appraisal/" + item.id}
+            className="opacity-0 absolute top-0 left-0 w-full h-full"
+          ></Link>
+        )}
+        {item?.type === "leaves" && (
+          <Link
+            href={"/dashboard/leaves/" + item.id}
+            className="opacity-0 absolute top-0 left-0 w-full h-full"
+          ></Link>
+        )}
+      </div>
     </Wrapper>
   );
 };

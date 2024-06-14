@@ -11,8 +11,7 @@ export const GET = async (request) => {
     const start = url.searchParams.get("st");
     const limit = url.searchParams.get("lt");
     if (key) {
-      const apiKey = key.replace("f6bb694916a535eecf64c585d4d879ad_", "");
-      const user = await userData.findOne({ _id: apiKey });
+      const user = await userData.findOne({ _id: key, status:'active' });
 
       if (user) {
         const result = await Roles.findOne({

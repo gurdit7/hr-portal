@@ -20,9 +20,8 @@ export const GET = async (request) => {
     await connect();
     const url = new URL(request.url);
     const key = url.searchParams.get("key");
-    if (key) {
-      const apiKey = key.replace("f6bb694916a535eecf64c585d4d879ad_", "");
-      const user = await userData.findOne({ _id: apiKey });
+    if (key) { 
+      const user = await userData.findOne({ _id: key, status:'active' });
       if (user) {
         const departments = await Designation.find().sort({ "name": 1 });
         return new NextResponse(JSON.stringify(departments), { status: 200 });

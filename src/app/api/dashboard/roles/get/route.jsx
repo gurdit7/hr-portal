@@ -10,8 +10,7 @@ export const GET = async (request) => {
      const url = new URL(request.url);
      const key = url.searchParams.get("key");
      if(key){
-     const apiKey = key.replace("f6bb694916a535eecf64c585d4d879ad_","");
-     const user = await userData.findOne({_id:apiKey});
+     const user = await userData.findOne({_id: key, status:'active'});
      if(user){
     const data = await Roles.find()
       .then( async (userExist) => {
@@ -39,7 +38,7 @@ export const GET = async (request) => {
         status: 200,
       });
     }
-  } catch (error) {    
+  } catch (error) {  
     return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });
   }
 };

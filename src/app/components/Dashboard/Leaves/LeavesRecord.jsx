@@ -10,92 +10,88 @@ import H2 from "../../Ui/H2/H2";
 import IconSort from "../../Icons/IconSort";
 import { LeaveItem } from "./Leaves";
 import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
+import Pagination from "../../Ui/Pagination/Pagination";
+import Input from "../../Form/Input/Input";
+import IconSearch from "../../Icons/IconSearch";
 
-const LeavesRecord = ({loader, setLoader}) => {
-  const [load, setLoad] = useState(false);
-  const { userData } = useAuth();
-  const { userPermissions, leaves } = useDashboard();
-  const [allLeaves, setAllLeaves] = useState(false);
-  const [allLeavesLength, setAllLeavesLength] = useState(-1);
+const LeavesRecord = () => {
+  const { userPermissions, individualUserLeaves, allUsersLeaves } =
+    useDashboard();
+  const [allLeaves, setAllLeaves] = useState([]);
   const [status, setStatus] = useState(false);
   const [error, setError] = useState(false);
   const array = [0, 1, 2, 3, 4];
-
+  const [count, setCount] = useState(0);
+  const [start, setStart] = useState(0);
+  const [search, setSearch] = useState("");
+  const limit = 3;
   const getSort = (e) => {
     setError(false);
-    if (userData) {
-      if (e.target.value !== "all") {
-        if (userPermissions && userPermissions?.includes("user-leaves")) {
-          fetch(
-            `/api/dashboard/leaves?all=true&value=${e.target.value}&key=f6bb694916a535eecf64c585d4d879ad_${userData?._id}`
-          )
-            .then((res) => res.json())
-            .then((data) => {
-              setAllLeaves(data || []);
-              setTimeout(() => {
-                setAllLeavesLength(data.length)
-                setStatus(true);
-                if (data.length === 0) {
-                  setError(true);
-                }
-              }, 500);
-            });
-        } else {
-          fetch(
-            `/api/dashboard/leaves?email=${userData?.email}&value=${e.target.value}&key=f6bb694916a535eecf64c585d4d879ad_${userData?._id}`
-          )
-            .then((res) => res.json())
-            .then((data) => {
-              setAllLeaves(data.leaves || []);
-              setTimeout(() => {
-                setAllLeavesLength(data.length)
-                if (data.leaves.length === 0) {
-                  setError(true);
-                }
-                setStatus(true);
-              }, 500);
-            });
-        }
+    if (e.target.value !== "all") {
+      if (!userPermissions?.includes("user-leaves")) {
+        let filteredUsers = individualUserLeaves?.filter((user) => {
+          return user.status === e.target.value;
+        });
+        setCount(Math.ceil(filteredUsers.length / limit));
+        setAllLeaves(filteredUsers.slice(start * limit, (start + 1) * limit));
       } else {
-        setLoad(true);
+        let filteredUsers = allUsersLeaves?.filter((user) => {
+          return user.status === e.target.value;
+        });
+        setCount(Math.ceil(filteredUsers.length / limit));
+        setAllLeaves(filteredUsers.slice(start * limit, (start + 1) * limit));
+      }
+    } else {
+      if (!userPermissions?.includes("user-leaves")) {
+        setCount(Math.ceil(individualUserLeaves?.length / limit));
+        setAllLeaves(
+          individualUserLeaves?.slice(start * limit, (start + 1) * limit)
+        );
+      } else {
+        setCount(Math.ceil(allUsersLeaves?.length / limit));
+        setAllLeaves(allUsersLeaves?.slice(start * limit, (start + 1) * limit));
       }
     }
   };
+  const getSearch = (e) => {
+    setSearch(e.target.value);
+  };
+  const handlePageChange = (e) => {
+    setStart(e);
+  };
   useEffect(() => {
-    setLoad(false);
-    if (userData) {
-      if (userPermissions && userPermissions?.includes("user-leaves")) {
-        fetch(
-          `/api/dashboard/leaves?all=true&key=f6bb694916a535eecf64c585d4d879ad_${userData?._id}`
-        )
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.length === 0) {
-              setError(true);
-            }
-            setAllLeavesLength(data.length);
-            setStatus(true);
-            setAllLeaves(data || []);
-            setLoader(false);
-          });
+    if (
+      individualUserLeaves &&
+      userPermissions &&
+      !userPermissions?.includes("user-leaves")
+    ) {
+      setStatus(true);
+      setCount(Math.ceil(individualUserLeaves?.length / limit));
+      setAllLeaves(
+        individualUserLeaves?.slice(start * limit, (start + 1) * limit)
+      );
+    }
+  }, [individualUserLeaves, start]);
+  useEffect(() => {
+    if (
+      allUsersLeaves &&
+      userPermissions &&
+      userPermissions?.includes("user-leaves")
+    ) {
+      if (search !== "") {
+        let filteredUsers = allUsersLeaves?.filter((user) => {
+          const name = user?.name.toLowerCase();
+          return name.includes(search.toLowerCase());
+        });
+        setCount(Math.ceil(filteredUsers.length / limit));
+        setAllLeaves(filteredUsers.slice(start * limit, (start + 1) * limit));
       } else {
-        fetch(
-          `/api/dashboard/leaves?email=${userData?.email}&key=f6bb694916a535eecf64c585d4d879ad_${userData?._id}`
-        )
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.leaves.length === 0) {
-              setError(true);
-
-            }
-            setAllLeavesLength(data.length);
-            setStatus(true);
-            setAllLeaves(data.leaves || []);
-            setLoader(false);
-          });
+        setStatus(true);
+        setCount(Math.ceil(allUsersLeaves?.length / limit));
+        setAllLeaves(allUsersLeaves?.slice(start * limit, (start + 1) * limit));
       }
     }
-  }, [leaves, userData.email, load, loader]);
+  }, [allUsersLeaves, start, search]);
   return (
     <Wrapper className="bg-white rounded-[10px] p-5 w-full">
       <Wrapper className="flex flex-col gap-[15px] mb-4">
@@ -103,33 +99,58 @@ const LeavesRecord = ({loader, setLoader}) => {
           <H2>Leave Record</H2>
           <DropDown
             items={leaveSort}
-            placeholder="Sort By"
+            placeholder="Filter By"
             value=""
-            name="Sort By"
+            name="Filter By"
             setData={getSort}
             className="!flex-none max-w-[210px] w-full"
           >
             <IconSort size="24px" color="fill-light-400" />
           </DropDown>
         </Wrapper>
-        {allLeaves && allLeaves?.length > 0 ? (
-          <>
-            {allLeaves?.map((item, index) => (
-              <LeaveItem item={item} key={index} index={index} />
-            ))}
-          </>
-        ) : (
-          <>
-            {error && (
-              <Text className="text-center my-4">
-                {defaultTheme?.leavesNoRecord}
-              </Text>
-            )}
-          </>
+        {userPermissions && userPermissions?.includes("user-leaves") && (
+          <Wrapper>
+            <Input
+              type="text"
+              placeholder="Search by employee name"
+              value={search}
+              setData={getSearch}
+              name="Search"
+              wrapperClassName="!flex-none"
+              className="border border-light-600"
+            >
+              <IconSearch size="24px" color="fill-light-400" />
+            </Input>
+          </Wrapper>
         )}
-      </Wrapper>  
-      {allLeavesLength < 0 &&
-        !status &&
+        {userPermissions &&
+          !userPermissions?.includes("user-leaves") &&
+          allLeaves &&
+          allLeaves?.length > 0 && (
+            <>
+              {allLeaves?.map((item, index) => (
+                <LeaveItem item={item} key={index} index={index} />
+              ))}
+            </>
+          )}
+        {userPermissions &&
+          userPermissions?.includes("user-leaves") &&
+          allLeaves &&
+          allLeaves?.length > 0 && (
+            <>
+              {allLeaves?.map((item, index) => (
+                <LeaveItem item={item} key={index} index={index} />
+              ))}
+            </>
+          )}
+        {allLeaves?.length === 0 && (
+          <Text className="text-center my-4">No Record Found.</Text>
+        )}
+        {allLeaves?.length > 0 && count > 1 && (
+          <Pagination count={count} getIndex={handlePageChange} index={start} />
+        )}
+      </Wrapper>
+      {!status &&
         array.map((index) => (
           <Wrapper key={index} className="border border-light-500 relative">
             <Wrapper className="p-3 relative">

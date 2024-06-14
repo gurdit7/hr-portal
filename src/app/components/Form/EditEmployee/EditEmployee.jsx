@@ -22,12 +22,14 @@ import useAuth from "@/app/contexts/Auth/auth";
 import IconSalary from "../../Icons/IconSalary";
 import IconNumber from "../../Icons/IconNumber";
 import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
+import ErrorNotification from "../../Ui/notification/loader/LoaderNotification";
 const EditEmployee = ({ user, closePopup }) => {
   const { userData } = useAuth();
-  const { getUsers, userRoles, designations, departments } = useDashboard();
+  const { getEmployees, userRoles, designations, departments } = useDashboard();
   const [formData, setFromData] = useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
   useEffect(() => {
     setFromData({
       userType: user?.userType,
@@ -52,9 +54,10 @@ const EditEmployee = ({ user, closePopup }) => {
   const submitForm = (e) => {
     setLoading(true);
     e.preventDefault();
-    fetch("/api/dashboard/edit-employee", {
-      method: "POST",
+    fetch("/api/dashboard/employee", {
+      method: "PUT",
       body: JSON.stringify({
+        key:`${userData?._id}`,
         userType: formData?.userType || user?.userType,
         name: formData?.name || user?.name,
         joinDate: formData?.joinDate || user?.joinDate,
@@ -81,12 +84,34 @@ const EditEmployee = ({ user, closePopup }) => {
         return res.json();
       })
       .then((res) => {
+        if(res.error){
+          setError({
+            status: true,
+            active: true,
+            message: res?.error,
+          });
+          setTimeout(() => {
+            setLoading(false);
+            setError(false);
+          }, 3000);
+        } else{        
         setSuccess(true);
-        getUsers();
+        getEmployees(userData?._id);
         setTimeout(() => {
           setLoading(false);
           closePopup(false);
         }, 2000);
+      }
+      }).catch(error=>{
+        setError({
+          status: true,
+          active: true,
+          message: res?.error,
+        });
+        setTimeout(() => {    
+          setLoading(false);
+          setError(false);
+        }, 3000);
       });
   };
   const addItemForm = (e) => {
@@ -352,6 +377,12 @@ const EditEmployee = ({ user, closePopup }) => {
           message="User successsfully updated."
         ></Notification>
       )}
+        {error?.status && (
+            <ErrorNotification
+              active={error?.active}
+              message={error?.message}
+            ></ErrorNotification>
+          )}
     </>
   );
 };

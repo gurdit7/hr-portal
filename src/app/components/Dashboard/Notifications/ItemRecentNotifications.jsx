@@ -16,40 +16,34 @@ import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 
 const ItemRecentNotifications = () => {
   const { userData } = useAuth();
-  const {
-    userPermissions,
-    userNotifications,
-    userNotificationsLength,
-    fetchNotifications,
-  } = useDashboard();
+  const { userPermissions, userNotifications, fetchNotifications } =
+    useDashboard();
   const [emailID, setEmail] = useState("");
   const [name, setName] = useState("");
-  const [limit, setLimit] = useState(5);
+  const [allNotification, setAllNotification] = useState("");
   const [count, setCount] = useState(0);
   const [start, setStart] = useState(0);
   const [sortby, setSortBy] = useState("");
   const [search, setSearch] = useState("");
-
+  const limit = 10;
   useEffect(() => {
     setEmail(userData?.email || "");
     setName(userData?.name || "");
   }, [userData]);
 
   useEffect(() => {
-    setCount(Math.ceil(userNotificationsLength / limit));
-  }, [userNotificationsLength, limit]);
-
-  useEffect(() => {
-    const all = !userPermissions?.includes("user-notifications");
-    fetchNotifications(all, start, limit, userData?.email);
-  }, [limit, start, userPermissions, userData]);
-
+    if (userNotifications) {
+      setCount(Math.ceil(userNotifications.length / limit));
+      setAllNotification(
+        userNotifications.slice(start * limit, (start + 1) * limit)
+      );
+    }
+  }, [userNotifications]);
   const handleSearchChange = (e) => setSearch(e.target.value);
   const handleSortByChange = (e) => setSortBy(e.target.value);
   const handlePageChange = (e) => {
     setStart(e);
   };
-
   return (
     <>
       <Wrapper className="flex justify-between items-center">
@@ -68,7 +62,7 @@ const ItemRecentNotifications = () => {
             </DropDown>
           </>
         )}
-      </Wrapper>
+      </Wrapper>     
       {count > 0 && (
         <Input
           value={search}
@@ -82,17 +76,10 @@ const ItemRecentNotifications = () => {
           <IconSearch size="24px" color="fill-light-400" />
         </Input>
       )}
-      <div className="flex flex-col gap-[15px]">
-        {userNotifications.map((item, index) => (
-          <Item
-            key={index}
-            item={item}
-            emailID={emailID}
-            name={name}
-            userData={userData}
-          />
-        ))}
-      </div>
+ {allNotification &&
+              allNotification.map((item, i) => (
+                 <Item item={item} key={i}/> 
+              ))}
       {count > 1 && (
         <Pagination count={count} getIndex={handlePageChange} index={start} />
       )}

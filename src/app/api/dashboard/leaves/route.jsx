@@ -85,7 +85,7 @@ export const POST = async (request) => {
     const notifications = new Notifications({
       ...payload,
       toEmails: mails,
-      type: "leaves",
+      type: "leaveRequest",
       id: result._id,
       viewed: viewedStatus,
     });
@@ -108,68 +108,80 @@ export const GET = async (request) => {
     const value = url.searchParams.get("value");
     const key = url.searchParams.get("key");
     if (key) {
-      const apiKey = key.replace("f6bb694916a535eecf64c585d4d879ad_", "");
-      const user = await UsersData.findOne({ _id: apiKey });
-
+      const user = await UsersData.findOne({ _id: key, status:'active' });
       if (user) {
-        if (all === "true" && !value) {
-          const leaves = await Leaves.find().sort({ $natural: -1 });
-          return new NextResponse(JSON.stringify(leaves), { status: 200 });
-        }
-        if (all === "true" && value) {
-          const leaves = await Leaves.find({ status: value }).sort({
-            $natural: -1,
-          });
-          return new NextResponse(JSON.stringify(leaves), { status: 200 });
-        }
-        if (all === "salary") {
-          const date = new Date();
-          const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-          const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-          const leaves = await Leaves.find({
-            $or: [
-              { status: "approved" },
-              { status: "updated" },         
-            ],
-            createdAt: { $gte: firstDay, $lt: lastDay },
-          }).sort({
-            $natural: -1,
-          });
-          return new NextResponse(JSON.stringify(leaves), { status: 200 });
-        }
-        if (!id && !email) {
-          return new NextResponse(
-            JSON.stringify({ error: "Email not provided" }),
-            {
-              status: 400,
-            }
-          );
-        }
+        const result = await addRole.findOne({
+          role: user.role,
+          $or: [{ permissions: "read-leaves" }, { permissions: "user-leaves" }],
+        });
+        if (result) {
+          if (all === "true" && !value) {
+            const leaves = await Leaves.find().sort({ $natural: -1 });
+            return new NextResponse(JSON.stringify(leaves), { status: 200 });
+          }
+          if (all === "true" && value) {
+            const leaves = await Leaves.find({ status: value }).sort({
+              $natural: -1,
+            });
+            return new NextResponse(JSON.stringify(leaves), { status: 200 });
+          }
+          if (all === "salary") {
+            const date = new Date();
+            const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+            const lastDay = new Date(
+              date.getFullYear(),
+              date.getMonth() + 1,
+              0
+            );
+            const leaves = await Leaves.find({
+              $or: [{ status: "approved" }, { status: "updated" }],
+              createdAt: { $gte: firstDay, $lt: lastDay },
+            }).sort({
+              $natural: -1,
+            });
+            return new NextResponse(JSON.stringify(leaves), { status: 200 });
+          }
+          if (!id && !email) {
+            return new NextResponse(
+              JSON.stringify({ error: "Email not provided" }),
+              {
+                status: 400,
+              }
+            );
+          }
 
-        if (email && !value) {
-          const leaves = await Leaves.find({ email }).sort({ $natural: -1 });
-          const user = await UsersData.findOne({ email });
-          return new NextResponse(JSON.stringify({ leaves, user }), {
-            status: 200,
-          });
-        }
-        if (email && value) {
-          const leaves = await Leaves.find({ email, status: value }).sort({
-            $natural: -1,
-          });
-          const user = await UsersData.findOne({ email });
-          return new NextResponse(JSON.stringify({ leaves, user }), {
-            status: 200,
-          });
-        }
-        if (id) {
-          const leaves = await Leaves.findById(id);
-          const user = await UsersData.findOne({ email: leaves.email }).sort({
-            $natural: -1,
-          });
-          return new NextResponse(JSON.stringify({ leaves, user }), {
-            status: 200,
-          });
+          if (email && !value) {
+            const leaves = await Leaves.find({ email }).sort({ $natural: -1 });
+            const user = await UsersData.findOne({ email });
+            return new NextResponse(JSON.stringify({ leaves, user }), {
+              status: 200,
+            });
+          }
+          if (email && value) {
+            const leaves = await Leaves.find({ email, status: value }).sort({
+              $natural: -1,
+            });
+            const user = await UsersData.findOne({ email });
+            return new NextResponse(JSON.stringify({ leaves, user }), {
+              status: 200,
+            });
+          }
+          if (id) {
+            const leaves = await Leaves.findById(id);
+            const user = await UsersData.findOne({ email: leaves.email }).sort({
+              $natural: -1,
+            });
+            return new NextResponse(JSON.stringify({ leaves, user }), {
+              status: 200,
+            });
+          }
+        } else {
+          return new NextResponse(
+            JSON.stringify({
+              error: "You don't have permissions to get the data.",
+            }),
+            { status: 403 }
+          );
         }
       } else {
         return new NextResponse(JSON.stringify({ error: "Invalid api key." }), {
@@ -184,10 +196,13 @@ export const GET = async (request) => {
         }
       );
     }
-    console.log("apiKey", apiKey);
   } catch (error) {
-    console.error("Error:", error);
-    return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });
+    return new NextResponse(
+      JSON.stringify({
+        error: "Invalid API key.",
+      }),
+      { status: 403 }
+    );
   }
 };
 
@@ -195,33 +210,77 @@ export const PUT = async (request) => {
   try {
     await connect();
     const payload = await request.json();
-    let updatedLeave,
-      updatedUser = 0;
-    const user = await UsersData.findOne({ email: payload?.email });
-    if (payload.update === "leaves") {
-      await Leaves.updateOne({ _id: payload.id }, { status: "updated",  reason: payload.reason });
-      await UsersData.updateOne(
-        { email: payload.email },
-        {
-          totalLeaveTaken: payload.totalLeaveTaken,
-          balancedLeaves: payload.balancedLeaves,
-          balancedSandwichLeaves: payload.balancedSandwichLeaves,
-          balancedSandwichLeavesTaken: payload.balancedSandwichLeavesTaken || 0,
-          totalUnpaidLeaveTaken: payload.totalUnpaidLeaveTaken || 0,
-          unpaidSandwichLeavesTaken: payload.unpaidSandwichLeavesTaken || 0,
+    if (payload?.key) {   
+      const user = await UsersData.findOne({ _id: payload?.key, status:'active' });
+      if (user) {        
+        const result = await addRole.findOne({
+          role: user.role,
+          permissions: "approve-decline-leaves"
+        });
+        if (result) {
+          let updatedLeave,
+            updatedUser = 0;
+          const user = await UsersData.findOne({ email: payload?.email });
+          if (payload.update === "leaves") {
+            await Leaves.updateOne(
+              { _id: payload.id },
+              { status: "updated", reason: payload.reason }
+            );
+            await UsersData.updateOne(
+              { email: payload.email },
+              {
+                totalLeaveTaken: payload.totalLeaveTaken,
+                balancedLeaves: payload.balancedLeaves,
+                balancedSandwichLeaves: payload.balancedSandwichLeaves,
+                balancedSandwichLeavesTaken:
+                  payload.balancedSandwichLeavesTaken || 0,
+                totalUnpaidLeaveTaken: payload.totalUnpaidLeaveTaken || 0,
+                unpaidSandwichLeavesTaken:
+                  payload.unpaidSandwichLeavesTaken || 0,
+              }
+            );
+            updatedUser = await UsersData.findOne({ email: payload.email });
+            return new NextResponse(JSON.stringify(updatedUser), {
+              status: 200,
+            });
+          }
+          await UsersData.updateOne({ email: payload.email }, updateUserFields);
+          const User = await UsersData.findOne({ email: payload.email });
+          return new NextResponse(
+            JSON.stringify({ leave: updatedLeave, user: User }),
+            { status: 200 }
+          );
         }
-      );
-      updatedUser = await UsersData.findOne({ email: payload.email });
-      return new NextResponse(JSON.stringify(updatedUser), { status: 200 });
+        else {
+          return new NextResponse(
+            JSON.stringify({
+              error: "You don't have permissions.",
+            }),
+            { status: 403 }
+          );
+        }
+      }
+      else {
+        return new NextResponse(
+          JSON.stringify({
+            error: "Invalid API key.",
+          }),
+          { status: 403 }
+        );
+      }
     }
-    await UsersData.updateOne({ email: payload.email }, updateUserFields);
-    const User = await UsersData.findOne({ email: payload.email });
-    return new NextResponse(
-      JSON.stringify({ leave: updatedLeave, user: User }),
-      { status: 200 }
-    );
+    else {
+      return new NextResponse(
+        JSON.stringify({ error: "Please add the API key." }),
+        { status: 403 }
+      );
+    }
   } catch (error) {
-    console.error("Error:", error);
-    return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });
+    return new NextResponse(
+      JSON.stringify({
+        error: "Invalid API key.",
+      }),
+      { status: 403 }
+    );
   }
 };

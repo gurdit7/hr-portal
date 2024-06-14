@@ -8,7 +8,6 @@ export const POST = async (request) => {
   try {
     await connect();
     const payload = await request.json();
-    console.log(payload?.email)
     const data = await Users.findOne({ email: payload?.email })
       .then(async (userExist) => {
         if (userExist) {

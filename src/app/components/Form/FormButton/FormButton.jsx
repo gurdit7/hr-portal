@@ -9,11 +9,11 @@ const FormButton = ({ children, type, btnType, label, loading, loadingText, even
     return (
         <>
         {event && (<button type={type} className={classes + ' '} onClick={event}>
-            <span className="relative z-10">{children} {loading ? loadingText : label}</span> 
+            <span className="relative z-10 flex gap-1 justify-center items-center flex-row-reverse w-full">{children} {loading ? loadingText : label}</span> 
             </button>) }
 
             {!event && (<button type={type} className={classes} onClick={event}>
-                <span className="relative z-10">{children} {loading ? loadingText : label}</span> 
+                <span className="relative z-10 flex gap-1 justify-center items-center">{children} {loading ? loadingText : label}</span> 
             </button>) }
             
         </>

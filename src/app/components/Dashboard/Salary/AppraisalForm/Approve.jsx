@@ -7,8 +7,10 @@ import ErrorNotification from "@/app/components/Ui/notification/loader/LoaderNot
 import Notification from "@/app/components/Ui/notification/success/Notification";
 import Input from "@/app/components/Form/Input/Input";
 import IconSalary from "@/app/components/Icons/IconSalary";
+import useAuth from "@/app/contexts/Auth/auth";
 
 const Approve = ({ id, user, setValue }) => {
+  const { userData } = useAuth();
   const [approvePopup, setApprovePopup] = useState(false);
   const [formData, setFormData] = useState({});
   const [approveButtonLoading, setApproveButtonLoading] = useState(false);
@@ -17,8 +19,6 @@ const Approve = ({ id, user, setValue }) => {
   const [successAnimation, setSuccessAnimation] = useState(false);
   const [successMessage, setSuccessMessage] = useState(false);
   const [error, setError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [errorAnimation, setErrorAnimation] = useState(false);
   const closeApproveModal = (e) => {
     setApprovePopup(false);
   };
@@ -26,8 +26,9 @@ const Approve = ({ id, user, setValue }) => {
     setApprovePopup(true);
     setFormData({
       ...formData,
-      id:id,
-      email:user?.email,
+      id: id,
+      key: userData._id,
+      email: user?.email,
       status: "not-approved",
     });
   };
@@ -35,8 +36,9 @@ const Approve = ({ id, user, setValue }) => {
     setApprovePopup(true);
     setFormData({
       ...formData,
-      id:id,
-      email:user?.email,
+      id: id,
+      key: userData._id,
+      email: user?.email,
       status: "approved",
     });
   };
@@ -51,15 +53,38 @@ const Approve = ({ id, user, setValue }) => {
         return res.json();
       })
       .then((res) => {
-        setSuccess(true);
-        setSuccessMessage("The status is changed.");
-        setSuccessAnimation(true);
+        if (res.error) {
+          setError({
+            status: true,
+            active: true,
+            message: res?.error,
+          });
+          setTimeout(() => {
+            setApproveButtonLoading(false);
+            setError(false);
+          }, 3000);
+        } else {
+          setSuccess(true);
+          setSuccessMessage("The status is changed.");
+          setSuccessAnimation(true);
+          setTimeout(() => {
+            setValue(true);
+            setApproveButtonLoading(false);
+            closeApproveModal();
+            setSuccess(false);
+            setSuccessAnimation(false);
+          }, 3000);
+        }
+      })
+      .catch((error) => {
+        setError({
+          status: true,
+          active: true,
+          message: error?.error,
+        });
         setTimeout(() => {
-          setValue(true);
           setApproveButtonLoading(false);
-          closeApproveModal();
-          setSuccess(false);
-          setSuccessAnimation(false);
+          setError(false);
         }, 3000);
       });
   };
@@ -133,10 +158,10 @@ const Approve = ({ id, user, setValue }) => {
               message={successMessage}
             ></Notification>
           )}
-          {error && (
+          {error.status && (
             <ErrorNotification
-              active={errorAnimation}
-              message={errorMessage}
+              active={error.active}
+              message={error.message}
             ></ErrorNotification>
           )}
         </Modal>

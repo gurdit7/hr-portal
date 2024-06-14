@@ -1,62 +1,77 @@
 import { NextResponse, NextRequest } from "next/server";
 import connect from "../../../libs/mongo/index";
 import Notifications from "@/model/notifications";
-import requestDocuments from "@/model/requestDocuments";
+import userData from "@/model/userData";
+import Roles from "@/model/addRole";
 
 export const GET = async (request) => {
   try {
     await connect();
     const url = new URL(request.url);
-    const all = url.searchParams.get("all");
-    const filter = url.searchParams.get("filter");
-    const start = url.searchParams.get("start");
-    const limit = url.searchParams.get("limit");
+    const key = url.searchParams.get("key");
     const email = url.searchParams.get("email");
-    if (all === "false") {
-      const data = await Notifications.find({toEmails:email}).sort({$natural:-1})
-        .then((userExist) => {
-          if (userExist) {
-            return userExist;
-          }
-        })
-        .then((res) => {
-          return res;
-        });        
-      return new NextResponse(JSON.stringify({ data: data, length: data.length }), { status: 200 });
-    } else if (filter === "search") {
-      const search = url.searchParams.get("search");
-      const data = await requestDocuments
-        .find({
-          $or: [
-            { document: { $regex: search } },
-            { description: { $regex: search } },
-            { status: { $regex: search } },
-            { email: { $regex: search } }            
-          ],
-        })
-        .limit(limit)
-        .skip(limit * start)
-        .sort({ $natural: -1 });
-      return new NextResponse(
-        JSON.stringify({ data: data, length: data.length }),
-        {
-          status: 200,
+    if (key) {
+      const user = await userData.findOne({ _id: key, status:'active' });
+      if (user) {
+        const result = await Roles.findOne({
+          role: user.role,
+          permissions: "view-users-notifications",
+        });
+        if (result) {
+          const data = await Notifications.find({ toEmails: email })
+            .sort({ $natural: -1 })
+            .then((res) => {
+              if (res) {
+                return res;
+              }
+            })
+            .then((res) => {
+              return res;
+            });
+          const result = data.map((item) => {
+            const viewedStatus = item?.viewed.find(mail => mail?.mail === email)?.status;
+            return { name: item.name, createdDate: item.createdAt, viewedStatus, type: item.type, id: item.id, mainId: item._id };
+          });
+          return new NextResponse(JSON.stringify({ data: result }), {
+            status: 200,
+          });
+        } else {
+          return new NextResponse(
+            JSON.stringify({
+              error: "You don't have permissions to get the data.",
+            }),
+            { status: 403 }
+          );
         }
-      );
+      } else {
+        return new NextResponse(
+          JSON.stringify({
+            error: "Invalid API key.",
+          }),
+          { status: 403 }
+        );
+      }
     } else {
-      const notification = await Notifications.find({toEmails:email}).sort({$natural:-1});        
-      const result = notification.sort((a, b) => {
-        return new Date(b.updatedAt) - new Date(a.updatedAt);
-      });
-      const data = result.slice(start, Math.floor(start) + Math.floor(limit));      
       return new NextResponse(
-        JSON.stringify({ data: data, length: result.length }),
-        { status: 200 }
+        JSON.stringify({ error: "Please add the API key." }),
+        { status: 403 }
       );
-      
     }
   } catch (error) {
-    return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });
+    if (error?.path === "_id") {
+      return new NextResponse(JSON.stringify({ error: "Invalid api key." }), {
+        status: 401,
+      });
+    } else {
+      return new NextResponse(
+        "ERROR" +
+          JSON.stringify({
+            error: "Please add required fields.",
+            errors: JSON.stringify(error),
+          }),
+        { status: 500 }
+      );
+    }
   }
 };
 
@@ -80,14 +95,16 @@ export const POST = async (request) => {
   }
 };
 
-
 export const PUT = async (request) => {
   try {
     await connect();
-    const payload = await request.json();    
-    const notification = await Notifications.updateOne({ _id: payload.id }, { viewed: payload.viewed });
+    const payload = await request.json();
+    const notification = await Notifications.updateOne(
+      { _id: payload.id },
+      { viewed: payload.viewed }
+    );
     return new NextResponse(JSON.stringify(notification), { status: 200 });
   } catch (error) {
     return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });
   }
-}
+};

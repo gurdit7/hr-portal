@@ -19,7 +19,7 @@ import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 
 const AllEmployees = () => {
-  const {setBreadcrumbs} = useThemeConfig();
+  const { setBreadcrumbs } = useThemeConfig();
   const [sortby, setSortBy] = useState("");
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState([]);
@@ -31,14 +31,14 @@ const AllEmployees = () => {
   const [count, setCount] = useState("");
   const limit = 10;
   useEffect(() => {
-    if(allEmployeesData?.data){
-      setCount(allEmployeesData?.length / limit);
-      setUsers(allEmployeesData?.data)
+    if (allEmployeesData) {
+      setCount(allEmployeesData?.leaves?.length / limit);
+      setUsers(allEmployeesData?.leaves);
     }
   }, [editEmployee, addEmployee, allEmployeesData]);
   useEffect(() => {
     if (search !== "") {
-      let filteredUsers = allEmployeesData?.all.filter((user) => {
+      let filteredUsers = allEmployeesData?.leaves.filter((user) => {
         return (
           user.userType.includes(search) ||
           user.name.includes(search) ||
@@ -49,23 +49,21 @@ const AllEmployees = () => {
         );
       });
       setCount(Math.ceil(filteredUsers.length / limit));
-      setUsers(
-        filteredUsers.slice(index * 2, index * (index + 1) + limit)
-      );
+      setUsers(filteredUsers.slice(index * 2, index * (index + 1) + limit));
     } else {
-      setCount(Math.ceil(allEmployeesData.length / limit));
-      setUsers(allEmployeesData?.data);
+      if (allEmployeesData) {
+        setCount(Math.ceil(allEmployeesData?.leaves.length / limit));
+        setUsers(allEmployeesData?.leaves);
+      }
     }
   }, [search, index, allEmployeesData]);
   const getSortBy = (e) => {
-    setSortBy(e.target.value);   
-    if(e.target.value === 'all'){
-      setSearch('');
-    }
-    else{
+    setSortBy(e.target.value);
+    if (e.target.value === "all") {
+      setSearch("");
+    } else {
       setSearch(e.target.value);
     }
-    
   };
   const getSearch = (e) => {
     setSearch(e.target.value);
@@ -93,7 +91,7 @@ const AllEmployees = () => {
       {
         href: "/dashboard/employees",
         label: "Employees",
-      }
+      },
     ];
     setBreadcrumbs(breadcrumbs);
   }, []);
@@ -142,10 +140,12 @@ const AllEmployees = () => {
               <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white">
                 Increment Date
               </Wrapper>
-              {userPermissions && userPermissions?.includes("write-employees") && (      
-              <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white">
-                Actions
-              </Wrapper>)}
+              {userPermissions &&
+                userPermissions?.includes("write-employees") && (
+                  <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white">
+                    Actions
+                  </Wrapper>
+                )}
             </Wrapper>
             <Wrapper className="border border-light-500 border-t-0">
               {users &&
@@ -171,24 +171,25 @@ const AllEmployees = () => {
                     <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
                       {formatDate(user.incrementDate)}
                     </Wrapper>
-                    {userPermissions && userPermissions?.includes("write-employees") && (   
-                    <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark flex gap-[2px]">
-                      <span
-                        onClick={() => editEmployeeModal(i)}
-                        className="rounded-full w-[30px] h-[30px] bg-accent flex justify-center items-center cursor-pointer hover:scale-110"
-                      >
-                        <IconEdit size="16px" color="fill-white" />
-                      </span>
-                      <span
-                        onClick={() => viewModal(i)}
-                        className="rounded-full w-[30px] h-[30px] bg-[#219653] flex justify-center items-center cursor-pointer hover:scale-110"
-                      >
-                        <IconView size="16px" color="fill-white" />
-                      </span>
-                    </Wrapper>)}
+                    {userPermissions &&
+                      userPermissions?.includes("write-employees") && (
+                        <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark flex gap-[2px]">
+                          <span
+                            onClick={() => editEmployeeModal(i)}
+                            className="rounded-full w-[30px] h-[30px] bg-accent flex justify-center items-center cursor-pointer hover:scale-110"
+                          >
+                            <IconEdit size="16px" color="fill-white" />
+                          </span>
+                          <span
+                            onClick={() => viewModal(i)}
+                            className="rounded-full w-[30px] h-[30px] bg-[#219653] flex justify-center items-center cursor-pointer hover:scale-110"
+                          >
+                            <IconView size="16px" color="fill-white" />
+                          </span>
+                        </Wrapper>
+                      )}
                   </Wrapper>
                 ))}
-                
             </Wrapper>
             {count === 0 && (
               <Text className="text-center my-4">No Record Found.</Text>

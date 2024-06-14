@@ -33,7 +33,7 @@ const All = () => {
   const [start, setStart] = useState(0);
   const handlePageChange = (e) => {
     setStart(e);
-  };
+  };  
   useEffect(() => {
     if (userRoles) {
       setCount(Math.ceil(userRoles.length / limit));
@@ -72,7 +72,7 @@ const All = () => {
     setFormData({
         ...formData,
         name: name,
-        key:`f6bb694916a535eecf64c585d4d879ad_${userData?._id}`, 
+        key:`${userData?._id}`, 
         permissions: per[0]?.permissions,
       });
     setShowEditModal(true);
@@ -81,7 +81,7 @@ const All = () => {
   const setFormValues = (e) => {
     setFormDataDelete({
       ...formDataDelete,
-      key:`f6bb694916a535eecf64c585d4d879ad_${userData?._id}`, 
+      key:`${userData?._id}`, 
       [e.target.name]: e.target.value,
     });
   };
@@ -89,7 +89,7 @@ const All = () => {
     setShowDeleteModal(true);
     setFormDataDelete({
       ...formDataDelete,
-      key:`f6bb694916a535eecf64c585d4d879ad_${userData?._id}`, 
+      key:`${userData?._id}`, 
       name: name,
     });
   };
@@ -116,7 +116,6 @@ const All = () => {
         return response.json();
       })
       .then((response) => {
-        console.log(response);
         setSuccess({
           active: true,
           message: "Role is Updated.",
