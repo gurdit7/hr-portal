@@ -15,8 +15,8 @@ export const GET = async (request) => {
           permissions: "read-employees",
         });
         if (result) {
-          const leaves = await UsersData.find().sort({ $natural: -1 });
-          return new NextResponse(JSON.stringify({ leaves }), { status: 200 });
+          const data = await UsersData.find().sort({ $natural: -1 });
+          return new NextResponse(JSON.stringify({ data }), { status: 200 });
         } else {
           return new NextResponse(
             JSON.stringify({

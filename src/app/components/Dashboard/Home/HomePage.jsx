@@ -26,7 +26,6 @@ const HomePage = () => {
     setBreadcrumbs(breadcrumbs);
   }, []);
   useEffect(() => {
-    console.log(allEmployeesData);
     if (allEmployeesData.length > 0) {
       const maleCount = allEmployeesData?.filter((item) => {
         return item?.gender === "male";
@@ -71,9 +70,9 @@ const HomePage = () => {
           </Wrapper>
         </Container>
       )}
-      {userPermissions && userPermissions?.includes("balance-leaves") && (
+      {userPermissions && userPermissions?.includes("balance-leaves") && !userPermissions?.includes("write-employees") && (
         <Container heading={`Welcome, ${userData?.name}`}>
-         {!userPermissions?.includes("write-employees")  &&  <BalancedLeaves user={userData} />}
+         <BalancedLeaves user={userData} />
           <Wrapper className="flex justify-between gap-[15px] mt-[15px] items-start">
             <RecentNotifications />
             <Wrapper className="max-w-[600px] w-full bg-white rounded-[10px] p-5">

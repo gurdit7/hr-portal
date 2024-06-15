@@ -123,7 +123,7 @@ export const DashboardConfiger = ({ children }) => {
         return res.json();
       })
       .then(async function (data) {
-        setAllEmployees(data);
+        setAllEmployees(data.data);
       });
   };
   const getIndividualUserLeaves = (email, key) => {
