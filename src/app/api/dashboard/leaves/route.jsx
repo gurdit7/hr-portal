@@ -91,7 +91,7 @@ export const POST = async (request) => {
     });
 
     await notifications.save();
-    return new NextResponse(JSON.stringify(result), { status: 200 });
+    return new NextResponse(JSON.stringify({result, mails}), { status: 200 });
   } catch (error) {
     console.error("Error:", error);
     return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });

@@ -160,12 +160,16 @@ const Leaves = () => {
         body: JSON.stringify(formDataCopy),
       });
 
-      const data = await response.json();
-      if(data){
-        const rooms = 'gurdit@thefabcode.org, room2';
-        const roomArray = rooms.split(',').map(room => room.trim());
-        const message = "Test";
-        socket.emit('sendNotification', { rooms: roomArray, message });
+      const data = await response.json();  
+      console.log(data);
+      if(data){    
+        const message = {
+          heading:"New leave request",
+          message:`${data.result.name} is applied for leave.`,
+          link:`/dashboard/leaves/${data.result._id}`,
+          type:"leaveRequest"
+        };
+        socket.emit('sendNotification', { rooms: data.mails, message });
       }
       setSuccess(true);
       setSuccessMessage("Your leave request is sent.");
