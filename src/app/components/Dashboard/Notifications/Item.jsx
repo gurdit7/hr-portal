@@ -58,18 +58,12 @@ const Item = ({ item }) => {
         {item?.type === "appraisalForm" && (
           <Text>{item.name} is requested for appraisal.</Text>
         )}
-        {item?.type === "appraisalForm" && (
+        {item?.link && (
           <Link
-            href={"/dashboard/appraisal/" + item.id}
+            href={item?.link}
             className="opacity-0 absolute top-0 left-0 w-full h-full"
-          ></Link>
-        )}
-        {item?.type === "leaves" && (
-          <Link
-            href={"/dashboard/leaves/" + item.id}
-            className="opacity-0 absolute top-0 left-0 w-full h-full"
-          ></Link>
-        )}
+          ></Link>)}
+
       </div>
     </Wrapper>
   );

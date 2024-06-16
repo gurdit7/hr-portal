@@ -9,8 +9,10 @@ import Text from "../../Ui/Text/Text";
 import Input from "../../Form/Input/Input";
 import IconEdit from "../../Icons/IconEdit";
 import useAuth from "@/app/contexts/Auth/auth";
+import { useSocket } from "@/app/contexts/Socket/SocketContext";
 
 const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
+  const  socket  = useSocket();
   const { userData } = useAuth();
   const [approvePopup, setApprovePopup] = useState(false);
   const [declinePopup, setDeclinePopup] = useState(false);
@@ -182,6 +184,15 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
         return res.json();
       })
       .then((res) => {
+        if(res.mails){    
+          const message = {
+            heading:"Your leave is approved.",
+            message:`${leave.subject} is approved.`,
+            link:`/dashboard/leaves/${res.leave._id}`,
+            type:"appraisalRequest"
+          };
+          socket.emit('sendNotification', { room: res.mails, message });
+        }
         if (res?.error) {
           setError({
             status: true,

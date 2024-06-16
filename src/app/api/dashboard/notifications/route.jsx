@@ -30,7 +30,7 @@ export const GET = async (request) => {
             });
           const result = data.map((item) => {
             const viewedStatus = item?.viewed.find(mail => mail?.mail === email)?.status;
-            return { name: item.name, createdDate: item.createdAt, viewedStatus, type: item.type, id: item.id, mainId: item._id };
+            return { name: item.name, createdDate: item.createdAt, viewedStatus, type: item.type, id: item.id, mainId: item._id, link:item.link };
           });
           return new NextResponse(JSON.stringify({ data: result }), {
             status: 200,

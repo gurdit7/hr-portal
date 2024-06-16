@@ -39,6 +39,7 @@ export const PUT = async (request) => {
             toEmails: payload.email,
             type: "info",
             id: payload.id,
+            link:`/dashboard/leaves/${result._id}`,
             viewed: [{ mail: payload.email, status: false }],
           });
           await notifications.save();
@@ -118,7 +119,7 @@ export const PUT = async (request) => {
           await UsersData.updateOne({ email: payload.email }, updateUserFields);
           const User = await UsersData.findOne({ email: payload.email });
           return new NextResponse(
-            JSON.stringify({ leave: updatedLeave, user: User }),
+            JSON.stringify({ leave: updatedLeave, user: User, mails:payload.email }),
             { status: 200 }
           );
         } else {

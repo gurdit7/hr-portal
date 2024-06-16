@@ -19,7 +19,7 @@ const Checkbox = ({value, label, id, onChange, checked}) => {
   )}
     </span>
     <label htmlFor={id} className="cursor-pointer text-sm relative before:absolute before:w-5 before:h-5 before:-left-[30px] before:top-0 ">
-    {label}
+    {label && label.replace('-', ' ')}
     </label>
   </Wrapper>
   );

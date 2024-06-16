@@ -14,8 +14,6 @@ import ErrorNotification from "../../Ui/notification/loader/LoaderNotification";
 import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 const LoginForm = () => {
   const route = useRouter();
-  const {userData} = useAuth();
-  const [active, setActive] = useState(false)
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState({
@@ -37,6 +35,7 @@ const LoginForm = () => {
     });
   };
   const submitForm = (e) => {
+    setLoading(true)
     e.preventDefault();
     fetch("/api/auth/sign-in", {
       method: "POST",
@@ -54,6 +53,7 @@ const LoginForm = () => {
           });          
 
           setTimeout(() => {
+            setLoading(false)
             setUserLoggedIn(true);
             setUserData(data?.user);
             route.push('/'); 
@@ -63,12 +63,14 @@ const LoginForm = () => {
           
 
         } else if (data?.status === 403) {
+          setLoading(false)
           setError({
             active: true,
             animation: true,
             message: "Password incorrect.",
           });
         } else if (data?.status === 404) {
+          setLoading(false)
           setError({
             active: true,
             animation: true,
@@ -76,6 +78,7 @@ const LoginForm = () => {
           });
         }
         setTimeout(function () {
+          setLoading(false)
           setSuccess({
             ...success,
             animation: false,
