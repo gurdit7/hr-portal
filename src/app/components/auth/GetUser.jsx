@@ -36,7 +36,9 @@ const GetUserData = (session) => {
           setTimeout(() => {
             getUserRoles(data?.user?._id);
             setUserData(data?.user);
+            if (data?.permissions.includes("view-appraisal")) {
             getAppraisal(data?.user?._id, data?.user?.email);
+            }
             setUserLoggedIn(true);
             setPermissions(data?.permissions);
             if (data?.permissions.includes("read-team")) {

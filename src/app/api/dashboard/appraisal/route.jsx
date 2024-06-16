@@ -64,10 +64,11 @@ export const POST = async (request) => {
             subject: `${user.name} has requested for appraisal.`,
             type: "appraisalForm",
             id: result._id,
+            link: `/dashboard/appraisal/${result._id}`,
             viewed: viewedStatus,
           });
           await notification.save();
-          return new NextResponse(JSON.stringify(result), { status: 200 });
+          return new NextResponse(JSON.stringify({result, mails}), { status: 200 });
         } else {
           return new NextResponse(
             JSON.stringify({ error: "You Don't have permissions." }),
@@ -113,36 +114,20 @@ export const GET = async (request) => {
     const email = url.searchParams.get("email");
     const id = url.searchParams.get("id");
     const all = url.searchParams.get("all");
-    const value = url.searchParams.get("value");
     const key = url.searchParams.get("key");
     if (key) {
       const user = await UsersData.findOne({ _id: key, status: "active" });
       if (user) {
         const result = await addRole.findOne({
           role: user.role,
-          permissions: "read-employees",
+          permissions: "view-appraisal",
         });
         if (result) {
-          if (all === "true" && !value) {
+          if (all) {
             const leaves = await AppraisalForm.find().sort({ $natural: -1 });
             return new NextResponse(JSON.stringify(leaves), { status: 200 });
           }
-          if (all === "true" && value) {
-            const leaves = await AppraisalForm.find({ status: value }).sort({
-              $natural: -1,
-            });
-            return new NextResponse(JSON.stringify(leaves), { status: 200 });
-          }
-          if (!id && !email) {
-            return new NextResponse(
-              JSON.stringify({ error: "Email not provided" }),
-              {
-                status: 400,
-              }
-            );
-          }
-
-          if (email && !value) {
+          if (email) {
             const appraisal = await AppraisalForm.find({ email }).sort({
               $natural: -1,
             });
@@ -151,19 +136,6 @@ export const GET = async (request) => {
               status: 200,
             });
           }
-          if (email && value) {
-            const leaves = await AppraisalForm.find({
-              email,
-              status: value,
-            }).sort({
-              $natural: -1,
-            });
-            const user = await UsersData.findOne({ email });
-            return new NextResponse(JSON.stringify({ leaves, user }), {
-              status: 200,
-            });
-          }
-
           if (id) {
             const leaves = await AppraisalForm.findById(id);
             const user = await UsersData.findOne({ email: leaves.email }).sort({
@@ -203,10 +175,10 @@ export const GET = async (request) => {
     } else {
       return new NextResponse(
         "ERROR" +
-          JSON.stringify({
-            error: "Please add required fields.",
-            errors: JSON.stringify(error),
-          }),
+        JSON.stringify({
+          error: "Please add required fields.",
+          errors: JSON.stringify(error),
+        }),
         { status: 500 }
       );
     }

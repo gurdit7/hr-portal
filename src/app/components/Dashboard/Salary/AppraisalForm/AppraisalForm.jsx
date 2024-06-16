@@ -6,11 +6,13 @@ import H2 from "@/app/components/Ui/H2/H2";
 import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
 import Notification from "@/app/components/Ui/notification/success/Notification";
 import useAuth from "@/app/contexts/Auth/auth";
+import { useSocket } from "@/app/contexts/Socket/SocketContext";
 import { defaultTheme } from "@/app/data/default";
 import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 const AppraisalForm = () => {
+  const  socket  = useSocket();
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const { userData } = useAuth();
@@ -51,11 +53,21 @@ const AppraisalForm = () => {
           return res.json();
         })
         .then(async function (data) {
-          if (data?.user) {
+          console.log(data);
+          if (data?.result) {
             setLoading(false);
             setFormData(" ");
             setDescription(" ");
             setSuccess(true);
+          }
+          if(data.mails){    
+            const message = {
+              heading:"New appraisal request",
+              message:`${data.result.name} is request for appraisal.`,
+              link:`/dashboard/appraisal/${data.result._id}`,
+              type:"appraisalRequest"
+            };
+            socket.emit('sendNotification', { rooms: data.mails, message });
           }
         }).catch(error=>{
           setLoading(false);

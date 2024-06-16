@@ -34,6 +34,9 @@ const userSchema = new Schema({
         },
         viewed:{
             type:Array
+        },
+        link:{
+            type:String
         }
 },{timestamps:true})
 

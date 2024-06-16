@@ -87,8 +87,12 @@ export const DashboardConfiger = ({ children }) => {
         setAllPermissions(data?.role);
       });
   };
-  const getAppraisal = (key, email) => {
-    fetch(`/api/dashboard/appraisal?key=${key}&email=${email}`)
+  const getAppraisal = (key, email, id, all) => {
+    let link = `/api/dashboard/appraisal?key=${key}&email=${email}`;
+    if(all){
+      let link = `/api/dashboard/appraisal?all=${all}`; 
+    }
+    fetch(link)
       .then(function (res) {
         return res.json();
       })

@@ -10,7 +10,7 @@ import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 const RealtimeNotification = () => {
   const socket = useSocket();
   const { userData } = useAuth();
-  const { fetchNotifications } = useDashboard();
+  const { fetchNotifications, getAllUsersLeaves, getIndividualUserLeaves, userPermissions } = useDashboard();
   const [notifications, setNotifications] = useState('');
   const [animate, setAnimate] = useState(false);
   useEffect(() => {
@@ -19,6 +19,12 @@ const RealtimeNotification = () => {
         socket.emit("joinRoom", userData.email);
         socket.on("receiveNotification", (message) => {
           setNotifications(message);
+          if(message.link.includes('leaves')){
+            if(userPermissions && userPermissions.includes('user-leaves')){
+            getAllUsersLeaves(userData?._id);
+            }
+            getIndividualUserLeaves(userData?.email, userData?._id);
+          }
           fetchNotifications(userData?._id, userData?.email)
           setTimeout(() => {
             setAnimate(true)

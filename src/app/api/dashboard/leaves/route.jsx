@@ -87,6 +87,7 @@ export const POST = async (request) => {
       toEmails: mails,
       type: "leaveRequest",
       id: result._id,
+      link:`/dashboard/leaves/${result._id}`,
       viewed: viewedStatus,
     });
 
