@@ -43,6 +43,7 @@ export const POST = async (request) => {
       });
     return new NextResponse(JSON.stringify(data), { status: 200 });
   } catch (error) {
+    console.log(error);
     return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });
   }
 };

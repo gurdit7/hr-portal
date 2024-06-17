@@ -1,25 +1,33 @@
 "use client";
 import Checkbox from "@/app/components/Form/Checkbox/Checkbox";
 import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
+import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 import { rolesPermissions } from "@/app/data/default";
 import { useEffect, useState } from "react";
 const Permissions = ({ getFormData, selectedPermissions }) => {
+  const { userRoles } = useDashboard();
   const [checkbox, setCheckbox] = useState({});
   const [accordions, setAccordions] = useState({});
   const [mainChecked, setMainChecked] = useState(false);
   const [mainCheckCount, setMainCheckCount] = useState({});
+  useEffect(() => {
+    if (userRoles) {
+      setMainCheckCount({});
+      setMainChecked(false);
+      setAccordions({});
+      setCheckbox({});
+    }
+  }, [userRoles]);
   const handleAccordion = (id) => {
-    setAccordions((prev) => ({ ...prev,
-      [id]: !accordions[id],
-    }));
+    setAccordions((prev) => ({ ...prev, [id]: !accordions[id] }));
   };
-  useEffect(()=>{
+  useEffect(() => {
     const newMainCheck = {};
     Object.keys(rolesPermissions).forEach((value) => {
       newMainCheck[`${value}Wrapper`] = false;
     });
     setAccordions(newMainCheck);
-  },[rolesPermissions])
+  }, [rolesPermissions]);
   const handleExpandAll = () => {
     const newMainCheck = {};
     const expand = Object.values(accordions).every((v) => v);
@@ -81,26 +89,25 @@ const Permissions = ({ getFormData, selectedPermissions }) => {
   useEffect(() => {
     const mainChecked = {};
     const mainCheckCount = {};
-    if(selectedPermissions){
-    Object.keys(rolesPermissions).map((value) => {
-      const arrray = [];
-      rolesPermissions[value].map((item, i) => {      
-        if (selectedPermissions?.includes(item?.value)) {
-          setCheckbox((prev) => ({ ...prev, [`${value}_${i}`]: true }));
-          getFormData((prev) => ({ ...prev, [item?.value]: true }));
-          arrray.push(item?.value);
-          mainChecked[value] = true;
-        }
+    if (selectedPermissions) {
+      Object.keys(rolesPermissions).map((value) => {
+        const arrray = [];
+        rolesPermissions[value].map((item, i) => {
+          if (selectedPermissions?.includes(item?.value)) {
+            setCheckbox((prev) => ({ ...prev, [`${value}_${i}`]: true }));
+            getFormData((prev) => ({ ...prev, [item?.value]: true }));
+            arrray.push(item?.value);
+            mainChecked[value] = true;
+          }
+        });
+        mainCheckCount[value] = arrray.length || 0;
       });
-      mainCheckCount[value] =  arrray.length || 0;
-    });
-    setMainCheckCount(mainCheckCount);
-    setMainChecked(mainChecked);
-  }
+      setMainCheckCount(mainCheckCount);
+      setMainChecked(mainChecked);
+    }
   }, [selectedPermissions]);
   return (
     <Wrapper className="bg-light-200 rounded-lg border border-gray-200">
-     
       <Wrapper className="flex gap-2 items-center justify-between   p-3">
         <Checkbox
           id="allPermissions"
@@ -114,7 +121,7 @@ const Permissions = ({ getFormData, selectedPermissions }) => {
         <span
           className="text-gray-600 text-sm cursor-pointer hover:text-gray-400 font-semibold"
           onClick={handleExpandAll}
-        >               
+        >
           {Object.values(accordions).every((v) => v)
             ? "Hide all"
             : "Expand all"}
@@ -129,7 +136,7 @@ const Permissions = ({ getFormData, selectedPermissions }) => {
           >
             <Checkbox
               id={value}
-              value={`all-${value}`  || ''}
+              value={`all-${value}` || ""}
               label={value.charAt(0).toUpperCase() + value.slice(1)}
               onChange={handlePermissionsChange(value, rolesPermissions[value])}
               checked={
@@ -160,23 +167,21 @@ const Permissions = ({ getFormData, selectedPermissions }) => {
                 </svg>
               </span>
             </span>
-          </div>          
-          <Wrapper   
+          </div>
+          <Wrapper
             className={`${
               accordions[`${value}Wrapper`] ? "block" : "hidden"
             } p-5 bg-white space-y-4 border-t border-gray-200`}
           >
-            {rolesPermissions[value].map((item, i) => (          
-                <Checkbox
-                  key={i}
-                  id={`${value}_${i}` || ''}
-                  value={item.value}
-                  label={item.item}
-                  onChange={handleSinglePermissionsChange(value, item.value)}
-                  checked={
-                    checkbox[`${value}_${i}`] || false
-                  }
-                />        
+            {rolesPermissions[value].map((item, i) => (
+              <Checkbox
+                key={i}
+                id={`${value}_${i}` || ""}
+                value={item.value}
+                label={item.item}
+                onChange={handleSinglePermissionsChange(value, item.value)}
+                checked={checkbox[`${value}_${i}`] || false}
+              />
             ))}
           </Wrapper>
         </Wrapper>

@@ -12,7 +12,7 @@ export const POST = async (request) => {
     const payload = await request.json();
     const key = payload?.key;
     if (key) {
-      const user = await userData.findOne({ _id: key, status:'active' });
+      const user = await userData?.findOne({ _id: key, status:'active' });
       const data = await Roles.find({
         role: user?.role,
         permissions: "write-employees",

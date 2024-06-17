@@ -30,7 +30,7 @@ export const POST = async (request) => {
               httpOnly: true,
               expires: expiresAt,
             });
-          const dataPermissions =  await userData.findOne({ userID: userExist?.userID })
+          const dataPermissions =  await userData?.findOne({ userID: userExist?.userID })
               .then(async (userExist) => {
                 if (userExist) {
                   const permission = await Roles.findOne({

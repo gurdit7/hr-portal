@@ -76,7 +76,7 @@ const Sidebar = () => {
       href: "/dashboard/notifications",
       label: "Notifications",
       icon: IconNotification,
-      isActive: path === "/dashboard/notifications",
+      isActive: path === "/dashboard/notifications" || path.includes("/notifications/"),
     },
     {
       href: "/dashboard/departments",

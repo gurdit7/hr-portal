@@ -32,13 +32,13 @@ const AllEmployees = () => {
   const limit = 10;
   useEffect(() => {
     if (allEmployeesData) {
-      setCount(allEmployeesData?.leaves?.length / limit);
-      setUsers(allEmployeesData?.leaves);
+      setCount(allEmployeesData?.length / limit);
+      setUsers(allEmployeesData);
     }
   }, [editEmployee, addEmployee, allEmployeesData]);
   useEffect(() => {
     if (search !== "") {
-      let filteredUsers = allEmployeesData?.leaves.filter((user) => {
+      let filteredUsers = allEmployeesData?.filter((user) => {
         return (
           user.userType.includes(search) ||
           user.name.includes(search) ||
@@ -52,8 +52,8 @@ const AllEmployees = () => {
       setUsers(filteredUsers.slice(index * 2, index * (index + 1) + limit));
     } else {
       if (allEmployeesData) {
-        setCount(Math.ceil(allEmployeesData?.leaves.length / limit));
-        setUsers(allEmployeesData?.leaves);
+        setCount(Math.ceil(allEmployeesData?.length / limit));
+        setUsers(allEmployeesData);
       }
     }
   }, [search, index, allEmployeesData]);

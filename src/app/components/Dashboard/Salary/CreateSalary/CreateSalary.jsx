@@ -21,7 +21,7 @@ const CreateSalary = () => {
     formatYear(new Date());
   useEffect(() => {
     if (userData) {
-      fetchUsers(setUsers);
+      fetchUsers(setUsers, userData);
       fetchLeaves(setLeaves, userData?._id);
     }
   }, [userData]);
@@ -402,11 +402,8 @@ const CreateSalary = () => {
 
 export default CreateSalary;
 
-export const fetchUsers = async (setUsers) => {
-  const res = await fetch("/api/dashboard/all-employee", {
-    method: "POST",
-    body: JSON.stringify({ index: 0, limit: 30 }),
-  });
+export const fetchUsers = async (setUsers, userData) => {
+  const res = await fetch("/api/dashboard/employee?key=" + userData?._id);
   const data = await res.json();
   setUsers(data?.data || []);
 };

@@ -9,8 +9,10 @@ import FormButton from "../../Form/FormButton/FormButton";
 import { formatDay, formatMonth, formatYear } from "@/app/utils/DateFormat";
 import Notification from "../../Ui/notification/success/Notification";
 import ErrorNotification from "../../Ui/notification/loader/LoaderNotification";
+import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 
 const AddHolidays = () => {
+  const {getHolidays} = useDashboard();
   const [formData, setFromData] = useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState({
@@ -46,6 +48,7 @@ const AddHolidays = () => {
         return res.json();
       })
       .then((res) => {
+        getHolidays();
         setLoading(true);
         setSuccess({
           active: true,

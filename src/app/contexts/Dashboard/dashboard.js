@@ -24,6 +24,7 @@ export const DashboardConfiger = ({ children }) => {
   ]);
   const [allPermissions, setAllPermissions] = useState([]);
   const [userNotifications, setUserNotifications] = useState([]);
+  const [userIndividualNotifications, setUserIndividualNotifications] = useState([]);
   const getHolidays = (key) => {
     fetch(`/api/dashboard/holidays?key=${key}`)
       .then((res) => {
@@ -79,7 +80,7 @@ export const DashboardConfiger = ({ children }) => {
       })
       .then(async function (data) {
         const values = [];
-        data?.role.forEach((e) => {
+        data?.role?.forEach((e) => {
           values.push(e.role);
         });
         setuserRoles(values);
@@ -106,6 +107,13 @@ export const DashboardConfiger = ({ children }) => {
     );
     const data = await response.json();
     setUserNotifications(data?.data || []);
+  };
+    const fetchIndividualNotifications = async (key, email) => {
+    const response = await fetch(
+      `/api/dashboard/notifications?key=${key}&email=${email}&id=true`
+    );
+    const data = await response.json();
+    setUserIndividualNotifications(data?.data || []);
   };
 
   const getLeaves = (userID) => {
@@ -172,6 +180,8 @@ export const DashboardConfiger = ({ children }) => {
     getAllUsersLeaves,
     appraisals,
     getAppraisal,
+    userIndividualNotifications,
+    fetchIndividualNotifications
   };
 
   return (

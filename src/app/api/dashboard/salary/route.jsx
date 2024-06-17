@@ -32,7 +32,7 @@ export const POST = async (request) => {
       (lastThirdMonthDate.getMonth() + 1) +
       "-" +
       lastThirdMonthDate.getDate();
-    const user = await UserData.findOne({
+    const user = await userData?.findOne({
       email: "designerthefabcode@gmail.com",
     });
 

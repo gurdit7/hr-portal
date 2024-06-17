@@ -8,12 +8,14 @@ import H2 from "@/app/components/Ui/H2/H2";
 import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
 import ErrorNotification from "@/app/components/Ui/notification/loader/LoaderNotification";
 import Notification from "@/app/components/Ui/notification/success/Notification";
+import useAuth from "@/app/contexts/Auth/auth";
 import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
-import {  designation } from "@/app/data/default";
+import { designation } from "@/app/data/default";
 import { useState } from "react";
 
 const Assign = () => {
-    const {designations} = useDashboard();
+  const { userData } = useAuth();
+  const { designations, getEmployees } = useDashboard();
   const [formData, setFormData] = useState("");
   const [btnLoader, setBtnLoader] = useState(false);
   const [dropDown, setDropDown] = useState(true);
@@ -41,20 +43,21 @@ const Assign = () => {
       .then((response) => {
         return response.json();
       })
-      .then((response) => { 
-        if(response?.email){
-        setSuccess({
-          active: true,
-          message: `New Designation is assigned to ${formData?.email}`,
-        });
-    }
+      .then((response) => {
+        getEmployees(userData?._id);
+        if (response?.email) {
+          setSuccess({
+            active: true,
+            message: `New Designation is assigned to ${formData?.email}`,
+          });
+        }
 
         setTimeout(() => {
           setBtnLoader(false);
           setFormData("");
-          setDropDown(false)
+          setDropDown(false);
           setTimeout(() => {
-              setDropDown(true)
+            setDropDown(true);
           }, 1);
           setSuccess({
             active: false,
@@ -82,19 +85,19 @@ const Assign = () => {
       <H2>Assign Designation</H2>
       <form className=" flex flex-col gap-4" onSubmit={assignDepartment}>
         {dropDown && (
-        <DropDown
-          items={designations?.length > 0 ? designations :  designation}
-          required={true}
-          setData={setFormValues}
-          value={formData?.designation || ""}
-          name="designation"
-          placeholder={"Designation"}
-        >
-          <IconCategory size="24px" color="fill-light-400" />
-        </DropDown>
+          <DropDown
+            items={designations?.length > 0 ? designations : designation}
+            required={true}
+            setData={setFormValues}
+            value={formData?.designation || ""}
+            name="designation"
+            placeholder={"Designation"}
+          >
+            <IconCategory size="24px" color="fill-light-400" />
+          </DropDown>
         )}
         <Input
-          value={formData?.email || ''}
+          value={formData?.email || ""}
           setData={setFormValues}
           type="email"
           required={true}

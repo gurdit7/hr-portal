@@ -8,8 +8,10 @@ import Notification from "@/app/components/Ui/notification/success/Notification"
 import Input from "@/app/components/Form/Input/Input";
 import IconSalary from "@/app/components/Icons/IconSalary";
 import useAuth from "@/app/contexts/Auth/auth";
+import { useSocket } from "@/app/contexts/Socket/SocketContext";
 
 const Approve = ({ id, user, setValue }) => {
+  const socket = useSocket();
   const { userData } = useAuth();
   const [approvePopup, setApprovePopup] = useState(false);
   const [formData, setFormData] = useState({});
@@ -27,7 +29,7 @@ const Approve = ({ id, user, setValue }) => {
     setFormData({
       ...formData,
       id: id,
-      key: userData._id,
+      key: userData?._id,
       email: user?.email,
       status: "not-approved",
     });
@@ -37,7 +39,7 @@ const Approve = ({ id, user, setValue }) => {
     setFormData({
       ...formData,
       id: id,
-      key: userData._id,
+      key: userData?._id,
       email: user?.email,
       status: "approved",
     });
@@ -53,6 +55,17 @@ const Approve = ({ id, user, setValue }) => {
         return res.json();
       })
       .then((res) => {
+        if (res.mails) {
+          const message = {
+            heading: res?.subject,
+            message: res?.reason,
+            link: `/dashboard/appraisal/${res.leave._id}`,
+            type: "info",
+          };
+          const mailsArray = [];
+          mailsArray.push(res.mails);
+          socket.emit("sendNotification", { rooms: mailsArray, message });
+        }
         if (res.error) {
           setError({
             status: true,

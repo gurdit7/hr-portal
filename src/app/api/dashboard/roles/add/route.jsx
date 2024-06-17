@@ -24,7 +24,7 @@ export const POST = async (request) => {
       .then((res) => {
         return res;
       });
-      return new NextResponse(JSON.stringify(data), { status: 500 });
+      return new NextResponse(JSON.stringify(data), { status: 200 });
   } catch (error) {
     console.log("error>>", error);
     return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });

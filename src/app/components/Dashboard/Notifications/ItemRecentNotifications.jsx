@@ -12,25 +12,14 @@ import IconSearch from "../../Icons/IconSearch";
 import Pagination from "../../Ui/Pagination/Pagination";
 import Item from "./Item";
 import { useEffect, useState } from "react";
-import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 
-const ItemRecentNotifications = () => {
-  const { userData } = useAuth();
-  const { userPermissions, userNotifications, fetchNotifications } =
-    useDashboard();
-  const [emailID, setEmail] = useState("");
-  const [name, setName] = useState("");
+const ItemRecentNotifications = ({userNotifications}) => {  
   const [allNotification, setAllNotification] = useState("");
   const [count, setCount] = useState(0);
   const [start, setStart] = useState(0);
   const [sortby, setSortBy] = useState("");
   const [search, setSearch] = useState("");
   const limit = 10;
-  useEffect(() => {
-    setEmail(userData?.email || "");
-    setName(userData?.name || "");
-  }, [userData]);
-
   useEffect(() => {
     if (userNotifications) {
       setCount(Math.ceil(userNotifications.length / limit));
@@ -62,7 +51,7 @@ const ItemRecentNotifications = () => {
             </DropDown>
           </>
         )}
-      </Wrapper>     
+      </Wrapper>
       {count > 0 && (
         <Input
           value={search}
@@ -76,10 +65,8 @@ const ItemRecentNotifications = () => {
           <IconSearch size="24px" color="fill-light-400" />
         </Input>
       )}
- {allNotification &&
-              allNotification.map((item, i) => (
-                 <Item item={item} key={i}/> 
-              ))}
+      {allNotification &&
+        allNotification.map((item, i) => <Item item={item} key={i} />)}
       {count > 1 && (
         <Pagination count={count} getIndex={handlePageChange} index={start} />
       )}

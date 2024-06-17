@@ -9,9 +9,9 @@ export const PUT = async (request) => {
   try {
     await connect();
     const date = new Date(); 
-    const allUsers = await userData.find();
+    const allUsers = await userData?.find();
       const theArray = allUsers.map(async (item) => {
-      await userData.updateOne(
+      await userData?.updateOne(
         { _id: item.id },
         { balancedLeaves: 12, totalLeaveTaken: 0 }
       );

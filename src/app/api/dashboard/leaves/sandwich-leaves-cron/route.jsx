@@ -10,7 +10,7 @@ export const PUT = async (request) => {
     await connect();
     const date = new Date();
     const month = date.getMonth() + 1;
-    const allUsers = await userData.find();
+    const allUsers = await userData?.find();
     let balancedSandwichLeaves = 4;
     if (month === 4) {
       balancedSandwichLeaves = 3;
@@ -20,12 +20,12 @@ export const PUT = async (request) => {
       balancedSandwichLeaves = 1;
     }
     const theArray = allUsers.map(async (item) => {
-      await userData.updateOne(
+      await userData?.updateOne(
         { _id: item.id },
         { balancedSandwichLeaves: balancedSandwichLeaves }
       );
       if (month === 1) {
-        await userData.updateOne(
+        await userData?.updateOne(
           { _id: item.id },
           { balancedSandwichLeavesTaken: balancedSandwichLeavesTaken }
         );

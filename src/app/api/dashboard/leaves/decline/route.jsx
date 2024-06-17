@@ -30,8 +30,10 @@ export const PUT = async (request) => {
     await notifications.save();
     const User = await UsersData.findOne({ email: payload.email });
     const updatedLeave = await Leaves.findOne({ _id: payload.id });
+    const mails = [];
+    mails.push(payload.email);
     return new NextResponse(
-      JSON.stringify({ leave: updatedLeave, user: User }),
+      JSON.stringify({ leave: updatedLeave, user: User, mails }),
       { status: 200 }
     );
   } catch (error) {

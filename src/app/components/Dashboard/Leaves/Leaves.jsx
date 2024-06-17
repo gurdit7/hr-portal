@@ -116,18 +116,18 @@ const Leaves = () => {
     setLoading(true);
     const formDataCopy = {
       ...formData,
-      email: userData.email,
-      userID: userData.userID,
-      name: userData.name,
+      email: userData?.email,
+      userID: userData?.userID,
+      name: userData?.name,
     };
     if (file) {
       try {
         const random = Math.floor(Math.random() * 1000000 + 1);
         const imageFormData = new FormData();
-        imageFormData.append("folder", userData.userID);
+        imageFormData.append("folder", userData?.userID);
         imageFormData.append(
           "name",
-          `${userData.userID}-${random}-leave-image.jpg`
+          `${userData?.userID}-${random}-leave-image.jpg`
         );
         imageFormData.append("file", file);
 
@@ -161,7 +161,6 @@ const Leaves = () => {
       });
 
       const data = await response.json();  
-      console.log(data);
       if(data){    
         const message = {
           heading:"New leave request",
@@ -401,7 +400,7 @@ const Leaves = () => {
   }, [val, sandwitchCount, sandwitchLeavesData?.count]);
   useEffect(() => {
     if (sandwitchCount > 0) {
-      fetch(`/api/dashboard/leaves/sandwich-leaves?email=${userData.email}`)
+      fetch(`/api/dashboard/leaves/sandwich-leaves?email=${userData?.email}`)
         .then((res) => res.json())
         .then((res) => {
           setSandwitchLeavesData({
