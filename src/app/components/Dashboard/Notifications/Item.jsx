@@ -75,7 +75,7 @@ const Item = ({ item }) => {
           {item?.type === "document" && (
             <Text>{item.name} is requested for leave.</Text>
           )}
-          {item?.type === "indiNotification" || item?.type === "leaveCanceled"  && <Text>{item.subject}</Text>}
+          {(item?.type === "indiNotification" || item?.type === "leaveCanceled")  && <Text>{item.subject}</Text>}
           
           {item?.type === "appraisalForm" && (
             <Text>{item.name} is requested for appraisal.</Text>

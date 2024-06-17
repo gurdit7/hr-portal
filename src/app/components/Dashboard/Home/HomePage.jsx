@@ -42,7 +42,7 @@ const HomePage = () => {
     <>
       {userPermissions && userPermissions?.includes("write-employees") && (
         <Container heading={`Welcome, ${userData?.name?.split(" ")[0]}`}>
-          <Wrapper className="flex justify-between gap-[15px]">
+          <Wrapper className="flex justify-between gap-4">
             <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full items-center">
               <H1 className="text-light-500 text-[64px] leading-none">
                 {total}
@@ -67,6 +67,16 @@ const HomePage = () => {
                 Female Employees
               </H3>
             </Wrapper>
+          </Wrapper>
+          <Wrapper className='mt-4 flex gap-4'>
+          <Wrapper className='flex-[2]'>
+          <RecentNotifications />
+          </Wrapper>
+          <Wrapper className="flex-1 w-full bg-white rounded-[10px] p-5">
+              <H2 className="mb-[5px]">Holidays</H2>
+              <AllHolidays />
+            </Wrapper>
+         
           </Wrapper>
         </Container>
       )}

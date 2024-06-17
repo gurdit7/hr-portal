@@ -52,19 +52,6 @@ const ItemRecentNotifications = ({userNotifications}) => {
           </>
         )}
       </Wrapper>
-      {count > 0 && (
-        <Input
-          value={search}
-          setData={handleSearchChange}
-          type="text"
-          placeholder="Search"
-          name="Search"
-          wrapperClassName="!flex-none"
-          className="border border-light-600"
-        >
-          <IconSearch size="24px" color="fill-light-400" />
-        </Input>
-      )}
       {allNotification &&
         allNotification.map((item, i) => <Item item={item} key={i} />)}
       {count > 1 && (

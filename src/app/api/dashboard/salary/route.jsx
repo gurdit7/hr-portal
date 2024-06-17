@@ -3,7 +3,6 @@ import { formatMonthName } from "@/app/utils/DateFormat";
 import AppraisalForm from "@/model/AppraisalForm";
 import Leaves from "@/model/addLeave";
 import UserData from "@/model/userData";
-import { parse } from "dotenv";
 import { NextResponse } from "next/server";
 
 export const POST = async (request) => {
@@ -32,12 +31,12 @@ export const POST = async (request) => {
       (lastThirdMonthDate.getMonth() + 1) +
       "-" +
       lastThirdMonthDate.getDate();
-    const user = await userData?.findOne({
-      email: "designerthefabcode@gmail.com",
+    const user = await UserData?.findOne({
+      email: "gurdit@thefabcode.org",
     });
 
     const apprisal = await AppraisalForm.findOne({
-      email: "designerthefabcode@gmail.com",
+      email: "gurdit@thefabcode.org",
       status: "approved",
       updatedAt: { $gte: lastThirdMonthValue, $lt: lastMonthValue },
     });
@@ -55,11 +54,11 @@ export const POST = async (request) => {
     }
 
     const leave = await Leaves.find({
-      email: "designerthefabcode@gmail.com",
+      email: "gurdit@thefabcode.org",
       status: "approved",
       updatedAt: { $gte: lastThirdMonthValue, $lt: lastMonthValue },
     });
-
+      
     const newSlip = {
       firstMonth: { month: "", salary: "", paidLeaves: "" },
       secondMonth: { month: "", salary: "", paidLeaves: "" },
@@ -141,10 +140,38 @@ export const POST = async (request) => {
       newSlip.firstMonth.paidLeaves = firstMonthLeaves || 0;
       newSlip.secondMonth.paidLeaves = secondMonthLeaves || 0;
       newSlip.thirdMonth.paidLeaves = thirdMonthLeaves || 0;
+    } else {
+      const firstMonth = formatMonthName(lastThirdMonth);
+      const secondMonth = formatMonthName(secondLastMonth);
+      const thirdMonth = formatMonthName(lastMonth);
+      newSlip.firstMonth.month = firstMonth;
+      newSlip.secondMonth.month = secondMonth;
+      newSlip.thirdMonth.month = thirdMonth;
+      newSlip.firstMonth.salary = user.currentSalary;
+      newSlip.secondMonth.salary = user.currentSalary;
+      newSlip.thirdMonth.salary = user.currentSalary;
+      newSlip.firstMonth.paidLeaves = 0;
+      newSlip.secondMonth.paidLeaves = 0;
+      newSlip.thirdMonth.paidLeaves = 0;
+      newSlip.firstMonth.basic = (user.currentSalary * 43) / 100;
+      newSlip.firstMonth.hra = (user.currentSalary * 25) / 100;
+      newSlip.firstMonth.convenienceAllow = (user.currentSalary * 19) / 100;
+      newSlip.firstMonth.medicalAllow = (user.currentSalary * 13) / 100;
+      newSlip.secondMonth.basic = (user.currentSalary * 43) / 100;
+      newSlip.secondMonth.hra = (user.currentSalary * 25) / 100;
+      newSlip.secondMonth.convenienceAllow = (user.currentSalary * 19) / 100;
+      newSlip.secondMonth.medicalAllow = (user.currentSalary * 13) / 100;
+      newSlip.thirdMonth.basic = (user.currentSalary * 43) / 100;
+      newSlip.thirdMonth.hra = (user.currentSalary * 25) / 100;
+      newSlip.thirdMonth.convenienceAllow = (user.currentSalary * 19) / 100;
+      newSlip.thirdMonth.medicalAllow = (user.currentSalary * 13) / 100;
+      newSlip.firstMonth.otherDeduction = 0;
+      newSlip.secondMonth.otherDeduction = 0;
+      newSlip.thirdMonth.otherDeduction = 0;
     }
-
     return new NextResponse(JSON.stringify({ newSlip }), { status: 200 });
   } catch (error) {
+    console.log(error);
     return new NextResponse("ERROR: " + JSON.stringify(error), { status: 500 });
   }
 };
