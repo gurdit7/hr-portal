@@ -6,7 +6,7 @@ export const POST = async (request)=>{
     try{
      await connect();
      const payload = await request.json(); 
-     const data = await userData.findOne({ userID: payload?.userID })
+     const data = await userData?.findOne({ userID: payload?.userID })
      .then(async (userExist) => {
        if (userExist) {
             const data = await Roles.findOne({ role: userExist?.role });            
@@ -36,7 +36,7 @@ export const GET = async (request)=>{
    if (!userID) {
     return new NextResponse(JSON.stringify({ error: 'User ID not provided' }), { status: 400 });
   }
-   const data = await userData.findOne({ userID: userID })
+   const data = await userData?.findOne({ userID: userID })
    .then(async (userExist) => {
      if (userExist) {       
           return userExist;

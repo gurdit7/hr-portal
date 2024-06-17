@@ -8,7 +8,7 @@ export const POST = async (request) => {
     const db = await connect();
     const payload = await request.json();
     if (payload?.key) {
-      const user = await userData.findOne({ _id: payload?.key, status: "active" });
+      const user = await userData?.findOne({ _id: payload?.key, status: "active" });
       const data = await Roles.find({
         role: user?.role,
         permissions: "write-roles",
@@ -93,14 +93,14 @@ export const PUT = async (request) => {
     await connect();
     const payload = await request.json();
     if (payload?.key) { 
-      const user = await userData.findOne({ _id: payload?.key, status: "active" });
+      const user = await userData?.findOne({ _id: payload?.key, status: "active" });
       const data = await Roles.find({
         role: user?.role,
         permissions: "write-roles",
       });
       if (data && data.length > 0) {
         if (payload?.email) {
-          const updateData = await userData.updateOne(
+          const updateData = await userData?.updateOne(
             { email: payload?.email },
             { role: payload?.role }
           );
@@ -167,13 +167,13 @@ export const DELETE = async (request) => {
     await connect();
     const payload = await request.json();
     if (payload?.key) {  
-      const user = await userData.findOne({ _id: payload?.key, status: "active" });
+      const user = await userData?.findOne({ _id: payload?.key, status: "active" });
       const data = await Roles.find({
         role: user?.role,
         permissions: "write-roles",
       });
       if (data && data.length > 0) {
-        const updateData = await userData.updateMany(
+        const updateData = await userData?.updateMany(
           { role: payload?.name },
           { role: payload?.role }
         );

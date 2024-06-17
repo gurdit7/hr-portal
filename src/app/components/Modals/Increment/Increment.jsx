@@ -5,7 +5,7 @@ import Image from "next/image";
 import Img from "../../../sdf.gif";
 import Wrapper from "../../Ui/Wrapper/Wrapper";
 
-const Birthday = () => {
+const Increment = () => {
   const { userData } = useAuth();
   const [isBirthday, setIsBirthday] = useState(false);
   const [name, setName] = useState("");
@@ -15,17 +15,17 @@ const Birthday = () => {
   useEffect(() => {
     const checkBirthday = () => {
       const today = new Date();
-      const userDOB = new Date(userData?.DOB);
-      const hideBirthday = localStorage.getItem("birthdayHide");
+      const userDOB = new Date(userData?.joinDate);
+      const hideBirthday = localStorage.getItem("incrementHide");
 
       if (userDOB.getDate() === today.getDate() && userDOB.getMonth() === today.getMonth()) {
         if (!hideBirthday || hideBirthday === "false") {
           setIsBirthday(true);
-          localStorage.setItem("birthdayHide", "false");
+          localStorage.setItem("incrementHide", "false");
           setTimeout(() => setImageVisible(false), 3500);
           setTimeout(() => {
             setIsBirthday(false);
-            localStorage.setItem("birthdayHide", "true");
+            localStorage.setItem("incrementHide", "true");
           }, 5000);
         }
       }
@@ -63,7 +63,7 @@ const Birthday = () => {
               }`}
             >
               <Wrapper className="stroke-text text-7xl font-bold uppercase text-center">
-                Happy Birthday
+                Happy Work Anniversary
               </Wrapper>
               <Wrapper className="text-7xl font-bold uppercase text-center">
                 {name}
@@ -76,4 +76,4 @@ const Birthday = () => {
   );
 };
 
-export default Birthday;
+export default Increment;

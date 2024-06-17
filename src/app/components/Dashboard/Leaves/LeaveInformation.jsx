@@ -20,8 +20,10 @@ import SkeletonLoader from "../../Ui/skeletonLoader/skeletonLoader";
 import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 import ErrorNotification from "../../Ui/notification/loader/LoaderNotification";
+import { useSocket } from "@/app/contexts/Socket/SocketContext";
 
 const LeaveInformation = () => {
+  const socket = useSocket();
   const { setBreadcrumbs } = useThemeConfig();
   const [formData, setFormData] = useState({});
   const [formDataCancel, setFormDataCancel] = useState({});
@@ -41,7 +43,7 @@ const LeaveInformation = () => {
     if(userData){
     setFormDataCancel({
       ...formDataCancel,
-      key:`${userData._id}`,
+      key:`${userData?._id}`,
     })
   }
     fetch(`/api/dashboard/paid-leaves?email=${user?.email}`)
@@ -243,6 +245,13 @@ const LeaveInformation = () => {
           setError(false);
         }, 3000);
       } else {
+        const message = {
+          heading:"Your leave is canceled.",
+          message:`${result.leave.subject} is canceled.`,
+          link:`/dashboard/leaves/${result.leave._id}`,
+          type:"leaves"
+        };
+        socket.emit('sendNotification', { rooms: result?.mails, message });
       setValue(true);
       setLoading(false);
       }

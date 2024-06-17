@@ -8,12 +8,14 @@ import H2 from "@/app/components/Ui/H2/H2";
 import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
 import ErrorNotification from "@/app/components/Ui/notification/loader/LoaderNotification";
 import Notification from "@/app/components/Ui/notification/success/Notification";
+import useAuth from "@/app/contexts/Auth/auth";
 import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 import { department, userType } from "@/app/data/default";
 import { useState } from "react";
 
 const Assign = () => {
-    const {departments} = useDashboard();
+  const { userData } = useAuth();
+    const {departments, getEmployees} = useDashboard();
   const [formData, setFormData] = useState("");
   const [btnLoader, setBtnLoader] = useState(false);
   const [dropDown, setDropDown] = useState(true);
@@ -42,6 +44,7 @@ const Assign = () => {
         return response.json();
       })
       .then((response) => { 
+        getEmployees(userData?._id);
         if(response?.email){
         setSuccess({
           active: true,

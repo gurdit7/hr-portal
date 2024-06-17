@@ -14,22 +14,31 @@ const Header = () => {
   const { sidebarCollapse, setSidebarCollapse } = useThemeConfig();
   const [loader, setLoader] = useState(false);
   const [notificationsCount, setNotificationsCount] = useState(0);
-  const { userLoggedIn, setUserLoggedIn, setUserData  } =
-    useAuth();
-    const { setPermissions, userNotifications } = useDashboard();
+  const { userLoggedIn, setUserLoggedIn, setUserData } = useAuth();
+  const { setPermissions, userNotifications, userIndividualNotifications } =
+    useDashboard();
   const router = useRouter();
   const path = usePathname();
   const collapse = () => {
     setSidebarCollapse((prevState) => !prevState);
   };
-  useEffect(()=>{
-if(userNotifications.length > 0){
- const notifications = userNotifications.filter((item)=>{
-    return item.viewedStatus === false;
-  })
-  setNotificationsCount(notifications.length);  
-}
-  },[userNotifications])
+  useEffect(() => {
+    if (userNotifications.length > 0) {
+      const notifications = userNotifications.filter((item) => {
+        return item.viewedStatus === false;
+      });
+      setNotificationsCount(notifications.length);
+    }
+  }, [userNotifications]);
+  useEffect(() => {
+    if (userIndividualNotifications.length > 0) {
+      const notifications = userIndividualNotifications.filter((item) => {
+        return item.viewedStatus === false;
+      });
+      setNotificationsCount(notifications.length);
+    }
+  }, [userIndividualNotifications]);
+
   const logout = () => {
     fetch("/api/auth/logout", {
       method: "POST",
@@ -40,16 +49,16 @@ if(userNotifications.length > 0){
       .then(function (data) {
         setLoader(true);
         setTimeout(() => {
-        if (data?.success == true) {
-          setUserLoggedIn("");
-          setUserData("");
-          setPermissions("");
-          setTimeout(() => {
-            router.push("/account/login");
-          }, 200);
-          setLoader(false);
-        }
-      }, 1000);
+          if (data?.success == true) {
+            setUserLoggedIn("");
+            setUserData("");
+            setPermissions("");
+            setTimeout(() => {
+              router.push("/account/login");
+            }, 200);
+            setLoader(false);
+          }
+        }, 1000);
       });
   };
   return (
@@ -89,8 +98,13 @@ if(userNotifications.length > 0){
               href="/dashboard/notifications"
               className="flex justify-center items-center relative"
             >
-                    <IconNotification size="24px" color="fill-accent" />
-              {notificationsCount > 0 && (<Wrapper className='text-[8px] absolute top-[7px] -right-[3px] min-w-4 min-h-4 rounded-full bg-dark text-white font-medium text-nowrap items-center flex justify-center'>{notificationsCount}{notificationsCount > 99 && "+"}</Wrapper>)}        
+              <IconNotification size="24px" color="fill-accent" />
+              {notificationsCount > 0 && (
+                <Wrapper className="text-[8px] absolute top-[7px] -right-[3px] min-w-4 min-h-4 rounded-full bg-dark text-white font-medium text-nowrap items-center flex justify-center">
+                  {notificationsCount}
+                  {notificationsCount > 99 && "+"}
+                </Wrapper>
+              )}
             </Link>
             <FormButton
               btnType="outlined"
@@ -112,7 +126,9 @@ if(userNotifications.length > 0){
           </Wrapper>
         </Wrapper>
       )}
-      {loader && (<Wrapper className='fixed top-0 left-0 w-full h-full bg-white z-50'></Wrapper>)}
+      {loader && (
+        <Wrapper className="fixed top-0 left-0 w-full h-full bg-white z-50"></Wrapper>
+      )}
     </>
   );
 };

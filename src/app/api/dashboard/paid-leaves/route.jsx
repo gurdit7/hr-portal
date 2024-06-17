@@ -9,7 +9,7 @@ export const GET = async (request) => {
     const email = url.searchParams.get("email");
     const date = new Date();    
     let startDate = (date.getFullYear() - 1) + "-" + 12 + "-" + 31;  
-    const user = await userData.findOne({email});
+    const user = await userData?.findOne({email});
     const userJoinDate = new Date(user?.joinDate); 
     let lev = date.getMonth() + 2;   
     if(userJoinDate.getFullYear() === date.getFullYear()){

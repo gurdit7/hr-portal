@@ -68,7 +68,9 @@ export const POST = async (request) => {
             viewed: viewedStatus,
           });
           await notification.save();
-          return new NextResponse(JSON.stringify({result, mails}), { status: 200 });
+          return new NextResponse(JSON.stringify({ result, mails }), {
+            status: 200,
+          });
         } else {
           return new NextResponse(
             JSON.stringify({ error: "You Don't have permissions." }),
@@ -175,10 +177,10 @@ export const GET = async (request) => {
     } else {
       return new NextResponse(
         "ERROR" +
-        JSON.stringify({
-          error: "Please add required fields.",
-          errors: JSON.stringify(error),
-        }),
+          JSON.stringify({
+            error: "Please add required fields.",
+            errors: JSON.stringify(error),
+          }),
         { status: 500 }
       );
     }
@@ -197,7 +199,7 @@ export const PUT = async (request) => {
       if (user) {
         const result = await addRole.findOne({
           role: user.role,
-          permissions: "read-employees",
+          permissions: "write-appraisal",
         });
         if (result) {
           await AppraisalForm.updateOne(
@@ -214,13 +216,18 @@ export const PUT = async (request) => {
             `HR Portal - Your appraisal is ${payload.status}`,
             `${payload.reason}`
           );
+          let subject = "Your appraisal is decline.";
+          if (payload.status === "approved") {
+            subject = "Your appraisal is approved.";
+          }
+
           const notifications = new Notifications({
             email: payload.email,
-            subject: `Your appraisal is ${payload.status}`,
+            subject: subject,
             description: `${payload.reason}`,
             name: "HR",
             toEmails: payload.email,
-            type: "appraisalForm",
+            type: "info",
             id: payload.id,
             viewed: [{ mail: payload.email, status: false }],
           });
@@ -229,7 +236,7 @@ export const PUT = async (request) => {
             { currentSalary: payload?.salaryOffered }
           );
           await notifications.save();
-          return new NextResponse(JSON.stringify({ leave: updatedLeave }), {
+          return new NextResponse(JSON.stringify({ leave: updatedLeave, mails:payload.email, subject:subject, reason:payload.reason  }), {
             status: 200,
           });
         } else {

@@ -2,9 +2,11 @@
 import { useState } from "react";
 import Wrapper from "../../Ui/Wrapper/Wrapper";
 import Text from "../../Ui/Text/Text";
-import H3 from "../../Ui/H3/H3";
-import { formatDate } from "@/app/utils/DateFormat";
 import Link from "next/link";
+import useAuth from "@/app/contexts/Auth/auth";
+import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
+import { formatDate } from "@/app/utils/DateFormat";
+import IconDelete from "../../Icons/IconDelete";
 
 export const toHTML = (ref, content, limit) => {
   if (ref.current) {
@@ -13,57 +15,80 @@ export const toHTML = (ref, content, limit) => {
 };
 
 const Item = ({ item }) => {
-  const [load, setLoad] = useState(false);
-  const [status, setStatus] = useState(false);
+  const { userData } = useAuth();
+  const { fetchNotifications, userPermissions, fetchIndividualNotifications } =
+    useDashboard();
   const click = async (id) => {
-    setStatus(true);
     try {
-      const viewedStatus = item?.viewed.map((mail) => {
+      const viewedStatus = item?.views.map((mail) => {
         if (mail?.mail === userData?.email) {
           return { mail: mail?.mail, status: true };
         } else {
-          return { mail: mail?.mail, status: false };
+          return mail;
         }
       });
       const response = await fetch("/api/dashboard/notifications", {
         method: "PUT",
         body: JSON.stringify({
           id: id,
+          key: userData?._id,
           viewed: viewedStatus,
         }),
       });
       const result = await response.json();
-      setLoad(true);
-    } catch (error) {}
+      if (result?.matchedCount > 0) {
+        if (
+          userPermissions &&
+          userPermissions.includes("view-users-notifications")
+        ) {
+          fetchNotifications(userData?._id, userData?.email);
+        }
+        if (userPermissions && userPermissions.includes("user-notifications")) {
+          fetchIndividualNotifications(userData?._id, userData?.email);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <Wrapper
-      className={`border rounded-lg border-light-500 relative ${
-        !item?.viewedStatus ? "border-l-4 border-green-600" : " "
+      className={`border rounded-lg  relative ${
+        !item?.viewedStatus
+          ? "border-l-4 border-green-600"
+          : " border-light-500"
       }`}
     >
       <div
-        className="p-[10px] flex items-center gap-3"
-        onClick={() => click(item?._id)}
+        className="p-[10px] flex items-center gap-3 justify-between overflow-hidden group"
+        onClick={() => click(item?.mainId)}
       >
-        <Wrapper className="w-10 h-10 border rounded-full bg-accent flex justify-center items-center text-white font-semibold text-xl">
-          {item.name.slice(0, 1)}
-        </Wrapper>
-        {item?.type === "leaveRequest" && (
-          <Text>{item.name} is requested for leave.</Text>
-        )}
-        {item?.type === "document" && (
-          <Text>{item.name} is requested for leave.</Text>
-        )}        
-        {item?.type === "appraisalForm" && (
-          <Text>{item.name} is requested for appraisal.</Text>
-        )}
-        {item?.link && (
-          <Link
-            href={item?.link}
-            className="opacity-0 absolute top-0 left-0 w-full h-full"
-          ></Link>)}
-
+        <Wrapper className='flex justify-center items-center gap-2'>
+          <Wrapper className="w-10 h-10 border rounded-full bg-accent flex justify-center items-center text-white font-semibold text-xl">
+            {item.name.slice(0, 1)}
+          </Wrapper>
+          <Wrapper className='flex flex-col gap-0'>
+          {item?.type === "leaveRequest" && (
+            <Text>{item.name} is requested for leave.</Text>
+          )}
+          {item?.type === "info" && <Text>{item?.subject}</Text>}
+          {item?.type === "document" && (
+            <Text>{item.name} is requested for leave.</Text>
+          )}
+          {item?.type === "indiNotification" || item?.type === "leaveCanceled"  && <Text>{item.subject}</Text>}
+          
+          {item?.type === "appraisalForm" && (
+            <Text>{item.name} is requested for appraisal.</Text>
+          )}
+          {item?.link && (
+            <Link
+              href={item?.link}
+              className="opacity-0 absolute top-0 left-0 w-full h-full"
+            ></Link>
+          )}    
+           <Text className="!text-xs !text-gray-400">{formatDate(item?.updatedAt)}</Text>  
+          </Wrapper>  </Wrapper>
+     
       </div>
     </Wrapper>
   );

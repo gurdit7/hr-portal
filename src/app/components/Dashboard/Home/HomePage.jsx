@@ -26,14 +26,14 @@ const HomePage = () => {
     setBreadcrumbs(breadcrumbs);
   }, []);
   useEffect(() => {
-    if (allEmployeesData.length > 0) {
+    if (allEmployeesData?.length > 0) {
       const maleCount = allEmployeesData?.filter((item) => {
         return item?.gender === "male";
       });
       const femaleCount = allEmployeesData?.filter((item) => {
         return item?.gender === "female";
       });
-      setTotal(allEmployeesData.length);
+      setTotal(allEmployeesData?.length);
       setMale(maleCount.length);
       setFemale(femaleCount.length);
     }

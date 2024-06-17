@@ -10,9 +10,11 @@ import useAuth from "@/app/contexts/Auth/auth";
 
 import { useState } from "react";
 import Permissions from "./Permissions";
+import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 
 const Add = () => {
   const { userData } = useAuth();
+  const {getUserRoles} = useDashboard();
   const [name, setName] = useState("");
   const [btnLoader, setBtnLoader] = useState(false);
   const [formData, setFormData] = useState({});
@@ -58,13 +60,14 @@ const Add = () => {
       body: JSON.stringify({
         name: name.toLowerCase(),
         permissions: selectedPermissions,
-        key: `${userData._id}`,
+        key: `${userData?._id}`,
       }),
     })
       .then((res) => {
         return res.json();
       })
       .then((res) => {
+     
         if (res?.success) {
           setSuccess({
             active: true,
@@ -72,6 +75,7 @@ const Add = () => {
           });
           hideNotifications();
           getUserRoles(userData?._id);
+          setName('');
         }
         if (res?.error) {
           setError({
@@ -82,6 +86,7 @@ const Add = () => {
         }
         setBtnLoader(false)
       }).catch(error =>{
+        console.log(error);
         setBtnLoader(false)
         setError({
           active: true,

@@ -10,6 +10,7 @@ import Birthday from "./components/Modals/Birthday/Birthday";
 import { DashboardConfiger } from "./contexts/Dashboard/dashboard";
 import { SocketProvider } from "./contexts/Socket/SocketContext";
 import RealtimeNotification from "./components/Ui/RealtimeNotification/RealtimeNotification";
+import Increment from "./components/Modals/Increment/Increment";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,7 +32,8 @@ export default async function RootLayout({ children }) {
               <Sidebar />
               <Header />
               {children}
-              <Birthday />          
+              <Birthday />     
+              <Increment />     
               <RealtimeNotification/>    
               </SocketProvider>
             </AuthProvider>

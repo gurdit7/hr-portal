@@ -30,10 +30,10 @@ const CoverImage = () => {
     const random = Math.floor(Math.random() * 1000000 + 1);
     reader.readAsDataURL(e.target.files[0]);
     const formData = new FormData();
-    formData.append("folder", userData.userID);
+    formData.append("folder", userData?.userID);
     formData.append(
       "name",
-      userData.userID + "-" + random + "-cover-image.jpg"
+      userData?.userID + "-" + random + "-cover-image.jpg"
     );
     formData.append("file", e.target.files[0]);
     const imageUrl_ = URL.createObjectURL(e.target.files[0]);

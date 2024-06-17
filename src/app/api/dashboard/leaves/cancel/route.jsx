@@ -88,8 +88,10 @@ export const PUT = async (request) => {
           await notifications.save();
 
           const updatedLeave = await Leaves.findOne({ _id: payload.id });
+          const mails = [];
+          mails.push(payload.email);
           return new NextResponse(
-            JSON.stringify({ leave: updatedLeave, user: updatedUser }),
+            JSON.stringify({ leave: updatedLeave, user: updatedUser, mails }),
             { status: 200 }
           );
         } else {

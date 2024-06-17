@@ -10,7 +10,7 @@ export const GET = async (request) => {
      const url = new URL(request.url);
      const key = url.searchParams.get("key");
      if(key){
-     const user = await userData.findOne({_id: key, status:'active'});
+     const user = await userData?.findOne({_id: key, status:'active'});
      if(user){
     const data = await Roles.find()
       .then( async (userExist) => {
@@ -39,6 +39,7 @@ export const GET = async (request) => {
       });
     }
   } catch (error) {  
+    console.log(error);
     return new NextResponse("ERROR" + JSON.stringify(error), { status: 500 });
   }
 };

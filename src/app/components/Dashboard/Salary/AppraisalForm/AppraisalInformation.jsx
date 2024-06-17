@@ -63,7 +63,7 @@ const AppraisalInformation = () => {
         setFormData({
           update: "leaves",
           email: result?.user?.email,
-          key: userData._id,
+          key: userData?._id,
           balancedLeaves: result?.user?.balancedLeaves,
           totalLeaveTaken: result?.user?.totalLeaveTaken,
           balancedSandwichLeaves,
@@ -76,7 +76,7 @@ const AppraisalInformation = () => {
           id,
           status: "canceled",
           email: result?.user?.email,
-          key: userData._id,
+          key: userData?._id,
           balancedLeaves: result?.user?.balancedLeaves,
           balancedSandwichLeaves,
           balancedSandwichLeavesTaken:

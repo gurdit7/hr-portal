@@ -12,8 +12,8 @@ import useAuth from "@/app/contexts/Auth/auth";
 import { useSocket } from "@/app/contexts/Socket/SocketContext";
 
 const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
-  const  socket  = useSocket();
-  const { userData } = useAuth();
+  const socket = useSocket();
+  const { userData, getUser } = useAuth();
   const [approvePopup, setApprovePopup] = useState(false);
   const [declinePopup, setDeclinePopup] = useState(false);
   const [declineForm, setDeclineForm] = useState("");
@@ -32,7 +32,7 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
     setDeclineForm({
       ...declineForm,
       id: id,
-      key: `${userData._id}`,
+      key: `${userData?._id}`,
       status: "not-approved",
     });
   };
@@ -168,7 +168,7 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
     setApprovePopup(true);
     setApproveForm({
       ...approveForm,
-      key: `${userData._id}`,
+      key: `${userData?._id}`,
       update: "approve",
       status: "approved",
     });
@@ -184,14 +184,17 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
         return res.json();
       })
       .then((res) => {
-        if(res.mails){    
+        if (res.mails) {
+          getUser(userData?.userID);
           const message = {
-            heading:"Your leave is approved.",
-            message:`${leave.subject} is approved.`,
-            link:`/dashboard/leaves/${res.leave._id}`,
-            type:"appraisalRequest"
+            heading: "Your leave is approved.",
+            message: `${leave.subject} is approved.`,
+            link: `/dashboard/leaves/${res.leave._id}`,
+            type: "appraisalRequest",
           };
-          socket.emit('sendNotification', { room: res.mails, message });
+          const mailsArray = [];
+          mailsArray.push(res.mails);
+          socket.emit("sendNotification", { rooms: mailsArray, message });
         }
         if (res?.error) {
           setError({
@@ -257,18 +260,30 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
             setError(false);
           }, 3000);
         } else {
-        setSuccess({
-          status: true,
-          active: true,
-          message: `The leave is decline. We will notify ${user?.name}.`,
-        });
-        setTimeout(() => {
-          setValue(true);
-          setApproveButtonLoading(false);
-          closeApproveModal();
-          setSuccess(false);
-        }, 3000);
-      }
+          if (res.mails) {
+            getUser(userData?.userID);
+            const message = {
+              heading: "Your leave is decline.",
+              message: `${leave.subject} is decline.`,
+              link: `/dashboard/leaves/${res.leave._id}`,
+              type: "leaveCanceled",
+            };
+            const mailsArray = [];
+            mailsArray.push(res.mails);
+            socket.emit("sendNotification", { rooms: mailsArray, message });
+          }
+          setSuccess({
+            status: true,
+            active: true,
+            message: `The leave is decline. We will notify ${user?.name}.`,
+          });
+          setTimeout(() => {
+            setValue(true);
+            setApproveButtonLoading(false);
+            closeApproveModal();
+            setSuccess(false);
+          }, 3000);
+        }
       })
       .catch((error) => {
         setError({

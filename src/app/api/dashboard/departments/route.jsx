@@ -21,7 +21,7 @@ export const GET = async (request) => {
     const url = new URL(request.url);
     const key = url.searchParams.get("key");
     if (key) {
-      const user = await userData.findOne({ _id: key, status:'active' });
+      const user = await userData?.findOne({ _id: key, status:'active' });
       if (user) {
         const departments = await Department.find().sort({ "name": 1  });
         return new NextResponse(JSON.stringify(departments), { status: 200 });
@@ -48,7 +48,7 @@ export const PUT = async (request) => {
     await connect();
     const payload = await request.json();
     if (payload?.email) {
-      const updateData = await userData.updateOne(
+      const updateData = await userData?.updateOne(
         { email: payload?.email },
         { department: payload?.department }
       );
@@ -62,7 +62,7 @@ export const PUT = async (request) => {
       }
     }
     if (payload?.prevName) {
-      const updateData = await userData.updateMany(
+      const updateData = await userData?.updateMany(
         { department: payload?.prevName },
         { department: payload?.name }
       );
@@ -101,7 +101,7 @@ export const DELETE = async (request) => {
   try {
     await connect();
     const payload = await request.json();
-    const updateData = await userData.updateMany(
+    const updateData = await userData?.updateMany(
         { department: payload?.name },
         { department: payload?.department }
       );
