@@ -8,7 +8,6 @@ export function useThemeConfig() {
 
 export const ThemeConfiger =  ({children}) => {
   const [pagetitle, setPagetitle] = useState('Home');
-  const [headerStyle, setHeaderStyle] = useState('light');
   const [sidebarCollapse, setSidebarCollapse] = useState(false);
   const [activePage, setActivePage] = useState('home');
   const [themeMode, setThemeMode] = useState('light');
@@ -29,8 +28,6 @@ export const ThemeConfiger =  ({children}) => {
     getActivePage,
     themeMode,
     setThemeMode,
-    headerStyle,
-    setHeaderStyle,
     sidebarCollapse,
     setSidebarCollapse,
     breadcrumbs,

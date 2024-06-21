@@ -13,6 +13,9 @@ export const DashboardConfiger = ({ children }) => {
   const [allEmployeesData, setAllEmployees] = useState(false);
   const [holidays, setHolidays] = useState(false);
   const [appraisals, setAppraisals] = useState([]);
+  const [allAppraisals, setAllAppraisals] = useState([]);
+  const [documents, setDocuments] = useState([]);
+  const [indiviualDocuments, setIndiviualDocuments] = useState([]);
   const [individualUserLeaves, setIndividualUserLeaves] = useState([]);
   const [allUsersLeaves, setAllUsersLeaves] = useState([]);
   const [userRoles, setuserRoles] = useState([
@@ -88,11 +91,18 @@ export const DashboardConfiger = ({ children }) => {
         setAllPermissions(data?.role);
       });
   };
-  const getAppraisal = (key, email, id, all) => {
-    let link = `/api/dashboard/appraisal?key=${key}&email=${email}`;
-    if(all){
-      let link = `/api/dashboard/appraisal?all=${all}`; 
-    }
+  const getAppraisal = (key) => {
+    let link = `/api/dashboard/appraisal?key=${key}&all=true`;  
+    fetch(link)
+      .then(function (res) {
+        return res.json();
+      })
+      .then(async function (data) {
+        setAllAppraisals(data);        
+      });
+  };
+  const getIndiviualAppraisal = (key, email) =>{
+    let link = `/api/dashboard/appraisal?key=${key}&email=${email}`;         
     fetch(link)
       .then(function (res) {
         return res.json();
@@ -100,7 +110,7 @@ export const DashboardConfiger = ({ children }) => {
       .then(async function (data) {
         setAppraisals(data?.appraisal);        
       });
-  };
+  }
   const fetchNotifications = async (key, email) => {
     const response = await fetch(
       `/api/dashboard/notifications?key=${key}&email=${email}`
@@ -154,7 +164,27 @@ export const DashboardConfiger = ({ children }) => {
         setAllUsersLeaves(data);
       });
   };
+  const getDocuments = (key, all) => {
+    fetch(`/api/dashboard/document?key=${key}&all=true`)
+      .then((res) => res.json())
+      .then((data) => {
+        setDocuments(data);
+      });
+  };
+  const getIndiviualDocuments = (key) => {
+    fetch(`/api/dashboard/document?key=${key}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setIndiviualDocuments(data);
+      });
+  };
   const value = {
+    documents,
+    getDocuments,
+    indiviualDocuments,
+    getIndiviualDocuments,
+    allAppraisals,
+    getIndiviualAppraisal,
     departments,
     getDepartments,
     setPermissions,

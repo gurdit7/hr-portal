@@ -18,17 +18,33 @@ const GetUserData = (session) => {
     getAllUsersLeaves,
     fetchNotifications,
     getAppraisal,
+    getDocuments,
+    getIndiviualAppraisal,
+    getIndiviualDocuments,
     fetchIndividualNotifications,
   } = useDashboard();
   const router = useRouter();
   const location = usePathname();
   useEffect(() => {
     const fetchUser = async () => {
-       setTimeout(() => {
+      setTimeout(() => {
         getUserRoles(userData?._id);
+        if (data?.permissions.includes("view-appraisal")) {
+          getIndiviualAppraisal(userData?._id, userData?.email);
+        }
+        if (data?.permissions.includes("view-users-appraisals") || data?.permissions.includes("view-team-appraisals")) {
+          getAppraisal(userData?._id);
+        }
         if (data?.permissions.includes("view-appraisal")) {
           getAppraisal(userData?._id, userData?.email);
         }
+        if (data?.permissions.includes("view-documents")) {
+          getIndiviualDocuments(userData?._id);
+        }
+        if (data?.permissions.includes("view-users-documents") || data?.permissions.includes("view-team-documents")) {
+          getDocuments(userData?._id, true);
+        }
+
         if (data?.permissions.includes("user-notifications")) {
           fetchIndividualNotifications(userData?._id, userData?.email);
         }
@@ -57,12 +73,12 @@ const GetUserData = (session) => {
       if (location === "/account/register" || location === "/account/login") {
         router.push("/", { scroll: false });
       }
-    };  
-      if(data.permissions){
+    };
+    if (data.permissions) {
       fetchUser();
-      }
+    }
   }, [data]);
-  useEffect(()=>{
+  useEffect(() => {
     if (session.session !== "null") {
       const user = JSON.parse(session.session);
       getUser(user?.userID);
@@ -72,7 +88,7 @@ const GetUserData = (session) => {
         router.push("/account/login", { scroll: false });
       }
     }
-  },[])
+  }, []);
   return <></>;
 };
 

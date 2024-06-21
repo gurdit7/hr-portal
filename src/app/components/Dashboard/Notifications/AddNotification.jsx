@@ -166,7 +166,7 @@ const AddNotification = () => {
   return (
     <>
       {userPermissions && userPermissions.includes("add-notifications") && (
-        <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full max-w-[550px]">
+        <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full max-w-[550px]">
           <H2>Add Notification</H2>
           <form className="flex flex-col gap-[15px]" onSubmit={submitForm}>
             <Input
@@ -178,7 +178,7 @@ const AddNotification = () => {
               value={formData?.emails || ""}
               name="emails"
               multiple={true}
-              className="border-light-600 border"
+              className="border-light-600 dark:border-gray-600 border"
             >
               <IconProfile size="24px" color="stroke-light-400" />
             </Input>
@@ -191,7 +191,7 @@ const AddNotification = () => {
               value={formData?.subject || ""}
               name="subject"
               multiple={true}
-              className="border-light-600 border"
+              className="border-light-600 dark:border-gray-600 border"
             >
               <IconNotes size="24px" color="stroke-light-400" />
             </Input>
@@ -209,7 +209,7 @@ const AddNotification = () => {
               value={formData?.attachment || ""}
               name="attachment"
               multiple={false}
-              className="border-light-600 border"
+              className="border-light-600 dark:border-gray-600 border"
             >
               <IconAttachment size="24px" color="fill-light-400" />
             </Input>

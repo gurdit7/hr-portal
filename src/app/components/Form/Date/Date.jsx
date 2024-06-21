@@ -27,7 +27,7 @@ const Date = ({
                   required={true}
                   value={date}
                   name={name}
-                  className="border-light-600 border"
+                  className="border-light-600 dark:border-gray-600 border"
                 >
                  {children} 
                 </Input>     

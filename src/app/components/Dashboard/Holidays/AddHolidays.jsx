@@ -88,13 +88,13 @@ const AddHolidays = () => {
           required={true}
           value={formData?.date || ""}
           name="date"
-          className="border-light-600 border"
+          className="border-light-600 dark:border-gray-600 border"
         >
           <IconDate size="24px" color="stroke-light-400" />
         </Input>
         <label
           className={`absolute left-[48px] top-[38px] pointer-events-none text-light-600 ${
-            formData?.date ? "text-text-dark" : "text-light-600"
+            formData?.date ? "text-dark dark:text-white" : "text-light-600"
           }`}
         >
           {formData?.date || "Date"}
@@ -110,7 +110,7 @@ const AddHolidays = () => {
           required={true}
           value={formData?.festivals || ""}
           name="festivals"
-          className="border-light-600 border"
+          className="border-light-600 dark:border-gray-600 border"
         >
           <IconCategory size="24px" color="stroke-light-400" />
         </Input>

@@ -11,6 +11,8 @@ import { DashboardConfiger } from "./contexts/Dashboard/dashboard";
 import { SocketProvider } from "./contexts/Socket/SocketContext";
 import RealtimeNotification from "./components/Ui/RealtimeNotification/RealtimeNotification";
 import Increment from "./components/Modals/Increment/Increment";
+import Wrapper from "./components/Ui/Wrapper/Wrapper";
+import Main from "./components/Ui/Main/Main";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,14 +29,16 @@ export default async function RootLayout({ children }) {
         <ThemeConfiger>
           <DashboardConfiger>
             <AuthProvider>
-            <SocketProvider>
-              <GetUserData session={JSON.stringify(session)}></GetUserData>
-              <Sidebar />
-              <Header />
-              {children}
-              <Birthday />     
-              <Increment />     
-              <RealtimeNotification/>    
+              <SocketProvider>
+                <Main>
+                  <GetUserData session={JSON.stringify(session)}></GetUserData>
+                  <Sidebar />
+                  <Header />
+                  {children}
+                  <Birthday />
+                  <Increment />
+                  <RealtimeNotification />
+                </Main>
               </SocketProvider>
             </AuthProvider>
           </DashboardConfiger>

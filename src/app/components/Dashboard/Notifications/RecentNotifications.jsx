@@ -7,13 +7,16 @@ const RecentNotifications = () => {
     useDashboard();
   return (
     <>
-      <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full">
+      <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full">
         {userPermissions &&
           userPermissions?.includes("view-users-notifications") && (
-            <ItemRecentNotifications userNotifications={userNotifications} />
+            <ItemRecentNotifications
+            heading="Recent Notification"
+            userNotifications={userNotifications} />
           )}
         {userPermissions && userPermissions?.includes("user-notifications") && (
           <ItemRecentNotifications
+          heading="My Notification"
             userNotifications={userIndividualNotifications}
           />
         )}

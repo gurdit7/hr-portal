@@ -117,8 +117,18 @@ export const GET = async (request) => {
         });
         if (result) {
           if (all === "true" && !value) {
+            const rolesUsers = await getRolesWithPermission("user-leaves");
+            const rolesTeam = await getRolesWithPermission("view-team-leaves");
+            if(rolesUsers.includes(user.role)){
             const leaves = await Leaves.find().sort({ $natural: -1 });
             return new NextResponse(JSON.stringify(leaves), { status: 200 });
+            }
+            if(rolesTeam.includes(user.role)){
+              const users = await UsersData.find({ department: user?.department });
+              const mails = users.map((user) => user.email);             
+              const leaves = await Leaves.find({ email: { $in: mails } });   
+              return new NextResponse(JSON.stringify(leaves), { status: 200 });
+            }
           }
           if (all === "true" && value) {
             const leaves = await Leaves.find({ status: value }).sort({
@@ -142,7 +152,7 @@ export const GET = async (request) => {
             });
             return new NextResponse(JSON.stringify(leaves), { status: 200 });
           }
-          if (!id && !email) {
+          if (!id && !email && !all) {
             return new NextResponse(
               JSON.stringify({ error: "Email not provided" }),
               {
@@ -223,7 +233,7 @@ export const PUT = async (request) => {
             updatedUser = 0;
           const user = await UsersData.findOne({ email: payload?.email });
           if (payload.update === "leaves") {
-            await Leaves.updateOne(
+            updatedLeave = await Leaves.updateOne(
               { _id: payload.id },
               { status: "updated", reason: payload.reason }
             );
@@ -241,16 +251,33 @@ export const PUT = async (request) => {
               }
             );
             updatedUser = await UsersData.findOne({ email: payload.email });
-            return new NextResponse(JSON.stringify(updatedUser), {
-              status: 200,
+            const mails = [];
+            mails.push(payload.email);
+        
+            await sendEmail(
+              payload.email,
+              `HR Portal - Your leaves is updated.`,
+              `Please check HR portal your leave is updated.`,
+              payload.attachment
+            );
+        
+            const viewedStatus = mails.map((mail) => ({ mail, status: false }));
+            const notifications = new Notifications({
+              ...payload,
+              toEmails: mails,
+              type: "leaveUpdated",
+              id: result._id,
+              link:`/dashboard/leaves/${result._id}`,
+              viewed: viewedStatus,
             });
+        
+            await notifications.save();
+            return new NextResponse(
+              JSON.stringify({ leave: updatedLeave, user: User, mails }),
+              { status: 200 }
+            );
           }
-          await UsersData.updateOne({ email: payload.email }, updateUserFields);
-          const User = await UsersData.findOne({ email: payload.email });
-          return new NextResponse(
-            JSON.stringify({ leave: updatedLeave, user: User }),
-            { status: 200 }
-          );
+      
         }
         else {
           return new NextResponse(
@@ -277,6 +304,7 @@ export const PUT = async (request) => {
       );
     }
   } catch (error) {
+    console.log(error);
     return new NextResponse(
       JSON.stringify({
         error: "Invalid API key.",

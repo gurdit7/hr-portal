@@ -1,5 +1,6 @@
 "use client";
 import Checkbox from "@/app/components/Form/Checkbox/Checkbox";
+import Text from "@/app/components/Ui/Text/Text";
 import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
 import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 import { rolesPermissions } from "@/app/data/default";
@@ -107,7 +108,7 @@ const Permissions = ({ getFormData, selectedPermissions }) => {
     }
   }, [selectedPermissions]);
   return (
-    <Wrapper className="bg-light-200 rounded-lg border border-gray-200">
+    <Wrapper className="bg-light-200 rounded-lg border border-gray-200 dark:bg-gray-600 dark:border-gray-500">
       <Wrapper className="flex gap-2 items-center justify-between   p-3">
         <Checkbox
           id="allPermissions"
@@ -119,7 +120,7 @@ const Permissions = ({ getFormData, selectedPermissions }) => {
           }
         />
         <span
-          className="text-gray-600 text-sm cursor-pointer hover:text-gray-400 font-semibold"
+          className="text-gray-600 dark:text-accent text-sm cursor-pointer hover:text-gray-400 font-semibold"
           onClick={handleExpandAll}
         >
           {Object.values(accordions).every((v) => v)
@@ -128,7 +129,7 @@ const Permissions = ({ getFormData, selectedPermissions }) => {
         </span>
       </Wrapper>
       {Object.keys(rolesPermissions).map((value) => (
-        <Wrapper key={value} className="border-t border-gray-200">
+        <Wrapper key={value} className="border-t border-gray-200 dark:border-gray-500">
           <div
             className="flex gap-2 items-center w-full justify-between p-3 cursor-pointer"
             id={`${value}Wrapper`}
@@ -171,17 +172,20 @@ const Permissions = ({ getFormData, selectedPermissions }) => {
           <Wrapper
             className={`${
               accordions[`${value}Wrapper`] ? "block" : "hidden"
-            } p-5 bg-white space-y-4 border-t border-gray-200`}
+            } p-5 bg-white dark:bg-gray-700 dark:border-gray-600 space-y-4 border-t border-gray-200`}
           >
             {rolesPermissions[value].map((item, i) => (
-              <Checkbox
-                key={i}
-                id={`${value}_${i}` || ""}
-                value={item.value}
-                label={item.item}
-                onChange={handleSinglePermissionsChange(value, item.value)}
-                checked={checkbox[`${value}_${i}`] || false}
-              />
+              <>
+                <Checkbox
+                  key={i}
+                  id={`${value}_${i}` || ""}
+                  value={item.value}
+                  label={item.item}
+                  onChange={handleSinglePermissionsChange(value, item.value)}
+                  checked={checkbox[`${value}_${i}`] || false}
+                />
+                {item?.info && <Text className="!mt-0 !text-[12px] !font-normal !text-light-600 ml-[28px]">{item?.info}</Text>}
+              </>
             ))}
           </Wrapper>
         </Wrapper>

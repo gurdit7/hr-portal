@@ -98,7 +98,7 @@ const AllEmployees = () => {
   return (
     <>
       {userPermissions && userPermissions?.includes("read-employees") && (
-        <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full">
+        <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full">
           <Wrapper className="flex justify-between items-center">
             <H2>All Employees</H2>
             <DropDown
@@ -124,56 +124,56 @@ const AllEmployees = () => {
             <IconSearch size="24px" color="fill-light-400" />
           </Input>
           <Wrapper>
-            <Wrapper className="flex bg-dark-blue">
-              <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white">
+            <Wrapper className="flex bg-dark-blue dark:bg-gray-600">
+              <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white ">
                 S.no
               </Wrapper>
-              <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white">
+              <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white ">
                 Name
               </Wrapper>
-              <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white">
+              <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white ">
                 Department
               </Wrapper>
-              <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white">
+              <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white ">
                 Designation
               </Wrapper>
-              <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white">
+              <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white ">
                 Increment Date
               </Wrapper>
               {userPermissions &&
                 userPermissions?.includes("write-employees") && (
-                  <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white">
+                  <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white ">
                     Actions
                   </Wrapper>
                 )}
             </Wrapper>
-            <Wrapper className="border border-light-500 border-t-0">
+            <Wrapper className="border border-light-500 border-t-0 dark:border-gray-600">
               {users &&
                 users.map((user, i) => (
                   <Wrapper
                     key={i}
                     className={` flex items-center ${i} ${
-                      i > 0 ? "border-t border-light-500" : ""
+                      i > 0 ? "border-t border-light-500 dark:border-gray-600" : ""
                     }`}
                   >
-                    <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
+                    <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-dark dark:text-white capitalize">
                       {index > 0 ? i + 1 + limit * index : i + 1}
                     </Wrapper>
-                    <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
+                    <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-dark dark:text-white capitalize">
                       {user.name}
                     </Wrapper>
-                    <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
+                    <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-dark dark:text-white capitalize">
                       {user.department}
                     </Wrapper>
-                    <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
+                    <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-dark dark:text-white capitalize">
                       {user.designation}
                     </Wrapper>
-                    <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
+                    <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-dark dark:text-white capitalize">
                       {formatDate(user.incrementDate)}
                     </Wrapper>
                     {userPermissions &&
                       userPermissions?.includes("write-employees") && (
-                        <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark flex gap-[2px]">
+                        <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-dark dark:text-white flex gap-[2px]">
                           <span
                             onClick={() => editEmployeeModal(i)}
                             className="rounded-full w-[30px] h-[30px] bg-accent flex justify-center items-center cursor-pointer hover:scale-110"
@@ -207,7 +207,7 @@ const AllEmployees = () => {
           hideModal={closeViewModal}
           heading={"Employee - " + user?.name}
         >
-          <Wrapper className="bg-white rounded-[10px] p-5 max-w-[895px] w-full m-auto max-h-[95vh] overflow-auto">
+          <Wrapper className="bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] p-5 max-w-[895px] w-full m-auto max-h-[95vh] overflow-auto">
             <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
               <Text className="!text-light-400"> Name</Text>
               <Text className="capitalize"> {user?.name}</Text>

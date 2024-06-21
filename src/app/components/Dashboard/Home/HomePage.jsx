@@ -42,8 +42,8 @@ const HomePage = () => {
     <>
       {userPermissions && userPermissions?.includes("write-employees") && (
         <Container heading={`Welcome, ${userData?.name?.split(" ")[0]}`}>
-          <Wrapper className="flex justify-between gap-[15px]">
-            <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full items-center">
+          <Wrapper className="flex justify-between gap-4">
+            <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full items-center">
               <H1 className="text-light-500 text-[64px] leading-none">
                 {total}
               </H1>
@@ -51,7 +51,7 @@ const HomePage = () => {
                 Total Employees
               </H3>
             </Wrapper>
-            <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full items-center">
+            <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full items-center">
               <H1 className="text-light-500 text-[64px] leading-none">
                 {male}
               </H1>
@@ -59,7 +59,7 @@ const HomePage = () => {
                 Male Employees
               </H3>
             </Wrapper>
-            <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full items-center">
+            <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full items-center">
               <H1 className="text-light-500 text-[64px] leading-none">
                 {female}
               </H1>
@@ -68,6 +68,16 @@ const HomePage = () => {
               </H3>
             </Wrapper>
           </Wrapper>
+          <Wrapper className='mt-4 flex gap-4'>
+          <Wrapper className='flex-[2]'>
+          <RecentNotifications />
+          </Wrapper>
+          <Wrapper className="flex-1 w-full bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] p-5">
+              <H2 className="mb-[5px]">Holidays</H2>
+              <AllHolidays />
+            </Wrapper>
+         
+          </Wrapper>
         </Container>
       )}
       {userPermissions && userPermissions?.includes("balance-leaves") && !userPermissions?.includes("write-employees") && (
@@ -75,7 +85,7 @@ const HomePage = () => {
          <BalancedLeaves user={userData} />
           <Wrapper className="flex justify-between gap-[15px] mt-[15px] items-start">
             <RecentNotifications />
-            <Wrapper className="max-w-[600px] w-full bg-white rounded-[10px] p-5">
+            <Wrapper className="max-w-[600px] w-full bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] p-5">
               <H2 className="mb-[5px]">Holidays</H2>
               <AllHolidays />
             </Wrapper>
@@ -85,7 +95,7 @@ const HomePage = () => {
       {!userPermissions && (
         <Container>
           <Wrapper className="flex justify-between gap-[15px]">
-            <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full items-center animate-pulse">
+            <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full items-center animate-pulse">
               <H1 className="text-light-500 text-[64px] leading-none opacity-0">
                 {total || 0}
               </H1>
@@ -93,7 +103,7 @@ const HomePage = () => {
                 Total Employees
               </H3>
             </Wrapper>
-            <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full items-center animate-pulse">
+            <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full items-center animate-pulse">
               <H1 className="text-light-500 text-[64px] leading-none opacity-0">
                 {male || 0}
               </H1>
@@ -101,7 +111,7 @@ const HomePage = () => {
                 Male Employees
               </H3>
             </Wrapper>
-            <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full items-center animate-pulse">
+            <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full items-center animate-pulse">
               <H1 className="text-light-500 text-[64px] leading-none opacity-0">
                 {female || 0}
               </H1>

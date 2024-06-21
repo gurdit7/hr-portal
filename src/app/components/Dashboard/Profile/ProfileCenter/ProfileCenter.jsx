@@ -136,7 +136,7 @@ const ProfileCenter = () => {
     setBankAccount(false);
   };
   return (
-    <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col w-full">
+    <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col w-full">
       <H2>Personal Information</H2>
       <Wrapper className="mt-[15px]">
         <Wrapper className="py-[10px] border-t border-b border-light-500 flex justify-between">

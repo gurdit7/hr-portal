@@ -32,7 +32,7 @@ const AccessDenied = ({permission, message}) => {
     <>
     {userPermissions && !userPermissions?.includes(permission) && (
 <Wrapper className='w-full items-center justify-center flex'>
-<Wrapper className='w-full bg-white rounded-xl py-4 px-7'>
+<Wrapper className='w-full bg-white dark:bg-gray-700 dark:border-gray-600 rounded-xl py-4 px-7'>
 <H1 className='text-xl text-center leading-normal'>
    {heading}
 </H1>

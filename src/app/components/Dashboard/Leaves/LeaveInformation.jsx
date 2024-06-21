@@ -221,6 +221,7 @@ const LeaveInformation = () => {
   const handleFormChange = (e) => {
     setFormData((prevData) => ({
       ...prevData,
+      key:`${userData?._id}`,
       [e.target.name]: e.target.value,
     }));
   };
@@ -269,10 +270,28 @@ const LeaveInformation = () => {
         method: "PUT",
         body: JSON.stringify(formData),
       });
-      await response.json();
+      const result = await response.json();
+      if (result?.error) {
+        setError({
+          status: true,
+          active: true,
+          message: result?.error,
+        });
+        setTimeout(() => {
+          setLoading(false);
+          setError(false);
+        }, 3000);
+      } else {
+        const message = {
+          heading:"Your leave is updated.",
+          message:`${result.leave.subject} is updated.`,
+          link:`/dashboard/leaves/${result.leave._id}`,
+          type:"leaves"
+        };
+        socket.emit('sendNotification', { rooms: result?.mails, message });
       setValue(true);
       setLoading(false);
-      setShow(false);
+      }
     } catch (error) {
       console.error("Error updating leaves:", error);
       setLoading(false);
@@ -297,14 +316,14 @@ const LeaveInformation = () => {
   }, [leaves]);
   return (
     <>
-      <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full relative">
+      <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full relative">
         {leaves?.subject && <H2>Subject: {leaves?.subject}</H2>}
         {!leaves?.subject && (
           <SkeletonLoader className="h-9 rounded-lg w-1/2" />
         )}
         {leaves?.description && (
           <div
-            className="mt-[5px] text-sm font-medium font-poppins text-text-dark"
+            className="mt-[5px] text-sm font-medium font-poppins text-dark dark:text-white"
             ref={paraRef}
           >
             {toHTML(paraRef, leaves?.description, leaves?.description.length)}
@@ -521,7 +540,7 @@ const LeaveInformation = () => {
                   required={true}
                   value={formData?.balancedLeaves || ""}
                   name="balancedLeaves"
-                  className="border-light-600 border !text-base !bg-transparent !text-white"
+                  className="border-light-600 dark:border-gray-600 border !text-base !bg-transparent !text-white"
                 >
                   <IconNumber size="24px" color="fill-light-400" />
                 </Input>
@@ -533,7 +552,7 @@ const LeaveInformation = () => {
                   required={true}
                   value={formData?.totalLeaveTaken || 0}
                   name="totalLeaveTaken"
-                  className="border-light-600 border !text-base !bg-transparent !text-white"
+                  className="border-light-600 dark:border-gray-600 border !text-base !bg-transparent !text-white"
                 >
                   <IconNumber size="24px" color="fill-light-400" />
                 </Input>
@@ -547,7 +566,7 @@ const LeaveInformation = () => {
                   required={true}
                   value={formData?.balancedSandwichLeaves || ""}
                   name="balancedSandwichLeaves"
-                  className="border-light-600 border !text-base !bg-transparent !text-white"
+                  className="border-light-600 dark:border-gray-600 border !text-base !bg-transparent !text-white"
                 >
                   <IconNumber size="24px" color="fill-light-400" />
                 </Input>
@@ -559,7 +578,7 @@ const LeaveInformation = () => {
                   required={true}
                   value={formData?.balancedSandwichLeavesTaken || 0}
                   name="balancedSandwichLeavesTaken"
-                  className="border-light-600 border !text-base !bg-transparent !text-white"
+                  className="border-light-600 dark:border-gray-600 border !text-base !bg-transparent !text-white"
                 >
                   <IconNumber size="24px" color="fill-light-400" />
                 </Input>
@@ -574,7 +593,7 @@ const LeaveInformation = () => {
                     required={true}
                     value={formData?.totalUnpaidLeaveTaken || ""}
                     name="totalUnpaidLeaveTaken"
-                    className="border-light-600 border !text-base !bg-transparent !text-white"
+                    className="border-light-600 dark:border-gray-600 border !text-base !bg-transparent !text-white"
                   >
                     <IconNumber size="24px" color="fill-light-400" />
                   </Input>
@@ -588,12 +607,14 @@ const LeaveInformation = () => {
                     required={true}
                     value={formData?.unpaidSandwichLeavesTaken || ""}
                     name="unpaidSandwichLeavesTaken"
-                    className="border-light-600 border !text-base !bg-transparent !text-white"
+                    className="border-light-600 dark:border-gray-600 border !text-base !bg-transparent !text-white"
                   >
                     <IconNumber size="24px" color="fill-light-400" />
                   </Input>
                 )}
-                <Wrapper className="w-full">
+             
+              </Wrapper>
+              <Wrapper className="w-full">
                   <span className="text-light-400 text-xs block mb-1">
                     Reason
                   </span>
@@ -602,6 +623,7 @@ const LeaveInformation = () => {
                     onChange={(e) =>
                       setFormData({
                         ...formData,
+                        update: "updated",
                         reason: e.target.value,
                       })
                     }
@@ -610,7 +632,6 @@ const LeaveInformation = () => {
                     value={formData?.reason}
                   ></textarea>
                 </Wrapper>
-              </Wrapper>
               <Wrapper className="flex">
                 <FormButton
                   type="submit"

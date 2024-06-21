@@ -160,7 +160,7 @@ const EditEmployee = ({ user, closePopup }) => {
               required={true}
               value={formData?.name || user?.name}
               name="name"
-              className="border-light-600 border"
+              className="border-light-600 dark:border-gray-600 border"
             >
               <IconProfile size="24px" color="stroke-light-400" />
             </Input>{" "}
@@ -176,14 +176,14 @@ const EditEmployee = ({ user, closePopup }) => {
               required={true}
               value={formData?.joinDate || user?.joinDate}
               name="joinDate"
-              className="border-light-600 border"
+              className="border-light-600 dark:border-gray-600 border"
             >
               <IconDate size="24px" color="stroke-light-400" />
             </Input>
             <label
               className={`absolute left-[48px] top-[38px] pointer-events-none text-light-600 ${
                 formData?.joinDate || user?.joinDate
-                  ? "text-text-dark"
+                  ? "text-dark dark:text-white"
                   : "text-light-600"
               }`}
             >
@@ -250,13 +250,13 @@ const EditEmployee = ({ user, closePopup }) => {
               required={true}
               value={formData?.DOB || user?.DOB}
               name="DOB"
-              className="border-light-600 border"
+              className="border-light-600 dark:border-gray-600 border"
             >
               <IconDate size="24px" color="stroke-light-400" />
             </Input>
             <label
               className={`absolute left-[48px] top-[38px] pointer-events-none ${
-                formData?.DOB || user?.DOB ? "text-text-dark" : "text-light-600"
+                formData?.DOB || user?.DOB ? "text-dark dark:text-white" : "text-light-600"
               }`}
             >
               {formData?.DOB || user?.DOB || "DOB"}
@@ -273,14 +273,14 @@ const EditEmployee = ({ user, closePopup }) => {
               required={true}
               value={formData?.incrementDate || user?.incrementDate}
               name="incrementDate"
-              className="border-light-600 border"
+              className="border-light-600 dark:border-gray-600 border"
             >
               <IconDate size="24px" color="stroke-light-400" />
             </Input>
             <label
               className={`absolute left-[48px] top-[38px] pointer-events-none text-light-600 ${
                 formData?.incrementDate || user?.incrementDate
-                  ? "text-text-dark"
+                  ? "text-dark dark:text-white"
                   : "text-light-600"
               }`}
             >
@@ -298,7 +298,7 @@ const EditEmployee = ({ user, closePopup }) => {
               required={true}
               value={formData?.currentSalary || ""}
               name="currentSalary"
-              className="border-light-600 border"
+              className="border-light-600 dark:border-gray-600 border"
             >
               <IconSalary size="24px" color="fill-light-400" />
             </Input>
@@ -312,7 +312,7 @@ const EditEmployee = ({ user, closePopup }) => {
               required={true}
               value={formData?.balancedLeaves || 0 || ""}
               name="balancedLeaves"
-              className="border-light-600 border"
+              className="border-light-600 dark:border-gray-600 border"
             >
               <IconNumber size="24px" color="fill-light-400" />
             </Input>
@@ -329,7 +329,7 @@ const EditEmployee = ({ user, closePopup }) => {
               required={true}
               value={formData?.totalLeaveTaken || 0 || ""}
               name="totalLeaveTaken"
-              className="border-light-600 border"
+              className="border-light-600 dark:border-gray-600 border"
             >
               <IconNumber size="24px" color="fill-light-400" />
             </Input>
@@ -343,7 +343,7 @@ const EditEmployee = ({ user, closePopup }) => {
               required={true}
               value={formData?.balancedSandwichLeaves || 0 || ""}
               name="balancedSandwichLeaves"
-              className="border-light-600 border"
+              className="border-light-600 dark:border-gray-600 border"
             >
               <IconNumber size="24px" color="fill-light-400" />
             </Input>
@@ -357,7 +357,7 @@ const EditEmployee = ({ user, closePopup }) => {
               required={true}
               value={formData?.balancedSandwichLeavesTaken || 0 || ""}
               name="balancedSandwichLeavesTaken"
-              className="border-light-600 border"
+              className="border-light-600 dark:border-gray-600 border"
             >
               <IconNumber size="24px" color="fill-light-400" />
             </Input>

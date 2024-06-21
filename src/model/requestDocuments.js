@@ -24,7 +24,7 @@ const requestDocumentSchema = new Schema({
         status:{
             type:String
         },
-        file:{
+        attachment:{
             type:String
         }            
 

@@ -39,7 +39,7 @@ const Holidays = () => {
           additionalCss="!absolute right-[25px] top-4 max-w-[250px]"
         ></FormButton>
       )}
-      <Wrapper className=' bg-white rounded-[10px] p-5'>
+      <Wrapper className=' bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] p-5'>
       <AllHolidays />
       </Wrapper>
       {userPermissions &&

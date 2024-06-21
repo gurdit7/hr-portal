@@ -69,6 +69,7 @@ const All = () => {
         return item.permissions;
       }
     });
+    console.log(per);
     setFormData({
         ...formData,
         name: name,
@@ -198,11 +199,11 @@ const All = () => {
       });
   };
   return (
-    <Wrapper className="bg-white rounded-lg p-5 w-full">
+    <Wrapper className="bg-white dark:bg-gray-700 dark:border-gray-600 rounded-lg p-5 w-full">
       <Wrapper className="flex justify-between items-center mb-4">
         <H2>All Roles</H2>
       </Wrapper>
-      <Wrapper className="flex bg-dark-blue">
+      <Wrapper className="flex bg-dark-blue  dark:bg-gray-600">
         <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white">
           S.no
         </Wrapper>
@@ -213,22 +214,22 @@ const All = () => {
           Actions
         </Wrapper>
       </Wrapper>
-      <Wrapper className="border border-light-500 border-t-0">
+      <Wrapper className="border border-light-500 border-t-0  dark:border-gray-600">
         {allRoles &&
           allRoles.map((name, i) => (
             <Wrapper
               key={i}
               className={` flex items-center ${i} ${
-                i > 0 ? "border-t border-light-500" : ""
+                i > 0 ? "border-t border-light-500  dark:border-gray-600" : ""
               }`}
             >
-              <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
+              <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-dark dark:text-white capitalize">
               {start > 0 ? i + 1 + limit * start : i + 1}
               </Wrapper>
-              <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark uppercase">
+              <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-dark dark:text-white uppercase">
                 {name.replace("-", " ")}
               </Wrapper>
-              <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark flex gap-[2px]">
+              <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-dark dark:text-white flex gap-[2px]">
                 <span
                   onClick={() => showModalEdit(name, allPermissions)}
                   className="rounded-full w-[30px] h-[30px] bg-accent flex justify-center items-center cursor-pointer hover:scale-110"

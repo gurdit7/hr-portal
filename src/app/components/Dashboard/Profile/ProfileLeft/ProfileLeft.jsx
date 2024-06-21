@@ -144,7 +144,7 @@ const ProfileLeft = () => {
     }
   };
   return (
-    <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col max-w-[360px] w-full">
+    <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col max-w-[360px] w-full">
       <Wrapper className=" flex justify-center">
         <Wrapper className={`relative ${loading ? "animate-pulse" : ""}`}>
           <ProfileImage size={144} />

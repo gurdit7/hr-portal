@@ -205,4 +205,13 @@ body{
         background-size: 18px;
     }
 
-    
+    .ql-toolbar.ql-snow{
+        @apply dark:!bg-white dark:!border-gray-600
+    }
+
+    .ql-container.ql-snow{
+        @apply  dark:!border-gray-600
+    }
+    .ql-editor *{
+        @apply  dark:!text-gray-400 
+    }

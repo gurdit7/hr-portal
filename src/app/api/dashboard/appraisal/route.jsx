@@ -11,6 +11,7 @@ import sendEmail from "@/app/mailer/mailer";
 import Notifications from "@/model/notifications";
 import UsersData from "@/model/userData";
 import addRole from "@/model/addRole";
+import userData from "@/model/userData";
 
 export const POST = async (request) => {
   try {
@@ -39,16 +40,20 @@ export const POST = async (request) => {
           });
           const user = await getUserByEmail(payload?.email);
           const roles = await getRolesWithPermission(
-            "view-users-notifications"
+            "view-users-appraisals"
           );
           const departmentEmails = await getEmailsByRoleAndDepartment(
             roles,
             user.department
           );
+          
           const hrAdminEmails = await getHrAndAdminEmails();
           const mails = [...new Set([...departmentEmails, ...hrAdminEmails])];
+            var index = mails.indexOf(payload?.email);
+            if (index > -1) {
+              mails.splice(index, 1);
+            }
           const mailsString = mails.toString();
-
           await sendEmail(
             mailsString,
             `HR Portal - ${user.name} has requested for appraisal.`,
@@ -126,6 +131,23 @@ export const GET = async (request) => {
         });
         if (result) {
           if (all) {
+            const rolesUsers = await getRolesWithPermission("view-users-appraisals");
+            const rolesTeam = await getRolesWithPermission("view-team-appraisals");
+
+            if(rolesUsers.includes(user.role)){
+              const data = await AppraisalForm.find();
+              return new NextResponse(JSON.stringify(data), { status: 200 });
+            }
+            if(rolesTeam.includes(user.role)){
+            const users = await userData.find({ department: user?.department });
+            const mails = users.map((user) => user.email);
+            var index = mails.indexOf(user?.email);
+            if (index > -1) {
+              mails.splice(index, 1);
+            }
+            const data = await AppraisalForm.find({ email: { $in: mails } });   
+            return new NextResponse(JSON.stringify(data), { status: 200 });
+          }
             const leaves = await AppraisalForm.find().sort({ $natural: -1 });
             return new NextResponse(JSON.stringify(leaves), { status: 200 });
           }
@@ -202,6 +224,12 @@ export const PUT = async (request) => {
           permissions: "write-appraisal",
         });
         if (result) {
+          if(payload.status === 'approved'){
+            const user = await UsersData.updateOne(
+              { email: payload.email },
+              { currentSalary: payload?.salaryOffered }
+            );
+          }       
           await AppraisalForm.updateOne(
             { _id: payload.id },
             {

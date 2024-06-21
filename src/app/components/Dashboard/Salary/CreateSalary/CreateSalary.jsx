@@ -265,9 +265,9 @@ const CreateSalary = () => {
   return (
     <Wrapper>
       <div className="relative overflow-x-auto mt-4">
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 table-fixed">
-          <thead className="text-xs text-gray-700 uppercase bg-dark-blue dark:bg-gray-700 dark:text-gray-400">
-            <tr className="bg-dark-blue">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:bg-gray-600 table-fixed">
+          <thead className="text-xs text-gray-700 uppercase bg-dark-blue  dark:text-gray-400">
+            <tr className="bg-dark-blue dark:bg-gray-600">
               {[
                 "S.no",
                 "Employee Name",
@@ -295,21 +295,21 @@ const CreateSalary = () => {
             {users.map((user, i) => (
               <tr
                 key={i}
-                className="odd:bg-white odd:dark:bg-gray-900 even:bg-light-100 even:dark:bg-gray-800 border-b dark:border-gray-700"
+                className="odd:bg-white  odd:dark:bg-gray-700 even:bg-light-100 even:dark:bg-gray-800 border-b dark:border-gray-700"
               >
-                <td className="p-[10px] text-black">{i + 1}</td>
-                <td className="p-[10px] text-black">{user.name}</td>
-                <td className="p-[10px] text-black">{user.currentSalary}</td>
-                <td className="p-[10px] text-black">
+                <td className="p-[10px] text-black dark:text-white">{i + 1}</td>
+                <td className="p-[10px] text-black dark:text-white">{user.name}</td>
+                <td className="p-[10px] text-black dark:text-white">{user.currentSalary}</td>
+                <td className="p-[10px] text-black dark:text-white">
                   {calculateLeaves(user.email, "paidLeaves")}
                 </td>
-                <td className="p-[10px] text-black">
+                <td className="p-[10px] text-black dark:text-white">
                   {calculateLeaves(user.email, "unPaidLeaves")}
                 </td>
-                <td className="p-[10px] text-black">
+                <td className="p-[10px] text-black dark:text-white">
                   {calculateLeaves(user.email, "paidSandwich")}
                 </td>
-                <td className="p-[10px] text-black">
+                <td className="p-[10px] text-black dark:text-white">
                   {calculateLeaves(user.email, "unpaidSandwich")}
                 </td>
 
@@ -338,7 +338,7 @@ const CreateSalary = () => {
                   )}
                 </td>
                 <td
-                  className="p-[10px] text-black relative"
+                  className="p-[10px] text-black dark:text-white relative"
                   onClick={toggleInputVisibility}
                   data-name={`index_${i}`}
                 >
@@ -355,7 +355,7 @@ const CreateSalary = () => {
                     textInput[`index_${i}`] || 0
                   )}
                 </td>
-                <td className="p-[10px] text-dark-blue text-base font-semibold">
+                <td className="p-[10px] dark:text-white text-base font-semibold">
                   {getFinalSalary(
                     user.currentSalary,
                     textInput[`index_${i}`] || 0,
@@ -363,7 +363,7 @@ const CreateSalary = () => {
                       calculateLeavesHours(user.email, user.currentSalary)
                   )}
                 </td>
-                <td className="text-black relative">
+                <td className="text-black dark:text-white relative">
                   <textarea
                     className="w-full !min-h-11 p-[10px] bg-transparent h-11 block"
                     onChange={handleInputChange}

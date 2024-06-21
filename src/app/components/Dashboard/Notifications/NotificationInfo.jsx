@@ -50,14 +50,14 @@ const NotificationInfo = () => {
   }, [id, userData]);
   return (
     <>
-      <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full relative">
+      <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full relative">
         {notification?.subject && <H2>Subject: {notification?.subject}</H2>}
         {!notification?.subject && (
           <SkeletonLoader className="h-9 rounded-lg w-1/2" />
         )}
         {notification?.description && (
           <div
-            className="mt-[5px] text-sm font-medium font-poppins text-text-dark"
+            className="mt-[5px] text-sm font-medium font-poppins text-dark dark:text-white"
             ref={paraRef}
           >
             {toHTML(
