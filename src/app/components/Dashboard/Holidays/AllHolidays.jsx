@@ -10,7 +10,6 @@ import Notification from "../../Ui/notification/success/Notification";
 import ErrorNotification from "../../Ui/notification/loader/LoaderNotification";
 
 const AllHolidays = () => {
-
   const { userPermissions, holidays, getHolidays } = useDashboard();
   const { userData } = useAuth();
   const [btnLoader, setBtnLoader] = useState(false);
@@ -27,9 +26,7 @@ const AllHolidays = () => {
   const closeModal = (e) => {
     setShowDeleteModal(e);
   };
-  useEffect(() => {
-  
-  }, []);
+  useEffect(() => {}, []);
   const showModalDelete = (name) => {
     setShowDeleteModal(true);
     setFormDataDelete({
@@ -82,60 +79,70 @@ const AllHolidays = () => {
     <div>
       {holidays && (
         <Wrapper>
-          <Wrapper className="flex bg-dark-blue">
-            <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white max-w-20">
-              S.no
-            </Wrapper>
-            <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white">
-              Date
-            </Wrapper>
-            <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white">
-              Festival
-            </Wrapper>
-            <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white">
-              Day
-            </Wrapper>
-            {userPermissions && userPermissions?.includes("write-holidays") && (
-              <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white">
-                Action
-              </Wrapper>
-            )}
-          </Wrapper>
-          <Wrapper className="border border-light-500 border-t-0">
-            {holidays &&
-              holidays.map((item, i) => (
-                <Wrapper
-                  key={i}
-                  className={` flex items-center ${i} ${
-                    i > 0 ? "border-t border-light-500" : ""
-                  }`}
-                >
-                  <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark capitalize max-w-20">
-                    {i + 1}
-                  </Wrapper>
-                  <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
-                    {item.date}
-                  </Wrapper>
-                  <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
-                    {item.festival}
-                  </Wrapper>
-                  <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
-                    {item.day}
-                  </Wrapper>
-                  {userPermissions &&
-                    userPermissions?.includes("write-holidays") && (
-                      <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-text-dark flex gap-[2px]">
-                        <span
-                          onClick={() => showModalDelete(item?._id)}
-                          className="rounded-full w-[30px] h-[30px] bg-red-600 flex justify-center items-center cursor-pointer hover:scale-110"
-                        >
-                          <IconDelete size="16px" color="fill-white" />
-                        </span>
-                      </Wrapper>
-                    )}
-                </Wrapper>
-              ))}
-          </Wrapper>
+          <table className="w-full">
+            <thead className=" bg-dark-blue dark:bg-gray-600">
+              <tr>
+                <th className="text-sm text-left font-medium font-poppins p-[10px] text-white  max-w-20">
+                  {" "}
+                  S.no
+                </th>
+                <th className="text-sm text-left font-medium font-poppins p-[10px] text-white  max-w-20">
+                  {" "}
+                  Date
+                </th>
+                <th className="text-sm text-left font-medium font-poppins p-[10px] text-white  max-w-20">
+                  {" "}
+                  Festival
+                </th>
+                <th className="text-sm text-left font-medium font-poppins p-[10px] text-white  max-w-20">
+                  {" "}
+                  Day
+                </th>
+                {userPermissions &&
+                  userPermissions?.includes("write-holidays") && (
+                    <th className=" text-sm text-left font-medium font-poppins p-[10px] text-white  max-w-20">
+                      {" "}
+                      Action
+                    </th>
+                  )}
+              </tr>
+            </thead>
+            <tbody className="border border-light-500 dark:border-gray-600 border-t-0">
+              {holidays &&
+                holidays.map((item, i) => (
+                  <tr
+                    key={i}
+                    className={`  items-center ${i} ${
+                      i > 0 ? "border-t border-light-500  dark:border-gray-600" : ""
+                    }`}
+                  >
+                    <td className=" text-sm font-medium font-poppins p-[10px] text-dark dark:text-white capitalize max-w-20">
+                      {i + 1}
+                    </td>
+                    <td className=" text-sm font-medium font-poppins p-[10px] text-dark dark:text-white capitalize">
+                      {item.date}
+                    </td>
+                    <td className=" text-sm font-medium font-poppins p-[10px] text-dark dark:text-white capitalize">
+                      {item.festival}
+                    </td>
+                    <td className=" text-sm font-medium font-poppins p-[10px] text-dark dark:text-white capitalize">
+                      {item.day}
+                    </td>
+                    {userPermissions &&
+                      userPermissions?.includes("write-holidays") && (
+                        <td className="text-sm font-medium font-poppins p-[10px] text-dark dark:text-white flex gap-[2px]">
+                          <span
+                            onClick={() => showModalDelete(item?._id)}
+                            className="rounded-full w-[30px] h-[30px] bg-red-600 flex justify-center items-center cursor-pointer hover:scale-110"
+                          >
+                            <IconDelete size="16px" color="fill-white" />
+                          </span>
+                        </td>
+                      )}
+                  </tr>
+                ))}
+            </tbody>
+          </table>
         </Wrapper>
       )}
       {showDeleteModal && (
@@ -153,7 +160,7 @@ const AllHolidays = () => {
                   loading={btnLoader}
                   loadingText="No"
                   btnType="outlined"
-                  additionalCss='min-h-[54px]'
+                  additionalCss="min-h-[54px]"
                 ></FormButton>
               </Wrapper>{" "}
               <Wrapper className="flex-1">
@@ -169,7 +176,7 @@ const AllHolidays = () => {
           </Wrapper>
         </Modal>
       )}
-           {success.active && (
+      {success.active && (
         <Notification active={success.active} message={success.message} />
       )}
       {error.active && (

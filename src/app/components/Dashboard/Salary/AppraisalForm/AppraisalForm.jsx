@@ -53,12 +53,14 @@ const AppraisalForm = () => {
           return res.json();
         })
         .then(async function (data) {
-          console.log(data);
           if (data?.result) {
             setLoading(false);
             setFormData(" ");
             setDescription(" ");
             setSuccess(true);
+            setTimeout(() => {
+              setSuccess(false);
+            }, 2500);
           }
           if(data.mails){    
             const message = {
@@ -78,7 +80,7 @@ const AppraisalForm = () => {
     }
   };
   return (
-    <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col w-full">
+    <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col w-full">
       <H2>Appraisal Form</H2>
       <Wrapper className="mt-[15px]">
         <form onSubmit={submitForm}>

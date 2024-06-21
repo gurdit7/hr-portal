@@ -36,7 +36,7 @@ const Password = ({
           value={value}
           autoComplete=""
           onChange={onChange}
-          className="py-[15px] pl-[48px] pr-[25px] rounded-lg w-full placeholder-#C2C3CB"
+          className="py-[15px] pl-[48px] pr-[25px] rounded-lg w-full dark:text-white placeholder-#C2C3CB dark:bg-gray-700"
         />
         {!value && (        <span className="absolute top-[23px] left-[48px] pointer-events-none"><svg width="118" height="8" viewBox="0 0 118 8" fill="none" xmlns="http://www.w3.org/2000/svg">
 <ellipse cx="3.51017" cy="4" rx="3.51017" ry="3.5" fill="#C2C3CB"/>

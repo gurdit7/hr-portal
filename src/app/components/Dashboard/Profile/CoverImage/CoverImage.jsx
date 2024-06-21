@@ -70,7 +70,7 @@ const CoverImage = () => {
       <Wrapper
         className={`${
           loading ? "animate-pulse" : ""
-        } w-full h-[200px] bg-white rounded-xl`}
+        } w-full h-[200px] bg-white dark:bg-gray-700 dark:border-gray-600 rounded-xl`}
       >
         <Image
           src={coverImage || Cover.src}
@@ -84,7 +84,7 @@ const CoverImage = () => {
       <label
         htmlFor="coverImageInput"
         className="absolute rounded-3xl top-[10px] right-[10px] border border-bg py-[5px] px-[15px] text-bg text-bases cursor-pointer
-    hover:bg-bg hover:text-dark-blue
+    hover:bg-bg hover:dark:text-white-blue
     "
       >
         Change Cover

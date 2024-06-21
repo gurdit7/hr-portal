@@ -17,6 +17,7 @@ import IconSearch from "../../Icons/IconSearch";
 const LeavesRecord = () => {
   const { userPermissions, individualUserLeaves, allUsersLeaves } =
     useDashboard();
+    console.log(allUsersLeaves);
   const [allLeaves, setAllLeaves] = useState([]);
   const [status, setStatus] = useState(false);
   const [error, setError] = useState(false);
@@ -88,12 +89,14 @@ const LeavesRecord = () => {
       } else {
         setStatus(true);
         setCount(Math.ceil(allUsersLeaves?.length / limit));
+        if(!allUsersLeaves.error){
         setAllLeaves(allUsersLeaves?.slice(start * limit, (start + 1) * limit));
+        }
       }
     }
   }, [allUsersLeaves, start, search]);
   return (
-    <Wrapper className="bg-white rounded-[10px] p-5 w-full">
+    <Wrapper className="bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] p-5 w-full">
       <Wrapper className="flex flex-col gap-[15px] mb-4">
         <Wrapper className="flex justify-between items-center">
           <H2>Leave Record</H2>

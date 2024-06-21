@@ -68,7 +68,7 @@ const Add = () => {
       });
   };
   return (
-    <Wrapper className="bg-white rounded-lg p-5 flex flex-col gap-4 max-w-[515px] w-full">
+    <Wrapper className="bg-white dark:bg-gray-700 dark:border-gray-600 rounded-lg p-5 flex flex-col gap-4 max-w-[515px] w-full">
       <H2>Add New Designation</H2>
       <form className=" flex flex-col gap-4" onSubmit={addDepartment}>
         <Input

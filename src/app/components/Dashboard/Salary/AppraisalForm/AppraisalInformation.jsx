@@ -95,7 +95,7 @@ const AppraisalInformation = () => {
   return (
     <>
       {userPermissions && userPermissions?.includes("view-appraisal") && (
-        <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full relative">
+        <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full relative">
           {leaves?.ExpectedSalary && (
             <H2>Expected Salary: {leaves?.ExpectedSalary}</H2>
           )}
@@ -104,7 +104,7 @@ const AppraisalInformation = () => {
           )}
           {leaves?.description && (
             <div
-              className="mt-[5px] text-sm font-medium font-poppins text-text-dark"
+              className="mt-[5px] text-sm font-medium font-poppins text-dark dark:text-white"
               ref={paraRef}
             >
               {toHTML(paraRef, leaves?.description, leaves?.description.length)}

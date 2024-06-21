@@ -1,6 +1,7 @@
 "use client";
 import FormButton from "@/app/components/Form/FormButton/FormButton";
 import IconNotification from "@/app/components/Icons/IconNotification";
+import Mode from "@/app/components/Ui/ThemeMode/Mode";
 import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
 import SkeletonLoader from "@/app/components/Ui/skeletonLoader/skeletonLoader";
 import useAuth from "@/app/contexts/Auth/auth";
@@ -65,7 +66,7 @@ const Header = () => {
     <>
       {userLoggedIn && (
         <header
-          className={` flex justify-between items-center bg-white pr-6 border-b border-light-500 transition-all duration-200 ${
+          className={` flex relative z-10 justify-between items-center bg-white dark:bg-gray-700 dark:border-gray-600 pr-6 border-b border-light-500 transition-all duration-200 ${
             sidebarCollapse ? "ml-[100px]" : "ml-[300px]"
           }`}
         >
@@ -73,8 +74,8 @@ const Header = () => {
             <FormButton
               event={collapse}
               btnType="button"
-              additionalCss={`group w-[73px] h-[73px] flex justify-center items-center border-r border-light-500 ${
-                sidebarCollapse ? "bg-light-100" : ""
+              additionalCss={`group w-[73px] h-[73px] flex justify-center items-center border-r border-light-500 dark:border-gray-500 ${
+                sidebarCollapse ? "bg-light-100 dark:bg-gray-600" : ""
               }`}
               type="button"
             >
@@ -94,13 +95,14 @@ const Header = () => {
             </FormButton>
           </Wrapper>
           <Wrapper className="py-[13px] flex items-centers  gap-[10px]">
+            <Mode/>
             <Link
               href="/dashboard/notifications"
               className="flex justify-center items-center relative"
             >
               <IconNotification size="24px" color="fill-accent" />
               {notificationsCount > 0 && (
-                <Wrapper className="text-[8px] absolute top-[7px] -right-[3px] min-w-4 min-h-4 rounded-full bg-dark text-white font-medium text-nowrap items-center flex justify-center">
+                <Wrapper className="text-[8px] absolute top-[7px] -right-[3px] min-w-4 min-h-4 rounded-full bg-dark dark:bg-accent text-white font-medium text-nowrap items-center flex justify-center">
                   {notificationsCount}
                   {notificationsCount > 99 && "+"}
                 </Wrapper>
@@ -116,7 +118,7 @@ const Header = () => {
         </header>
       )}
       {!userLoggedIn && !path.includes("account") && (
-        <Wrapper className="ml-[300px]  bg-white  h-[74px] flex justify-between pr-6 items-center gap-[10px]">
+        <Wrapper className="ml-[300px]  bg-white dark:bg-gray-700 dark:border-gray-600  h-[74px] flex justify-between pr-6 items-center gap-[10px]">
           <Wrapper className="items-center !h-[73px] !w-[73px] flex justify-center">
             <SkeletonLoader className="!h-[12px] !w-[24px] "></SkeletonLoader>
           </Wrapper>
@@ -127,7 +129,7 @@ const Header = () => {
         </Wrapper>
       )}
       {loader && (
-        <Wrapper className="fixed top-0 left-0 w-full h-full bg-white z-50"></Wrapper>
+        <Wrapper className="fixed top-0 left-0 w-full h-full bg-white dark:bg-gray-700 dark:border-gray-600 z-50"></Wrapper>
       )}
     </>
   );

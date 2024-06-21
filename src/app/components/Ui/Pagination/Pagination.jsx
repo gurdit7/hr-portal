@@ -51,18 +51,18 @@ const Pagination = ({ count, index, getIndex }) => {
         {arrowBackword && (
       <div
         onClick={() => backword(_index)}
-        className={`w-8 text-base text-text-dark font-medium h-8 border flex items-center justify-center  border-light-500  ${
+        className={`w-8 text-base text-dark dark:text-white font-medium h-8 border flex items-center justify-center  border-light-500  ${
           _index === 0 ? "opacity-30 cursor-not-allowed" : " cursor-pointer"
         } `}
       >
-        <IconArrowBackword size="12px" color="fill-black" />
+        <IconArrowBackword size="12px" color="fill-black dark:fill-accent" />
       </div>
       )}
             {!arrowBackword && (
       <div
-        className={`w-8 text-base text-text-dark font-medium h-8 border flex items-center justify-center  border-light-500 opacity-30 cursor-not-allowed `}
+        className={`w-8 text-base text-dark dark:text-white font-medium h-8 border flex items-center justify-center  border-light-500 opacity-30 cursor-not-allowed `}
       >
-        <IconArrowBackword size="12px" color="fill-black" />
+        <IconArrowBackword size="12px" color="fill-black dark:fill-accent" />
       </div>
       )}
       {Array.from(Array(count), (e, i) => {
@@ -70,9 +70,9 @@ const Pagination = ({ count, index, getIndex }) => {
           <div
             key={i}
             onClick={() => setCount(i)}
-            className={`w-8 text-base text-text-dark font-medium h-8 border flex items-center justify-center  border-light-500 ${
+            className={`w-8 text-base text-dark dark:text-white font-medium h-8 border flex items-center justify-center  border-light-500 ${
               _index === i
-                ? "bg-light-500 cursor-not-allowed"
+                ? "bg-light-500 dark:bg-accent dark:border-accent cursor-not-allowed"
                 : "cursor-pointer"
             }`}
           >
@@ -83,16 +83,16 @@ const Pagination = ({ count, index, getIndex }) => {
       {arrowForward && (
         <div
           onClick={() => forword(_index)}
-          className={`cursor-pointer w-8 text-base text-text-dark font-medium h-8 border flex items-center justify-center  border-light-500`}
+          className={`cursor-pointer w-8 text-base text-dark dark:text-white font-medium h-8 border flex items-center justify-center  border-light-500`}
         >
-          <IconArrowForward size="12px" color="fill-black" />
+          <IconArrowForward size="12px" color="fill-black dark:fill-accent" />
         </div>
       )}
        {!arrowForward && (
         <div
-          className={`opacity-30 cursor-not-allowed w-8 text-base text-text-dark font-medium h-8 border flex items-center justify-center  border-light-500`}
+          className={`opacity-30 cursor-not-allowed w-8 text-base text-dark dark:text-white font-medium h-8 border flex items-center justify-center  border-light-500`}
         >
-          <IconArrowForward size="12px" color="fill-black" />
+          <IconArrowForward size="12px" color="fill-black dark:fill-accent" />
         </div>
       )}
     </Wrapper>

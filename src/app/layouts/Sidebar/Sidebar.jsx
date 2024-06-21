@@ -63,6 +63,7 @@ const Sidebar = () => {
       isActive:
         path === "/dashboard/salary" ||
         path.includes("/appraisal/") ||
+        path.includes("/documents/") ||
         path === "/dashboard/create-salary",
     },
     {
@@ -111,7 +112,7 @@ const Sidebar = () => {
     <div>
       {userLoggedIn && (
         <aside
-          className={`fixed h-full w-full left-0 top-0 transition-all duration-200 bg-dark-blue py-5 ${
+          className={`fixed h-full w-full left-0 top-0 transition-all duration-200 bg-dark-blue py-5 dark:bg-gray-800 dark:border-r dark:border-gray-600 ${
             sidebarCollapse ? "max-w-[100px]" : "max-w-[300px]"
           }`}
         >
@@ -119,7 +120,7 @@ const Sidebar = () => {
             {userLoggedIn ? (
               <>
                 <Text
-                  className={`text-center font-poppins text-white mb-4 transition-all duration-200 ${
+                  className={`text-center font-poppins !text-white mb-4 transition-all duration-200 ${
                     sidebarCollapse
                       ? "text-sm font-normal"
                       : "!text-2xl !font-bold"
@@ -129,7 +130,7 @@ const Sidebar = () => {
                 </Text>
                 <ProfileImage size={sidebarCollapse ? "46" : "100"} />
                 <Text
-                  className={`font-poppins font-semibold text-center text-white mt-2 ${
+                  className={`font-poppins font-semibold text-center !text-white mt-2 ${
                     sidebarCollapse ? "text-sm font-normal" : "!text-lg"
                   }`}
                 >
@@ -189,7 +190,7 @@ const DashboardLink = ({
     <Link
       href={href}
       className={`${
-        isActive ? "text-dark-blue bg-bg rounded-l-[60px]" : "text-white"
+        isActive ? "dark:text-white-blue bg-bg rounded-l-[60px]" : "text-white"
       } flex items-center text-sm font-semibold uppercase gap-1 px-6 py-3`}
     >
       {children}

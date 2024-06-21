@@ -450,7 +450,7 @@ const Leaves = () => {
             <LeavesRecord loader={load} setLoader={setLoad} />
             {userPermissions && userPermissions?.includes("apply-leaves") && (
               <Wrapper className="w-full  max-w-[600px]">
-                <Wrapper className="bg-white sticky top-4 rounded-[10px] p-5 w-full ">
+                <Wrapper className="bg-white dark:bg-gray-700 dark:border-gray-600 sticky top-4 rounded-[10px] p-5 w-full ">
                   <H2>Request For Leave</H2>
                   <form
                     className="mt-[15px] gap-[15px] flex flex-col"
@@ -483,14 +483,14 @@ const Leaves = () => {
                           required={true}
                           value={formData?.durationDate || ""}
                           name="durationDate"
-                          className="border-light-600 border"
+                          className="border-light-600 dark:border-gray-600 border"
                         >
                           <IconDate size="24px" color="stroke-light-400" />
                         </Input>
                         <label
                           className={`absolute left-[48px] top-[38px] pointer-events-none text-light-600 font-medium ${
                             formData?.durationDate
-                              ? "text-text-dark"
+                              ? "text-dark dark:text-white"
                               : "text-light-600"
                           }`}
                         >
@@ -524,7 +524,7 @@ const Leaves = () => {
                         required
                         value={formData.subject || ""}
                         name="subject"
-                        className="border-light-600 border"
+                        className="border-light-600 dark:border-gray-600 border"
                       >
                         <IconSubject size="24px" color="fill-light-400" />
                       </Input>
@@ -557,7 +557,7 @@ const Leaves = () => {
                         value=""
                         name="attachment"
                         multiple={false}
-                        className="border-light-600 border"
+                        className="border-light-600 dark:border-gray-600 border"
                       >
                         <IconAttachment size="24px" color="fill-light-400" />
                       </Input>
@@ -580,7 +580,7 @@ const Leaves = () => {
       {!userPermissions && (
         <Container heading={false}>
           <Wrapper className="flex justify-between gap-[15px] mt-[15px]">
-            <Wrapper className="bg-white rounded-[10px] p-5 w-full">
+            <Wrapper className="bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] p-5 w-full">
               <Wrapper className="flex flex-col gap-[15px]">
                 <Wrapper className="flex justify-between items-center">
                   <SkeletonLoader className="w-full max-w-[172px] !h-9 rounded-lg" />
@@ -638,7 +638,7 @@ export const LeaveSummaryCard = ({ title, count, tooltip, className }) => (
   <Wrapper
     className={
       className +
-      " p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full items-center"
+      " p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full items-center"
     }
   >
     <H1 className="text-light-500 text-[64px] leading-none">{count}</H1>
@@ -646,8 +646,8 @@ export const LeaveSummaryCard = ({ title, count, tooltip, className }) => (
       {title}
       {tooltip && (
         <span className="relative cursor-pointer group">
-          <IconInfo size="18px" color="fill-dark-blue" />
-          <Text className="absolute left-full top-1/2 translate-y-[-40%] bg-white border border-blue rounded-lg !text-xs p-3 w-60 text-left opacity-0  invisible group-hover:opacity-100 group-hover:visible group-hover:translate-y-[-50%]">
+          <IconInfo size="18px" color="fill-dark-blue dark:fill-gray-400" />
+          <Text className="absolute left-full top-1/2 translate-y-[-40%] bg-white dark:bg-gray-700 dark:border-gray-600 border border-blue rounded-lg !text-xs p-3 w-60 text-left opacity-0  invisible group-hover:opacity-100 group-hover:visible group-hover:translate-y-[-50%]">
             {tooltip}
           </Text>
         </span>
@@ -659,7 +659,7 @@ export const LeaveSummaryCard = ({ title, count, tooltip, className }) => (
 export const LeaveItem = ({ item, index }) => {
   const paraRef = useRef();
   return (
-    <Wrapper className="border border-light-500 relative">
+    <Wrapper className="border border-light-500 relative dark:border-gray-600">
       <Wrapper className="p-3 relative">
         <Text className="!text-light-400">Leave Request</Text>
         <Wrapper className="absolute flex top-3 right-3">
@@ -668,13 +668,13 @@ export const LeaveItem = ({ item, index }) => {
         <H3>{item?.subject}</H3>
         {item?.description && (
           <div
-            className="mt-[5px] text-sm font-medium font-poppins text-text-dark"
+            className="mt-[5px] text-sm font-medium font-poppins text-dark dark:text-white"
             ref={paraRef}
           >
             {toHTML(paraRef, item?.description, 350)}
           </div>
         )}
-        <Wrapper className="flex justify-between items-center border-t border-light-500 pt-[5px] mt-[5px]">
+        <Wrapper className="flex justify-between items-center border-t border-light-500 dark:border-gray-600 pt-[5px] mt-[5px]">
           <Text>{item?.name && "Applied By: " + item?.name}</Text>
           <Text>Updated on: {formatDate(item?.updatedAt)}</Text>
         </Wrapper>
@@ -699,13 +699,13 @@ export const DateTimeInput = ({ label, value, onChange, error }) => (
       required={true}
       value={value}
       name={label.toLowerCase()}
-      className="border-light-600 border"
+      className="border-light-600 dark:border-gray-600 border"
     >
       <IconDate size="24px" color="stroke-light-400" />
     </Input>
     <label
       className={`absolute left-[48px] top-[38px] pointer-events-none text-light-600 ${
-        value ? "text-text-dark" : "text-light-600"
+        value ? "text-dark dark:text-white" : "text-light-600"
       }`}
     >
       {value || "Date"}

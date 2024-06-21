@@ -10,7 +10,7 @@ const { sidebarCollapse, breadcrumbs } = useThemeConfig();
 
   return (
     <Wrapper
-    className={`mb-8 ${className || ''} py-[10px] px-[25px] ${
+    className={`pb-8 ${className || ''} py-[10px] px-[25px] dark:bg-gray-800 dark:border-gray-700 ${
       sidebarCollapse ? "ml-[100px]" : "ml-[300px]"
     }`}
   >

@@ -16,8 +16,8 @@ const Input = ({
   wrapperClassName,
   inputClasses
 }) => {
-  const commonClasses = `py-[15px] pl-[48px] pr-[25px] rounded-lg w-full placeholder-light-600 ${inputClasses || ""} ${className}`;
-  const fileClasses = `relative border-light-600  rounded-lg border ${className || ""}`;
+  const commonClasses = `py-[15px] pl-[48px] pr-[25px] rounded-lg w-full placeholder-light-600 dark:text-white dark:border-gray-600 dark:bg-gray-700 ${inputClasses || ""} ${className}`;
+  const fileClasses = `relative border-light-600 dark:border-gray-600  rounded-lg border ${className || ""}`;
   const classes = `flex flex-col-reverse flex-1 relative w-full font-medium ${wrapperClassName || ""}`;
 
   return (

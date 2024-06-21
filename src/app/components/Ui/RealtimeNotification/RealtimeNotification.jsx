@@ -73,16 +73,16 @@ const RealtimeNotification = () => {
         <div
           className={`${
             animate ? "opacity-100  right-3" : "opacity-0  -right-full"
-          } fixed  top-6 justify-center items-center z-50 outline-none focus:outline-none`}
+          } fixed  top-6 justify-center items-center z-50 outline-none focus:outline-none max-w-[576px]`}
         >
           <div
             onClick={closeNotification}
-            className="flex flex-col p-4 bg-white shadow-md hover:shodow-lg rounded-lg border border-light-200"
+            className="flex flex-col p-4 bg-white dark:bg-accent dark:border-gray-600 shadow-md hover:shodow-lg rounded-lg border border-light-200"
           >
             <div className="flex items-center justify-between">
-              <div className="flex items-center">
+              <div className="flex items-start">
                 <svg
-                  className="w-10 h-10 rounded-lg p-1 border border-blue-100 text-blue-400 bg-blue-50"
+                  className="w-10 h-10 min-w-10 min-h-10 rounded-lg p-1 border border-blue-100 text-blue-400 bg-blue-50"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -95,11 +95,11 @@ const RealtimeNotification = () => {
                   ></path>
                 </svg>
                 <div className="flex flex-col ml-3">
-                  <div className="font-medium leading-none">
+                  <div className="font-medium leading-none dark:text-white">
                     {notifications?.heading}
                   </div>
-                  <p className="text-sm text-gray-500 leading-none mt-1">
-                    {notifications?.message}
+                  <p className="text-sm text-gray-500 leading-[1.3] mt-1 dark:text-white">                    
+                    {notifications?.message.substring(0, 50)}{notifications?.message.length > 51 && "..."}
                   </p>
                 </div>
               </div>
@@ -111,7 +111,7 @@ const RealtimeNotification = () => {
           </div>
           <button
             onClick={closeNotification}
-            className="w-4 h-4 bg-accent flex items-center rounded-full justify-center absolute -top-[5px] -right-[5px]"
+            className="w-4 h-4 bg-accent dark:border-white dark:border  flex items-center rounded-full justify-center absolute -top-[5px] -right-[5px]"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

@@ -132,6 +132,7 @@ const Approve = ({ id, user, setValue }) => {
         >
           <Wrapper className="max-w-[510px] m-auto">
             <form onSubmit={addReason}>
+              {formData?.status === 'approved' &&
               <Input
                 type="text"
                 required={true}
@@ -142,7 +143,7 @@ const Approve = ({ id, user, setValue }) => {
                 className="border border-light-600"
               >
                 <IconSalary size={24} color="fill-light-600" />
-              </Input>
+              </Input> }
               <span className="text-light-400 text-xs block mb-1 mt-2">
                 Reason
               </span>

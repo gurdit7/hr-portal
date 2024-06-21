@@ -150,7 +150,7 @@ const AddEmployee = () => {
   return (
     <>
       {userPermissions && userPermissions.includes("write-employees") && show && (
-        <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[15px] w-full max-w-[550px]">
+        <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full max-w-[550px]">
           <H2>Add Employee</H2>
           <form className="flex flex-col gap-[15px]">
             <Wrapper className="flex gap-[15px]">
@@ -178,7 +178,7 @@ const AddEmployee = () => {
                   required={true}
                   value={formData?.email || ""}
                   name="email"
-                  className="border-light-600 border"
+                  className="border-light-600 dark:border-gray-600 border"
                 >
                   <IconMail size="24px" color="fill-light-400" />
                 </Input>
@@ -197,7 +197,7 @@ const AddEmployee = () => {
                   required={true}
                   value={formData?.name || ""}
                   name="name"
-                  className="border-light-600 border"
+                  className="border-light-600 dark:border-gray-600 border"
                 >
                   <IconProfile size="24px" color="stroke-light-400" />
                 </Input>
@@ -214,13 +214,13 @@ const AddEmployee = () => {
                   required={true}
                   value={formData?.joinDate || ""}
                   name="joinDate"
-                  className="border-light-600 border"
+                  className="border-light-600 dark:border-gray-600 border"
                 >
                   <IconDate size="24px" color="stroke-light-400" />
                 </Input>
                 <label
                   className={`absolute left-[48px] top-[38px] pointer-events-none text-light-600 ${
-                    formData?.joinDate ? "text-text-dark" : "text-light-600"
+                    formData?.joinDate ? "text-dark dark:text-white" : "text-light-600"
                   }`}
                 >
                   {formData?.joinDate || "Join Date"}
@@ -305,13 +305,13 @@ const AddEmployee = () => {
                   required={true}
                   value={formData?.DOB || ""}
                   name="DOB"
-                  className="border-light-600 border"
+                  className="border-light-600 dark:border-gray-600 border"
                 >
                   <IconDate size="24px" color="stroke-light-400" />
                 </Input>
                 <label
                   className={`absolute left-[48px] top-[38px] pointer-events-none ${
-                    formData?.DOB ? "text-text-dark" : "text-light-600"
+                    formData?.DOB ? "text-dark dark:text-white" : "text-light-600"
                   }`}
                 >
                   {formData?.DOB || "DOB"}
@@ -329,14 +329,14 @@ const AddEmployee = () => {
                   required={true}
                   value={formData?.incrementDate || ""}
                   name="incrementDate"
-                  className="border-light-600 border"
+                  className="border-light-600 dark:border-gray-600 border"
                 >
                   <IconDate size="24px" color="stroke-light-400" />
                 </Input>
                 <label
                   className={`absolute left-[48px] top-[38px] pointer-events-none text-light-600 ${
                     formData?.incrementDate
-                      ? "text-text-dark"
+                      ? "text-dark dark:text-white"
                       : "text-light-600"
                   }`}
                 >
@@ -352,11 +352,11 @@ const AddEmployee = () => {
                 label="Current Salary"
                 placeholder="Current Salary"
                 setData={addItemForm}
-                type="text"
+                type="number"
                 required={true}
                 value={formData?.currentSalary || ""}
                 name="currentSalary"
-                className="border-light-600 border"
+                className="border-light-600 dark:border-gray-600 border"
               >
                 <IconSalary size="24px" color="fill-light-400" />
               </Input>

@@ -8,7 +8,7 @@ import LoginForm from '@/app/components/Form/Login/LoginForm';
 const page = () => {
 
   return (
-<Wrapper className='bg-bg '>
+<Wrapper className='bg-bg dark:bg-gray-700 '>
 <Wrapper className='flex justify-between '>
 <Wrapper className='flex-1 flex flex-col items-center justify-center'>
 <svg width="132" height="99" viewBox="0 0 132 99" fill="none" xmlns="http://www.w3.org/2000/svg">

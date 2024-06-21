@@ -3,11 +3,10 @@ import './style.css';
 import Heading1 from '@/app/components/Ui/Heading 1/Heading 1';
 import Image from 'next/image';
 import Logo from '../../assets/images/logo/logo.png'
-import H1 from '@/app/components/Ui/H1/H1';
 import ForgotPassword from '@/app/components/Form/ForgotPassword/ForgotPassword';
 const page = () => {
   return (
-<Wrapper className='bg-bg '>
+<Wrapper className='bg-bg dark:bg-gray-700'>
 <Wrapper className='flex justify-between '>
 <Wrapper className='flex-1 login-bg relative min-h-[100vh]'>
     <Wrapper className='relative z-[1] flex flex-col items-center p-[60px]'>

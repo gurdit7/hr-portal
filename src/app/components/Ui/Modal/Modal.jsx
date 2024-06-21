@@ -22,7 +22,7 @@ const Modal = ({children, opened, hideModal, heading}) => {
     },[open])
 
   return (
-<Wrapper className={`fixed top-0 z-[999]  left-0 w-full  h-full flex justify-center items-center  duration-500 ${openFinal ? 'opacity-1 scale-100' : 'opacity-0 scale-90'}`}>
+<Wrapper className={`fixed top-0 z-[99999999]  left-0 w-full  h-full flex justify-center items-center  duration-500 ${openFinal ? 'opacity-1 scale-100' : 'opacity-0 scale-90'}`}>
     <FormButton additionalCss='!absolute top-3 right-3 z-30' event={closeModal}>
         <IconCloseModal size="56px" color="fill-white"/> 
         </FormButton>
@@ -30,7 +30,7 @@ const Modal = ({children, opened, hideModal, heading}) => {
 {heading && (<H1 className='text-3xl text-white text-center mb-6 leading-[1.2] max-w-[576px] mx-auto'>{heading}</H1>) }
 {children}
 </Wrapper>
-<Wrapper className='bg-dark-blue bg-opacity-90 backdrop-blur-xl w-full h-full absolute'/>
+<Wrapper className='bg-dark-blue dark:bg-gray-800 bg-opacity-90 backdrop-blur-xl w-full h-full absolute'/>
 </Wrapper>
   );
 }

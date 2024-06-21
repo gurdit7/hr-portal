@@ -491,7 +491,7 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
                         type="number"
                         name="paidLeaves"
                         wrapperClassName="!flex-none !w-9"
-                        className="border !border-light-600 !px-0 !py-1 text-center bg-transparent !text-white focus-visible:shadow-none focus-visible:outline-none"
+                        className="border !border-light-600 dark:border-gray-600 !px-0 !py-1 text-center bg-transparent !text-white focus-visible:shadow-none focus-visible:outline-none"
                       ></Input>
                     )}
                   </Wrapper>
@@ -524,7 +524,7 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
                         type="number"
                         name="unPaidLeaves"
                         wrapperClassName="!flex-none !w-9"
-                        className="border !border-light-600 !py-1  !px-0 text-center bg-transparent !text-white focus-visible:shadow-none focus-visible:outline-none"
+                        className="border !border-light-600 dark:border-gray-600 !py-1  !px-0 text-center bg-transparent !text-white focus-visible:shadow-none focus-visible:outline-none"
                       ></Input>
                     )}
                   </Wrapper>

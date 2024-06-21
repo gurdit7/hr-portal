@@ -25,7 +25,7 @@ module.exports = {
           600:'#C2C3CB'
         },
         'accent':'#B2A6FF',
-        'text-dark':'#212121'        
+        'dark:text-white':'#212121'        
       },
       fontFamily:{
         'poppins':['Poppins','sans-serif']

@@ -65,7 +65,7 @@ const Team = () => {
   }, [search, start, teamMembers]);
   return (
     <Container heading="My Team">
-      <Wrapper className="p-5 bg-white rounded-[10px] flex flex-col gap-[0px] w-full">
+      <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[0px] w-full">
         <Wrapper className="flex justify-between items-center">
           <H2>All Memebers</H2>
           <Wrapper>
@@ -125,32 +125,32 @@ const Team = () => {
                     i > 0 ? "border-t border-light-500" : ""
                   }`}
                 >
-                  <td className=" text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
+                  <td className=" text-sm font-medium font-poppins p-[10px] text-dark dark:text-white capitalize">
                     {start > 0 ? i + 1 + limit * start : i + 1}
                   </td>
-                  <td className=" text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
+                  <td className=" text-sm font-medium font-poppins p-[10px] text-dark dark:text-white capitalize">
                     {user.userType}
                   </td>
-                  <td className=" text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
+                  <td className=" text-sm font-medium font-poppins p-[10px] text-dark dark:text-white capitalize">
                     {user.name}
                   </td>
-                  <td className=" text-sm font-medium font-poppins p-[10px] text-text-dark">
+                  <td className=" text-sm font-medium font-poppins p-[10px] text-dark dark:text-white">
                     {user.email}
                   </td>
-                  <td className=" text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
+                  <td className=" text-sm font-medium font-poppins p-[10px] text-dark dark:text-white capitalize">
                     {user.designation}
                   </td>
 
-                  <td className=" text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
+                  <td className=" text-sm font-medium font-poppins p-[10px] text-dark dark:text-white capitalize">
                     {user.gender}
                   </td>
-                  <td className=" text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
+                  <td className=" text-sm font-medium font-poppins p-[10px] text-dark dark:text-white capitalize">
                     {formatDate(user.DOB)}
                   </td>
-                  <td className=" text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
+                  <td className=" text-sm font-medium font-poppins p-[10px] text-dark dark:text-white capitalize">
                     {formatDate(user.incrementDate)}
                   </td>
-                  <td className=" text-sm font-medium font-poppins p-[10px] text-text-dark capitalize">
+                  <td className=" text-sm font-medium font-poppins p-[10px] text-dark dark:text-white capitalize">
                     {formatDate(user.joinDate)}
                   </td>
                 </tr>

@@ -40,6 +40,11 @@ export const rolesPermissions = {
             "value":"view-users-appraisals"
         },
         { 
+            "item":"View Department appraisals",
+            "info":"User will see his department or team's appraisals requests.",
+            "value":"view-team-appraisals"
+        },
+        { 
             "item":"Write appraisal",
             "value":"write-appraisal"
         }
@@ -80,12 +85,17 @@ export const rolesPermissions = {
             "value":"apply-documents"
         },
         { 
-            "item":"View Documents",
+            "item":"View Documents Request",
             "value":"view-documents"
         },
         { 
-            "item":"View Users Documents",
+            "item":"View All Users Document Requests",
             "value":"view-users-documents"
+        },
+        { 
+            "item":"View Department documents",
+            "info":"User will see his department or team's document requests.",
+            "value":"view-team-documents"
         },
         { 
             "item":"Write Documents",
@@ -104,6 +114,11 @@ export const rolesPermissions = {
         { 
             "item":"Cron Notifications",
             "value":"sandwich-leaves-update-cron-notifications"
+        },
+        { 
+            "item":"View team notifications",
+            "info":"User will see his department or team's notifications.",
+            "value":"view-team-notifications"
         },
         { 
             "item":"User will read only his notifications",
@@ -128,6 +143,11 @@ export const rolesPermissions = {
         { 
             "item":"Read Other Users leaves",
             "value":"user-leaves"
+        },
+        { 
+            "item":"View Department leaves",
+            "info":"User will see his department or team's leaves requests.",
+            "value":"view-team-leaves"
         },
         { 
             "item":"Approve & decline Other Users leaves",

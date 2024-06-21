@@ -4,6 +4,7 @@ import Notifications from "@/model/notifications";
 import userData from "@/model/userData";
 import Roles from "@/model/addRole";
 import sendEmail from "@/app/mailer/mailer";
+import { getRolesWithPermission } from "../leaves/route";
 
 export const GET = async (request) => {
   try {
@@ -12,7 +13,7 @@ export const GET = async (request) => {
     const key = url.searchParams.get("key");
     const email = url.searchParams.get("email");
     const id = url.searchParams.get("id");
-    if (key) {
+    if (key) { 
       const user = await userData?.findOne({ _id: key, status: "active" });
       if (user) {
         const result = await Roles.findOne({
@@ -24,7 +25,11 @@ export const GET = async (request) => {
           permissions: "user-notifications",
         });
         if (result && !id) {
-          const data = await Notifications.find({
+          const rolesUsers = await getRolesWithPermission("view-users-notifications");
+          const rolesTeam = await getRolesWithPermission("view-team-notifications");
+          if(rolesUsers.includes(user.role)){
+            
+          const data = await Notifications.find({            
             $or: [{ toEmails: email }, { email: email }],
           })
             .sort({ $natural: -1 })
@@ -40,10 +45,15 @@ export const GET = async (request) => {
             const viewedStatus = item?.viewed.find(
               (mail) => mail?.mail === email
             )?.status;
+            const trash = item?.viewed.find(
+              (mail) => mail?.mail === email
+            )?.trashed;
+            
             return {
               name: item.name,
               updatedAt: item.updatedAt,
               viewedStatus,
+              trash,
               type: item.type,
               id: item.id,
               mainId: item._id,
@@ -55,6 +65,46 @@ export const GET = async (request) => {
           return new NextResponse(JSON.stringify({ data: result }), {
             status: 200,
           });
+        }
+        if(rolesTeam.includes(user.role)){          
+          const users = await userData.find({ department: user?.department });
+          const mails = users.map((user) => user.email);           
+          const data = await Notifications.find({
+            $or: [{ toEmails: { $in: mails } }, { email: { $in: mails } }],
+          })
+            .sort({ $natural: -1 })
+            .then((res) => {
+              if (res) {
+                return res;
+              }
+            })
+            .then((res) => {
+              return res;
+            });
+          const result = data.map((item) => {
+            const viewedStatus = item?.viewed.find(
+              (mail) => mail?.mail === email
+            )?.status;
+            const trash = item?.viewed.find(
+              (mail) => mail?.mail === email
+            )?.trashed;
+            return {
+              name: item.name,
+              updatedAt: item.updatedAt,
+              viewedStatus,
+              trash,
+              type: item.type,
+              id: item.id,
+              mainId: item._id,
+              views: item?.viewed,
+              subject: item?.subject,
+              link: item?.link || `/dashboard/notifications/${item._id}`,
+            };
+          });
+          return new NextResponse(JSON.stringify({ data: result }), {
+            status: 200,
+          });
+        }
         } 
         else if (indiResult && id === 'true') {
           const data = await Notifications.find({ toEmails: email })
@@ -71,10 +121,14 @@ export const GET = async (request) => {
             const viewedStatus = item?.viewed.find(
               (mail) => mail?.mail === email
             )?.status;
+            const trash = item?.viewed.find(
+              (mail) => mail?.mail === email
+            )?.trashed;
             return {
               name: item.name,
               updatedAt: item.updatedAt,
               viewedStatus,
+              trash,
               type: item.type,
               views: item?.viewed,
               id: item.id,
@@ -117,6 +171,7 @@ export const GET = async (request) => {
       );
     }
   } catch (error) {
+    console.log(error);
     if (error?.path === "_id") {
       return new NextResponse(JSON.stringify({ error: "Invalid api key." }), {
         status: 401,
@@ -268,6 +323,7 @@ export const PUT = async (request) => {
       );
     }
   } catch (error) {
+    
     if (error?.path === "_id") {
       return new NextResponse(JSON.stringify({ error: "Invalid api key." }), {
         status: 401,

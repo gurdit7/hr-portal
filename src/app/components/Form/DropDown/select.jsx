@@ -27,8 +27,8 @@ const DropDown = ({
           }}
           required={required}
           name={name}
-          className={`text-base w-full  bg-white capitalize placeholder:text-c-gray-400 pl-[15px] indent-8 pr-[20px]  border border-light-600  rounded-lg  font-medium  p-4 max-sm:p-2 ${
-            value ? "text-text-dark" : "text-light-600"
+          className={`text-base w-full  bg-white dark:bg-gray-700 dark:border-gray-600 capitalize placeholder:text-c-gray-400 pl-[15px] indent-8 pr-[20px]  border border-light-600 dark:border-gray-600  rounded-lg  font-medium  p-4 max-sm:p-2 ${
+            value ? "text-dark dark:text-white" : "text-light-600"
           }`}
         >
           <option disabled data-index="0" value=''>
@@ -39,7 +39,7 @@ const DropDown = ({
               value={item}
               key={index}
               data-index={index + 1}
-              className="text-text-dark"
+              className="text-dark dark:text-white"
             >
               {item.replace("-"," ")}
             </option>
