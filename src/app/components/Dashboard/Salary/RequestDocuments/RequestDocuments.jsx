@@ -129,7 +129,7 @@ const RequestDocuments = () => {
                     name="document"
                     id={"document-radio" + index}
                     value={value}
-                    className="w-5 h-5 min-w-5 min-h-5 appearance-none rounded-3xl border border-light-400 checked:border-8 checked:border-dark"
+                    className="w-5 h-5 min-w-5 min-h-5 appearance-none rounded-3xl border border-light-400 checked:border-8 checked:border-dark dark:checked:border-accent"
                     onChange={addDocument}
                   />
                   <label
@@ -172,11 +172,6 @@ const RequestDocuments = () => {
             loadingText="Requesting Document"
           ></FormButton>
         </form>
-        <FormButton
-          type="button"
-          label="Download Salary Slip"
-          btnType="solid"
-        ></FormButton>
       </Wrapper>
       {success && (
         <Notification

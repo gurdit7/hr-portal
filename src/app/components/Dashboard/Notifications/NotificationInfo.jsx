@@ -79,31 +79,31 @@ const NotificationInfo = () => {
         )}
         <Wrapper>
           {notification?.name && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-y min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-y min-h-[50px]">
               <Text className="!text-light-400">Applied by:</Text>
               <Text>{notification?.name}</Text>
             </Wrapper>
           )}
           {!notification && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-y min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-y min-h-[50px]">
               <Text className="!text-light-400">Applied by:</Text>
               <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
             </Wrapper>
           )}
           {notification?.status && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Status:</Text>
               <Badge status={notification?.status} />
             </Wrapper>
           )}
           {!notification && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Status:</Text>
               <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
             </Wrapper>
           )}
           {notification?.duration && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Duration:</Text>
               <Text>
                 {notification?.duration !== "Other"
@@ -115,13 +115,13 @@ const NotificationInfo = () => {
             </Wrapper>
           )}
           {!notification && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Duration:</Text>
               <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
             </Wrapper>
           )}
           {notification?.attachment && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Attachment:</Text>
               <Link
                 href={notification?.attachment}
@@ -133,14 +133,14 @@ const NotificationInfo = () => {
             </Wrapper>
           )}
           {!notification && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Attachment:</Text>
               <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
             </Wrapper>
           )}
 
           {notification?.reason && (
-            <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 max-w-1/2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Comment</Text>
               <Text className="max-w-[50%] text-right">
                 {notification?.status === "canceled"
@@ -150,19 +150,19 @@ const NotificationInfo = () => {
             </Wrapper>
           )}
           {!notification && (
-            <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 max-w-1/2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Comment</Text>
               <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
             </Wrapper>
           )}
           {notification?.updatedAt && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Applied On:</Text>
               <Text>{formatDate(notification?.updatedAt)}</Text>
             </Wrapper>
           )}
           {!notification && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Applied On:</Text>
               <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
             </Wrapper>

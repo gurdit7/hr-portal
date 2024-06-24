@@ -116,13 +116,13 @@ const Team = () => {
               </th>
             </tr>
           </thead>
-          <tbody className="border border-light-500 border-t-0">
+          <tbody className="border dark:border-gray-600 border-light-500 border-t-0">
             {allMembers &&
               allMembers.map((user, i) => (
                 <tr
                   key={i}
                   className={` items-center ${
-                    i > 0 ? "border-t border-light-500" : ""
+                    i > 0 ? "border-t dark:border-gray-600 border-light-500" : ""
                   }`}
                 >
                   <td className=" text-sm font-medium font-poppins p-[10px] text-dark dark:text-white capitalize">

@@ -590,7 +590,7 @@ const Leaves = () => {
                 {array.map((item, index) => (
                   <Wrapper
                     key={index}
-                    className="border border-light-500 relative"
+                    className="border dark:border-gray-600 border-light-500 relative"
                   >
                     <Wrapper className="p-3 relative">
                       <SkeletonLoader className="w-full max-w-[172px] !h-5 rounded-3xl" />
@@ -605,7 +605,7 @@ const Leaves = () => {
                         <SkeletonLoader className="!h-8 rounded-md  w-full max-w-[103px]" />
                       </Wrapper>
 
-                      <Wrapper className="flex justify-between items-center border-t border-light-500 pt-[5px] mt-[5px]">
+                      <Wrapper className="flex justify-between items-center border-t dark:border-gray-600 border-light-500 pt-[5px] mt-[5px]">
                         <SkeletonLoader className="!h-3 rounded-3xl  w-full max-w-[172px]" />
                         <SkeletonLoader className="!h-3 rounded-3xl  w-full max-w-[172px]" />
                       </Wrapper>
@@ -659,7 +659,7 @@ export const LeaveSummaryCard = ({ title, count, tooltip, className }) => (
 export const LeaveItem = ({ item, index }) => {
   const paraRef = useRef();
   return (
-    <Wrapper className="border border-light-500 relative dark:border-gray-600">
+    <Wrapper className="border dark:border-gray-600 border-light-500 relative dark:border-gray-600">
       <Wrapper className="p-3 relative">
         <Text className="!text-light-400">Leave Request</Text>
         <Wrapper className="absolute flex top-3 right-3">
@@ -674,7 +674,7 @@ export const LeaveItem = ({ item, index }) => {
             {toHTML(paraRef, item?.description, 350)}
           </div>
         )}
-        <Wrapper className="flex justify-between items-center border-t border-light-500 dark:border-gray-600 pt-[5px] mt-[5px]">
+        <Wrapper className="flex justify-between items-center border-t dark:border-gray-600 border-light-500 dark:border-gray-600 pt-[5px] mt-[5px]">
           <Text>{item?.name && "Applied By: " + item?.name}</Text>
           <Text>Updated on: {formatDate(item?.updatedAt)}</Text>
         </Wrapper>

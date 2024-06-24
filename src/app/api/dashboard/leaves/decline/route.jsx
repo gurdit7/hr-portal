@@ -9,7 +9,7 @@ export const PUT = async (request) => {
   try {
     await connect();
     const payload = await request.json();
-    await Leaves.updateOne({ _id: payload.id }, { status: payload.status,  reason: payload.reason });
+    const result = await Leaves.updateOne({ _id: payload.id }, { status: payload.status,  reason: payload.reason });
     
     await sendEmail(
       payload.email,
@@ -24,6 +24,7 @@ export const PUT = async (request) => {
       toEmails: payload.email,
       type: "info",
       id: payload.id,
+      link: `/dashboard/leaves/${result._id}`,
       viewed: [{ mail: payload.email, status: false }],
     });
 

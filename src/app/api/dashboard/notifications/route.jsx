@@ -13,6 +13,7 @@ export const GET = async (request) => {
     const key = url.searchParams.get("key");
     const email = url.searchParams.get("email");
     const id = url.searchParams.get("id");
+    const notiId = url.searchParams.get("notiId");
     if (key) { 
       const user = await userData?.findOne({ _id: key, status: "active" });
       if (user) {
@@ -24,7 +25,7 @@ export const GET = async (request) => {
           role: user.role,
           permissions: "user-notifications",
         });
-        if (result && !id) {
+        if (result && !id && !notiId) {
           const rolesUsers = await getRolesWithPermission("view-users-notifications");
           const rolesTeam = await getRolesWithPermission("view-team-notifications");
           if(rolesUsers.includes(user.role)){
@@ -106,6 +107,13 @@ export const GET = async (request) => {
           });
         }
         } 
+        else if (notiId) {
+          const data = await Notifications.findOne({ id: notiId });        
+   
+          return new NextResponse(JSON.stringify({views:data?.viewed ,mainId: data._id}), {
+            status: 200,
+          });
+        }
         else if (indiResult && id === 'true') {
           const data = await Notifications.find({ toEmails: email })
             .sort({ $natural: -1 })

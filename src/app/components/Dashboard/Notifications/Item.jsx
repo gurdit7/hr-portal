@@ -93,7 +93,7 @@ const Item = ({ item }) => {
           className={`border rounded-lg  relative flex justify-between ${
             !item?.viewedStatus
               ? "border-l-4 border-green-600 dark:border-accent"
-              : " border-light-500 dark:border-gray-600"
+              : " dark:border-gray-600 border-light-500 dark:border-gray-600"
           }`}
         >
           <div
@@ -137,7 +137,7 @@ const Item = ({ item }) => {
           </div>
           <div
             onClick={() => trashed(item?.mainId)}
-            className="cursor-pointer right-0 top-0 h-full w-[60px] flex justify-center items-center group"
+            className="cursor-pointer  w-[60px] flex justify-center items-center group"
           >
             <span className="pointer-events-none group-hover:scale-95">
               <IconDelete color="fill-red-700 dark:fill-white" size="24px" />

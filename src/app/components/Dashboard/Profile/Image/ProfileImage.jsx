@@ -23,7 +23,7 @@ const ProfileImage = ({size}) => {
 </Link>
 {_image !== '' && (
 <Wrapper className='border border-dark rounded-full p-[5px]'>
-<Image src={_image || Placeholder.src} alt="Profile Image" width={size} height={size} className="h-auto transition-all duration-200 border border-light-500 rounded-full" />
+<Image src={_image || Placeholder.src} alt="Profile Image" width={size} height={size} className="h-auto transition-all duration-200 border dark:border-gray-600 border-light-500 rounded-full" />
 </Wrapper>
 ) }
 

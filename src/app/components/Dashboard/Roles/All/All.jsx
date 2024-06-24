@@ -214,13 +214,13 @@ const All = () => {
           Actions
         </Wrapper>
       </Wrapper>
-      <Wrapper className="border border-light-500 border-t-0  dark:border-gray-600">
+      <Wrapper className="border dark:border-gray-600 border-light-500 border-t-0  dark:border-gray-600">
         {allRoles &&
           allRoles.map((name, i) => (
             <Wrapper
               key={i}
               className={` flex items-center ${i} ${
-                i > 0 ? "border-t border-light-500  dark:border-gray-600" : ""
+                i > 0 ? "border-t dark:border-gray-600 border-light-500  dark:border-gray-600" : ""
               }`}
             >
               <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-dark dark:text-white capitalize">
