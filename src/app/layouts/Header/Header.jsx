@@ -66,7 +66,7 @@ const Header = () => {
     <>
       {userLoggedIn && (
         <header
-          className={` flex relative z-10 justify-between items-center bg-white dark:bg-gray-700 dark:border-gray-600 pr-6 border-b border-light-500 transition-all duration-200 ${
+          className={` flex relative z-10 justify-between items-center bg-white dark:bg-gray-700 dark:border-gray-600 pr-6 border-b dark:border-gray-600 border-light-500 transition-all duration-200 ${
             sidebarCollapse ? "ml-[100px]" : "ml-[300px]"
           }`}
         >
@@ -74,7 +74,7 @@ const Header = () => {
             <FormButton
               event={collapse}
               btnType="button"
-              additionalCss={`group w-[73px] h-[73px] flex justify-center items-center border-r border-light-500 dark:border-gray-500 ${
+              additionalCss={`group w-[73px] h-[73px] flex justify-center items-center border-r dark:border-gray-600 border-light-500 dark:border-gray-500 ${
                 sidebarCollapse ? "bg-light-100 dark:bg-gray-600" : ""
               }`}
               type="button"

@@ -16,8 +16,7 @@ import IconSearch from "../../Icons/IconSearch";
 
 const LeavesRecord = () => {
   const { userPermissions, individualUserLeaves, allUsersLeaves } =
-    useDashboard();
-    console.log(allUsersLeaves);
+    useDashboard();    
   const [allLeaves, setAllLeaves] = useState([]);
   const [status, setStatus] = useState(false);
   const [error, setError] = useState(false);
@@ -155,7 +154,7 @@ const LeavesRecord = () => {
       </Wrapper>
       {!status &&
         array.map((index) => (
-          <Wrapper key={index} className="border border-light-500 relative">
+          <Wrapper key={index} className="border dark:border-gray-600 border-light-500 relative">
             <Wrapper className="p-3 relative">
               <SkeletonLoader className="w-full max-w-[172px] !h-5 rounded-3xl" />
               <SkeletonLoader className="w-full max-w-[50%] !h-[27px] rounded-3xl mt-1 mb-2" />
@@ -169,7 +168,7 @@ const LeavesRecord = () => {
                 <SkeletonLoader className="!h-8 rounded-md  w-full max-w-[103px]" />
               </Wrapper>
 
-              <Wrapper className="flex justify-between items-center border-t border-light-500 pt-[5px] mt-[5px]">
+              <Wrapper className="flex justify-between items-center border-t dark:border-gray-600 border-light-500 pt-[5px] mt-[5px]">
                 <SkeletonLoader className="!h-3 rounded-3xl  w-full max-w-[172px]" />
                 <SkeletonLoader className="!h-3 rounded-3xl  w-full max-w-[172px]" />
               </Wrapper>

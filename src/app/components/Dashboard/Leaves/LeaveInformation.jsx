@@ -22,13 +22,14 @@ import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 import ErrorNotification from "../../Ui/notification/loader/LoaderNotification";
 import { useSocket } from "@/app/contexts/Socket/SocketContext";
 
+
 const LeaveInformation = () => {
   const socket = useSocket();
   const { setBreadcrumbs } = useThemeConfig();
   const [formData, setFormData] = useState({});
   const [formDataCancel, setFormDataCancel] = useState({});
   const { userData } = useAuth();
-  const { userPermissions } = useDashboard();
+  const { userPermissions, fetchNotifications } = useDashboard();
   const path = usePathname();
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -40,12 +41,12 @@ const LeaveInformation = () => {
   const paraRef = useRef(null);
   const id = path.replace("/dashboard/leaves/", "");
   useEffect(() => {
-    if(userData){
-    setFormDataCancel({
-      ...formDataCancel,
-      key:`${userData?._id}`,
-    })
-  }
+    if (userData) {
+      setFormDataCancel({
+        ...formDataCancel,
+        key: `${userData?._id}`,
+      });
+    }
     fetch(`/api/dashboard/paid-leaves?email=${user?.email}`)
       .then((res) => {
         return res.json();
@@ -54,6 +55,7 @@ const LeaveInformation = () => {
         setPrevLeaves(res);
       });
   }, [user, userData]);
+ 
   useEffect(() => {
     const fetchLeaveData = async () => {
       try {
@@ -221,7 +223,7 @@ const LeaveInformation = () => {
   const handleFormChange = (e) => {
     setFormData((prevData) => ({
       ...prevData,
-      key:`${userData?._id}`,
+      key: `${userData?._id}`,
       [e.target.name]: e.target.value,
     }));
   };
@@ -247,14 +249,14 @@ const LeaveInformation = () => {
         }, 3000);
       } else {
         const message = {
-          heading:"Your leave is canceled.",
-          message:`${result.leave.subject} is canceled.`,
-          link:`/dashboard/leaves/${result.leave._id}`,
-          type:"leaves"
+          heading: "Your leave is canceled.",
+          message: `${result.leave.subject} is canceled.`,
+          link: `/dashboard/leaves/${result.leave._id}`,
+          type: "leaves",
         };
-        socket.emit('sendNotification', { rooms: result?.mails, message });
-      setValue(true);
-      setLoading(false);
+        socket.emit("sendNotification", { rooms: result?.mails, message });
+        setValue(true);
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error canceling leave:", error);
@@ -283,14 +285,14 @@ const LeaveInformation = () => {
         }, 3000);
       } else {
         const message = {
-          heading:"Your leave is updated.",
-          message:`${result.leave.subject} is updated.`,
-          link:`/dashboard/leaves/${result.leave._id}`,
-          type:"leaves"
+          heading: "Your leave is updated.",
+          message: `${result.leave.subject} is updated.`,
+          link: `/dashboard/leaves/${result.leave._id}`,
+          type: "leaves",
         };
-        socket.emit('sendNotification', { rooms: result?.mails, message });
-      setValue(true);
-      setLoading(false);
+        socket.emit("sendNotification", { rooms: result?.mails, message });
+        setValue(true);
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error updating leaves:", error);
@@ -316,7 +318,8 @@ const LeaveInformation = () => {
   }, [leaves]);
   return (
     <>
-      <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full relative">
+      <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full relative">        
+
         {leaves?.subject && <H2>Subject: {leaves?.subject}</H2>}
         {!leaves?.subject && (
           <SkeletonLoader className="h-9 rounded-lg w-1/2" />
@@ -341,31 +344,31 @@ const LeaveInformation = () => {
         )}
         <Wrapper>
           {leaves?.name && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-y min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-y min-h-[50px]">
               <Text className="!text-light-400">Applied by:</Text>
               <Text>{leaves?.name}</Text>
             </Wrapper>
           )}
           {!leaves && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-y min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-y min-h-[50px]">
               <Text className="!text-light-400">Applied by:</Text>
               <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
             </Wrapper>
           )}
           {leaves?.status && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Status:</Text>
               <Badge status={leaves?.status} />
             </Wrapper>
           )}
           {!leaves && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Status:</Text>
               <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
             </Wrapper>
           )}
           {leaves?.duration && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Duration:</Text>
               <Text>
                 {leaves?.duration !== "Other"
@@ -375,13 +378,13 @@ const LeaveInformation = () => {
             </Wrapper>
           )}
           {!leaves && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Duration:</Text>
               <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
             </Wrapper>
           )}
           {leaves?.attachment && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Attachment:</Text>
               <Link
                 href={leaves?.attachment}
@@ -393,7 +396,7 @@ const LeaveInformation = () => {
             </Wrapper>
           )}
           {!leaves && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Attachment:</Text>
               <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
             </Wrapper>
@@ -401,7 +404,7 @@ const LeaveInformation = () => {
           {userPermissions &&
             userPermissions?.includes("approve-decline-leaves") &&
             leaves?.status === "pending" && (
-              <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+              <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
                 <Text className="!text-light-400">Take Action:</Text>
                 <ApproveLeave
                   id={id}
@@ -415,7 +418,7 @@ const LeaveInformation = () => {
           {userPermissions &&
             userPermissions?.includes("approve-decline-leaves") &&
             leaves?.status === "approved" && (
-              <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+              <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
                 <Text className="!text-light-400">Take Action:</Text>
                 <Wrapper>
                   <FormButton
@@ -433,7 +436,7 @@ const LeaveInformation = () => {
           {userPermissions &&
             userPermissions?.includes("approve-decline-leaves") &&
             leaves?.status === "not-approved" && (
-              <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+              <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
                 <Text className="!text-light-400">Take Action:</Text>
                 <Wrapper>
                   <FormButton
@@ -447,7 +450,7 @@ const LeaveInformation = () => {
               </Wrapper>
             )}
           {leaves?.reason && (
-            <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 max-w-1/2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Comment</Text>
               <Text className="max-w-[50%] text-right">
                 {leaves?.status === "canceled"
@@ -457,19 +460,19 @@ const LeaveInformation = () => {
             </Wrapper>
           )}
           {!leaves && (
-            <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 max-w-1/2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Comment</Text>
               <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
             </Wrapper>
           )}
           {leaves?.updatedAt && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Applied On:</Text>
               <Text>{formatDate(leaves?.updatedAt)}</Text>
             </Wrapper>
           )}
           {!leaves && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Applied On:</Text>
               <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
             </Wrapper>
@@ -485,23 +488,23 @@ const LeaveInformation = () => {
         >
           <Wrapper>
             <Wrapper className="flex flex-col max-w-[576px] px-4 mx-auto">
-              <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
+              <Wrapper className="flex justify-between items-center p-2 max-w-1/2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
                 <Text className="!text-light-400">Balance Leaves:</Text>
                 <Text className="text-white">{user?.balancedLeaves}</Text>
               </Wrapper>
-              <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
+              <Wrapper className="flex justify-between items-center p-2 max-w-1/2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
                 <Text className="!text-light-400">Paid Leaves Taken:</Text>
                 <Text className="text-white">{user?.totalLeaveTaken}</Text>
               </Wrapper>
               {user?.totalUnpaidLeaveTaken !== 0 && (
-                <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
+                <Wrapper className="flex justify-between items-center p-2 max-w-1/2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
                   <Text className="!text-light-400">Unpaid Leaves Taken:</Text>
                   <Text className="text-white">
                     {user?.totalUnpaidLeaveTaken}
                   </Text>
                 </Wrapper>
               )}
-              <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
+              <Wrapper className="flex justify-between items-center p-2 max-w-1/2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
                 <Text className="!text-light-400">
                   Balance Sandwich Leaves:
                 </Text>
@@ -509,14 +512,14 @@ const LeaveInformation = () => {
                   {user?.balancedSandwichLeaves}
                 </Text>
               </Wrapper>
-              <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
+              <Wrapper className="flex justify-between items-center p-2 max-w-1/2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
                 <Text className="!text-light-400">Sandwich Leaves Taken:</Text>
                 <Text className="text-white">
                   {user?.balancedSandwichLeavesTaken}
                 </Text>
               </Wrapper>
               {user?.unpaidSandwichLeavesTaken !== 0 && (
-                <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
+                <Wrapper className="flex justify-between items-center p-2 max-w-1/2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
                   <Text className="!text-light-400">
                     Unpaid Sandwich Taken:
                   </Text>
@@ -612,26 +615,25 @@ const LeaveInformation = () => {
                     <IconNumber size="24px" color="fill-light-400" />
                   </Input>
                 )}
-             
               </Wrapper>
               <Wrapper className="w-full">
-                  <span className="text-light-400 text-xs block mb-1">
-                    Reason
-                  </span>
-                  <textarea
-                    required
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        update: "updated",
-                        reason: e.target.value,
-                      })
-                    }
-                    name="reason"
-                    className="w-full rounded-lg h-24 p-4 text-base bg-transparent text-white border border-light-500 focus-visible:shadow-none focus-visible:outline-none"
-                    value={formData?.reason}
-                  ></textarea>
-                </Wrapper>
+                <span className="text-light-400 text-xs block mb-1">
+                  Reason
+                </span>
+                <textarea
+                  required
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      update: "updated",
+                      reason: e.target.value,
+                    })
+                  }
+                  name="reason"
+                  className="w-full rounded-lg h-24 p-4 text-base bg-transparent text-white border dark:border-gray-600 border-light-500 focus-visible:shadow-none focus-visible:outline-none"
+                  value={formData?.reason}
+                ></textarea>
+              </Wrapper>
               <Wrapper className="flex">
                 <FormButton
                   type="submit"
@@ -646,12 +648,12 @@ const LeaveInformation = () => {
           </Wrapper>
         </Modal>
       )}
-        {error?.status && (
-            <ErrorNotification
-              active={error?.active}
-              message={error?.message}
-            ></ErrorNotification>
-          )}
+      {error?.status && (
+        <ErrorNotification
+          active={error?.active}
+          message={error?.message}
+        ></ErrorNotification>
+      )}
     </>
   );
 };

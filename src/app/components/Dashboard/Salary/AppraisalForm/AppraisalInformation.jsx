@@ -16,6 +16,7 @@ import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 import AccessDenied from "@/app/components/Ui/AccessDenied/AccessDenied";
 import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 import ErrorNotification from "@/app/components/Ui/notification/loader/LoaderNotification";
+import { PriceFormatter } from "@/app/utils/PriceFormatter";
 
 const AppraisalInformation = () => {
   const [formData, setFormData] = useState({});
@@ -97,7 +98,7 @@ const AppraisalInformation = () => {
       {userPermissions && userPermissions?.includes("view-appraisal") && (
         <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full relative">
           {leaves?.ExpectedSalary && (
-            <H2>Expected Salary: {leaves?.ExpectedSalary}</H2>
+            <H2>Expected Salary: {PriceFormatter.format(leaves?.ExpectedSalary)}</H2>
           )}
           {!leaves?.ExpectedSalary && (
             <SkeletonLoader className="h-9 rounded-lg w-1/2" />
@@ -122,25 +123,25 @@ const AppraisalInformation = () => {
           )}
           <Wrapper>
             {leaves?.name && (
-              <Wrapper className="flex justify-between items-center p-2 border-light-500 border-y min-h-[50px]">
+              <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-y min-h-[50px]">
                 <Text className="!text-light-400">Applied by:</Text>
                 <Text>{leaves?.name}</Text>
               </Wrapper>
             )}
             {!leaves && (
-              <Wrapper className="flex justify-between items-center p-2 border-light-500 border-y min-h-[50px]">
+              <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-y min-h-[50px]">
                 <Text className="!text-light-400">Applied by:</Text>
                 <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
               </Wrapper>
             )}
             {leaves?.status && (
-              <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+              <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
                 <Text className="!text-light-400">Status:</Text>
                 <Badge status={leaves?.status} />
               </Wrapper>
             )}
             {!leaves && (
-              <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+              <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
                 <Text className="!text-light-400">Status:</Text>
                 <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
               </Wrapper>
@@ -149,13 +150,13 @@ const AppraisalInformation = () => {
             {userPermissions &&
               userPermissions?.includes("write-appraisal") &&
               leaves?.status === "pending" && (
-                <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+                <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
                   <Text className="!text-light-400">Take Action:</Text>
                   <Approve id={id} user={user} setValue={setValue} />
                 </Wrapper>
               )}
             {leaves?.reason && (
-              <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
+              <Wrapper className="flex justify-between items-center p-2 max-w-1/2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
                 <Text className="!text-light-400">Comment</Text>
                 <Text className="max-w-[50%] text-right">
                   {leaves?.status === "canceled"
@@ -165,25 +166,25 @@ const AppraisalInformation = () => {
               </Wrapper>
             )}
             {leaves?.salaryOffered && (
-              <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
+              <Wrapper className="flex justify-between items-center p-2 max-w-1/2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
                 <Text className="!text-light-400">Final Salary</Text>
-                <Text>{leaves?.salaryOffered}</Text>
+                <Text>{PriceFormatter.format(leaves?.salaryOffered)}</Text>
               </Wrapper>
             )}
             {!leaves && (
-              <Wrapper className="flex justify-between items-center p-2 max-w-1/2 border-light-500 border-b min-h-[50px]">
+              <Wrapper className="flex justify-between items-center p-2 max-w-1/2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
                 <Text className="!text-light-400">Comment</Text>
                 <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
               </Wrapper>
             )}
             {leaves?.updatedAt && (
-              <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+              <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
                 <Text className="!text-light-400">Applied On:</Text>
                 <Text>{formatDate(leaves?.updatedAt)}</Text>
               </Wrapper>
             )}
             {!leaves && (
-              <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+              <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
                 <Text className="!text-light-400">Applied On:</Text>
                 <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
               </Wrapper>

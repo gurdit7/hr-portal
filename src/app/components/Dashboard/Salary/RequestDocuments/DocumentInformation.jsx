@@ -19,6 +19,7 @@ import IconAttachment from "@/app/components/Icons/IconAttachment";
 import axios from "axios";
 import Notification from "@/app/components/Ui/notification/success/Notification";
 
+
 const DocumentInformation = () => {
   const socket = useSocket();
   const { setBreadcrumbs } = useThemeConfig();
@@ -169,6 +170,7 @@ const DocumentInformation = () => {
   return (
     <>
       <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full relative">
+
         {documents?.document && <H2>Subject: {documents?.document}</H2>}
         {!documents?.document && (
           <SkeletonLoader className="h-9 rounded-lg w-1/2" />
@@ -197,31 +199,31 @@ const DocumentInformation = () => {
         )}
         <Wrapper>
           {documents?.name && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-y min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-y min-h-[50px]">
               <Text className="!text-light-400">Applied by:</Text>
               <Text>{documents?.name}</Text>
             </Wrapper>
           )}
           {!documents && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-y min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-y min-h-[50px]">
               <Text className="!text-light-400">Applied by:</Text>
               <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
             </Wrapper>
           )}
           {documents?.status && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Status:</Text>
               <Badge status={documents?.status} />
             </Wrapper>
           )}
           {!documents && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Status:</Text>
               <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
             </Wrapper>
           )}
           {documents?.attachment && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Attachment:</Text>
               <Link
                 href={documents?.attachment}
@@ -233,7 +235,7 @@ const DocumentInformation = () => {
             </Wrapper>
           )}
           {!documents && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Attachment:</Text>
               <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
             </Wrapper>
@@ -241,7 +243,7 @@ const DocumentInformation = () => {
           {userPermissions &&
             userPermissions?.includes("write-documents") &&
             documents?.status === "pending" && (
-              <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+              <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
                 <Text className="!text-light-400">Upload Document:</Text>
 
                 <Wrapper className="relative flex gap-3">
@@ -281,13 +283,13 @@ const DocumentInformation = () => {
             )}
 
           {documents?.updatedAt && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Applied On:</Text>
               <Text>{formatDate(documents?.updatedAt)}</Text>
             </Wrapper>
           )}
           {!documents && (
-            <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+            <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
               <Text className="!text-light-400">Applied On:</Text>
               <SkeletonLoader className="h-3 rounded-lg  w-full max-w-60" />
             </Wrapper>

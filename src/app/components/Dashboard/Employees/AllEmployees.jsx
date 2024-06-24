@@ -17,6 +17,7 @@ import Pagination from "../../Ui/Pagination/Pagination";
 import { formatDate } from "@/app/utils/DateFormat";
 import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
+import { PriceFormatter } from "@/app/utils/PriceFormatter";
 
 const AllEmployees = () => {
   const { setBreadcrumbs } = useThemeConfig();
@@ -140,6 +141,7 @@ const AllEmployees = () => {
               <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white ">
                 Increment Date
               </Wrapper>
+              
               {userPermissions &&
                 userPermissions?.includes("write-employees") && (
                   <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-white ">
@@ -147,13 +149,13 @@ const AllEmployees = () => {
                   </Wrapper>
                 )}
             </Wrapper>
-            <Wrapper className="border border-light-500 border-t-0 dark:border-gray-600">
+            <Wrapper className="border dark:border-gray-600 border-light-500 border-t-0 dark:border-gray-600">
               {users &&
                 users.map((user, i) => (
                   <Wrapper
                     key={i}
                     className={` flex items-center ${i} ${
-                      i > 0 ? "border-t border-light-500 dark:border-gray-600" : ""
+                      i > 0 ? "border-t dark:border-gray-600 border-light-500 dark:border-gray-600" : ""
                     }`}
                   >
                     <Wrapper className="flex-1 text-sm font-medium font-poppins p-[10px] text-dark dark:text-white capitalize">
@@ -208,61 +210,64 @@ const AllEmployees = () => {
           heading={"Employee - " + user?.name}
         >
           <Wrapper className="bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] p-5 max-w-[895px] w-full m-auto max-h-[95vh] overflow-auto">
-            <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
+            <Wrapper className="flex justify-between py-[10px] border-b dark:border-gray-600 border-light-500">
               <Text className="!text-light-400"> Name</Text>
               <Text className="capitalize"> {user?.name}</Text>
             </Wrapper>
-            <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
+            <Wrapper className="flex justify-between py-[10px] border-b dark:border-gray-600 border-light-500">
               <Text className="!text-light-400"> Email Address</Text>
               <Text className=""> {user?.email}</Text>
             </Wrapper>
 
-            <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
+            <Wrapper className="flex justify-between py-[10px] border-b dark:border-gray-600 border-light-500">
               <Text className="!text-light-400"> Join Date</Text>
               <Text className="capitalize"> {formatDate(user?.joinDate)}</Text>
             </Wrapper>
-            <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
+            <Wrapper className="flex justify-between py-[10px] border-b dark:border-gray-600 border-light-500">
               <Text className="!text-light-400"> Role</Text>
               <Text className="capitalize"> {user?.role}</Text>
             </Wrapper>
-            <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
+            <Wrapper className="flex justify-between py-[10px] border-b dark:border-gray-600 border-light-500">
               <Text className="!text-light-400"> Department</Text>
               <Text className="capitalize"> {user?.department}</Text>
             </Wrapper>
-            <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
+            <Wrapper className="flex justify-between py-[10px] border-b dark:border-gray-600 border-light-500">
               <Text className="!text-light-400"> DOB</Text>
               <Text className="capitalize"> {formatDate(user?.DOB)}</Text>
             </Wrapper>
-            <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
+            <Wrapper className="flex justify-between py-[10px] border-b dark:border-gray-600 border-light-500">
               <Text className="!text-light-400"> Gender</Text>
               <Text className="capitalize"> {user?.gender}</Text>
             </Wrapper>
-            <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
+            <Wrapper className="flex justify-between py-[10px] border-b dark:border-gray-600 border-light-500">
               <Text className="!text-light-400"> Increment Date</Text>
               <Text className="capitalize">
                 {" "}
                 {formatDate(user?.incrementDate)}
               </Text>
             </Wrapper>
-            <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
+            <Wrapper className="flex justify-between py-[10px] border-b dark:border-gray-600 border-light-500">
               <Text className="!text-light-400"> User Type</Text>
               <Text className="capitalize"> {user?.userType}</Text>
             </Wrapper>
-
-            <Wrapper className="flex justify-between py-[10px] border-b border-light-500">
+            <Wrapper className="flex justify-between py-[10px] border-b dark:border-gray-600 border-light-500">
+              <Text className="!text-light-400">Current Salary</Text>
+              <Text className="capitalize"> {PriceFormatter.format(user?.currentSalary)}</Text>
+            </Wrapper>
+            <Wrapper className="flex justify-between py-[10px] border-b dark:border-gray-600 border-light-500">
               <Text className="!text-light-400">Status</Text>
               <Text className="capitalize"> {user?.status || "active"}</Text>
             </Wrapper>
             <Wrapper className="border border-dark-blue px-4">
-              <Wrapper className="flex justify-between py-[10px] border-b border-light-500  ">
+              <Wrapper className="flex justify-between py-[10px] border-b dark:border-gray-600 border-light-500  ">
                 <Text> Total Leave Taken </Text>
                 <Text className=""> {user?.totalLeaveTaken}</Text>
               </Wrapper>
-              <Wrapper className="flex justify-between py-[10px] border-b border-light-500  ">
+              <Wrapper className="flex justify-between py-[10px] border-b dark:border-gray-600 border-light-500  ">
                 <Text> Balanced Leaves</Text>
                 <Text className=""> {user?.balancedLeaves}</Text>
               </Wrapper>
-              <Wrapper className="flex justify-between py-[10px] border-b border-light-500  ">
+              <Wrapper className="flex justify-between py-[10px] border-b dark:border-gray-600 border-light-500  ">
                 <Text> Sandwich Leaves Taken</Text>
                 <Text className=""> {user?.balancedSandwichLeavesTaken}</Text>
               </Wrapper>

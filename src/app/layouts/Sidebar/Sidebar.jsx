@@ -112,8 +112,8 @@ const Sidebar = () => {
     <div>
       {userLoggedIn && (
         <aside
-          className={`fixed h-full w-full left-0 top-0 transition-all duration-200 bg-dark-blue py-5 dark:bg-gray-800 dark:border-r dark:border-gray-600 ${
-            sidebarCollapse ? "max-w-[100px]" : "max-w-[300px]"
+          className={`fixed h-full w-full left-0 top-0 transition-all max-h-screen overflow-auto duration-200 bg-dark-blue py-5 dark:bg-gray-800 dark:border-r dark:border-gray-600 ${
+            sidebarCollapse ? "max-w-[100px]" : "max-w-[300px] "
           }`}
         >
           <Wrapper>
@@ -140,7 +140,7 @@ const Sidebar = () => {
             ) : (
               <LoaderSkeleton sidebarCollapse={sidebarCollapse} />
             )}
-            <Wrapper className={`mt-9 ${sidebarCollapse ? "pl-2" : "pl-12"}`}>
+            <Wrapper className={` mt-9 ${sidebarCollapse ? "pl-2" : "pl-12 max-3xl:pl-6"}`}>
               <ul className="list-none p-0 mt-0">
                 {menuItems.map(
                   ({ href, label, icon: Icon, isActive, requiresPermission }) =>

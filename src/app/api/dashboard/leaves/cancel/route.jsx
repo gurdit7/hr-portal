@@ -82,6 +82,7 @@ export const PUT = async (request) => {
             toEmails: payload.email,
             type: "leaveCanceled",
             id: payload.id,
+            link: `/dashboard/leaves/${result._id}`,
             viewed: [{ mail: payload.email, status: false }],
           });
 

@@ -111,7 +111,7 @@ const RealtimeNotification = () => {
           </div>
           <button
             onClick={closeNotification}
-            className="w-4 h-4 bg-accent dark:border-white dark:border  flex items-center rounded-full justify-center absolute -top-[5px] -right-[5px]"
+            className="w-4 h-4 bg-accent dark:border-gray-600 dark:border  flex items-center rounded-full justify-center absolute -top-[5px] -right-[5px]"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

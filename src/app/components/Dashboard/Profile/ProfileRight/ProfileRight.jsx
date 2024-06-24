@@ -8,6 +8,7 @@ import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
 import SkeletonLoader from "@/app/components/Ui/skeletonLoader/skeletonLoader";
 import useAuth from "@/app/contexts/Auth/auth";
 import { formatDate } from "@/app/utils/DateFormat";
+import { PriceFormatter } from "@/app/utils/PriceFormatter";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -18,7 +19,7 @@ const ProfileRight = ({ heading, button }) => {
     <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col w-full">
       <H2>{heading}</H2>
       <Wrapper className="mt-[15px]">
-        <Wrapper className="py-[10px] border-t border-b border-light-500 flex justify-between">
+        <Wrapper className="py-[10px] border-t border-b dark:border-gray-600 border-light-500 flex justify-between">
           <Text className="!text-light-400 flex-1">Current Salary</Text>
 
           <Wrapper className="flex items-center gap-1 justify-end">
@@ -105,7 +106,7 @@ const ProfileRight = ({ heading, button }) => {
             )}
             {view && (
               <span className="text-sm dark:!text-white">
-                {userData?.currentSalary || "Not Added Yet"}
+                {PriceFormatter.format(userData?.currentSalary) || "Not Added Yet"}
               </span>
             )}
             <button onClick={() => setView((prevState) => !prevState)}>
@@ -151,7 +152,7 @@ const ProfileRight = ({ heading, button }) => {
             </button>
           </Wrapper>
         </Wrapper>
-        <Wrapper className="py-[10px] border-b border-light-500 flex justify-between">
+        <Wrapper className="py-[10px] border-b dark:border-gray-600 border-light-500 flex justify-between">
           <Text className="!text-light-400 flex-1">Increment Date</Text>
           {!userData && <SkeletonLoader className="!w-1/2 rounded-2xl !h-3" />}
           {userData && (

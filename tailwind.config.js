@@ -29,6 +29,10 @@ module.exports = {
       },
       fontFamily:{
         'poppins':['Poppins','sans-serif']
+      },
+      screens:{
+        "max-3xl":{max:"1366px"},
+        "max-2xl":{max:"1280px"}
       }
     },
   },

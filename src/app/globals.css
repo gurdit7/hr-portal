@@ -215,3 +215,22 @@ body{
     .ql-editor *{
         @apply  dark:!text-gray-400 
     }
+
+    ::-webkit-scrollbar {
+        width: 3px;
+      }
+      
+      
+      ::-webkit-scrollbar-track {
+        @apply dark:bg-gray-600;
+      }
+      
+      
+      ::-webkit-scrollbar-thumb {
+        @apply dark:bg-accent;
+      }
+      
+      
+      ::-webkit-scrollbar-thumb:hover {
+        @apply dark:bg-accent;
+      }

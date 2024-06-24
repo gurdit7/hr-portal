@@ -46,14 +46,14 @@ const Salary = () => {
           <H2>Documents requested.</H2>
           <Wrapper className="w-full flex flex-col gap-4 mt-3">
             {documents.map((item, i) => (              
-              <Wrapper key={i} className="border border-light-500 relative"> 
+              <Wrapper key={i} className="border dark:border-gray-600 border-light-500 relative"> 
                    
                 <Wrapper className="p-3 relative">
                 <Wrapper className='flex justify-between items-center'>    <Text className="!text-light-400">Document request</Text>
     
                   </Wrapper>
                   <H3>{item?.name} applied for a {item?.document}.</H3>                 
-                  <Wrapper className="flex justify-between items-center border-t border-light-500 pt-[5px] mt-[5px]">
+                  <Wrapper className="flex justify-between items-center border-t dark:border-gray-600 border-light-500 pt-[5px] mt-[5px]">
                  
                     <Text>Updated on: {formatDate(item?.updatedAt)}</Text> <Wrapper className=" flex ">
                     <Badge status={item?.status} />
@@ -76,12 +76,12 @@ const Salary = () => {
           <H2>Appraisal requests</H2>
           <Wrapper className="w-full flex flex-col gap-4 mt-3">
             {allAppraisals.map((item, i) => (
-              <Wrapper key={i} className="border border-light-500 relative">
+              <Wrapper key={i} className="border dark:border-gray-600 border-light-500 relative">
                 <Wrapper className="p-3 relative">
                   <Text className="!text-light-400">Appraisal requests</Text>
               
                   <H3>{item?.name} requested for a appraisal.</H3>                 
-                  <Wrapper className="flex justify-between items-center border-t border-light-500 pt-[5px] mt-[5px]">                   
+                  <Wrapper className="flex justify-between items-center border-t dark:border-gray-600 border-light-500 pt-[5px] mt-[5px]">                   
                     <Text>Updated on: {formatDate(item?.updatedAt)}</Text>
                     <Wrapper className="flex">
                     <Badge status={item?.status} />
@@ -104,12 +104,12 @@ const Salary = () => {
           <H2>My appraisal requests.</H2>
           <Wrapper className="w-full flex flex-col gap-4 mt-3">
             {appraisals.map((item, i) => (
-              <Wrapper key={i} className="border border-light-500 relative">
+              <Wrapper key={i} className="border dark:border-gray-600 border-light-500 relative">
                 <Wrapper className="p-3 relative">
                   <Text className="!text-light-400">Appraisal requests</Text>
               
                   <H3>You have requested for a appraisal.</H3>                 
-                  <Wrapper className="flex justify-between items-center border-t border-light-500 pt-[5px] mt-[5px]">                   
+                  <Wrapper className="flex justify-between items-center border-t dark:border-gray-600 border-light-500 pt-[5px] mt-[5px]">                   
                     <Text>Updated on: {formatDate(item?.updatedAt)}</Text>
                     <Wrapper className="flex">
                     <Badge status={item?.status} />
@@ -132,12 +132,12 @@ const Salary = () => {
           <H2>My documents requests.</H2>
           <Wrapper className="w-full flex flex-col gap-4 mt-3">
             {indiviualDocuments.map((item, i) => (              
-              <Wrapper key={i} className="border border-light-500 relative">                
+              <Wrapper key={i} className="border dark:border-gray-600 border-light-500 relative">                
                 <Wrapper className="p-3 relative">
                   <Text className="!text-light-400">Document request</Text>
     
                   <H3>You have applied for a {item?.document}.</H3>                 
-                  <Wrapper className="flex justify-between items-center border-t border-light-500 pt-[5px] mt-[5px]">
+                  <Wrapper className="flex justify-between items-center border-t dark:border-gray-600 border-light-500 pt-[5px] mt-[5px]">
                     <Text>Updated on: {formatDate(item?.updatedAt)}</Text>
                     <Wrapper className="flex">
                     <Badge status={item?.status} />

@@ -460,11 +460,11 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
                   required
                   onChange={handleApproveChange}
                   name="reason"
-                  className="w-full rounded-lg h-72 p-4 bg-transparent text-white border border-light-500 focus-visible:shadow-none focus-visible:outline-none"
+                  className="w-full rounded-lg h-72 p-4 bg-transparent text-white border dark:border-gray-600 border-light-500 focus-visible:shadow-none focus-visible:outline-none"
                   value={approveForm?.reason}
                 ></textarea>
                 <Wrapper>
-                  <Wrapper className="flex justify-between items-center p-2 border-light-500 border-y min-h-[50px]">
+                  <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-y min-h-[50px]">
                     <Text className="!text-light-100">No. of paid leaves:</Text>
                     {!editLeaves?.paidLeaves && (
                       <Text className="!text-light-100 flex items-center gap-1">
@@ -495,7 +495,7 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
                       ></Input>
                     )}
                   </Wrapper>
-                  <Wrapper className="flex justify-between items-center p-2 border-light-500 border-b min-h-[50px]">
+                  <Wrapper className="flex justify-between items-center p-2 dark:border-gray-600 border-light-500 border-b min-h-[50px]">
                     <Text className="!text-light-100">
                       No. of unpaid leaves:
                     </Text>
@@ -574,7 +574,7 @@ const ApproveLeave = ({ id, user, setValue, leave, prevLeaves }) => {
                     })
                   }
                   name="reason"
-                  className="w-full rounded-lg h-72 p-4 bg-transparent text-white border border-light-500 focus-visible:shadow-none focus-visible:outline-none"
+                  className="w-full rounded-lg h-72 p-4 bg-transparent text-white border dark:border-gray-600 border-light-500 focus-visible:shadow-none focus-visible:outline-none"
                   value={declineForm?.reason}
                 ></textarea>
 

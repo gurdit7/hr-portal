@@ -107,13 +107,13 @@ const AllHolidays = () => {
                   )}
               </tr>
             </thead>
-            <tbody className="border border-light-500 dark:border-gray-600 border-t-0">
+            <tbody className="border dark:border-gray-600 border-light-500 dark:border-gray-600 border-t-0">
               {holidays &&
                 holidays.map((item, i) => (
                   <tr
                     key={i}
                     className={`  items-center ${i} ${
-                      i > 0 ? "border-t border-light-500  dark:border-gray-600" : ""
+                      i > 0 ? "border-t dark:border-gray-600 border-light-500  dark:border-gray-600" : ""
                     }`}
                   >
                     <td className=" text-sm font-medium font-poppins p-[10px] text-dark dark:text-white capitalize max-w-20">

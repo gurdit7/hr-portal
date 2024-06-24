@@ -3,6 +3,7 @@ import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
 import useAuth from "@/app/contexts/Auth/auth";
 import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 import { formatMonthName, formatYear } from "@/app/utils/DateFormat";
+import { PriceFormatter } from "@/app/utils/PriceFormatter";
 import { useEffect, useState, useCallback } from "react";
 import { CSVLink } from "react-csv";
 
@@ -299,7 +300,7 @@ const CreateSalary = () => {
               >
                 <td className="p-[10px] text-black dark:text-white">{i + 1}</td>
                 <td className="p-[10px] text-black dark:text-white">{user.name}</td>
-                <td className="p-[10px] text-black dark:text-white">{user.currentSalary}</td>
+                <td className="p-[10px] text-black dark:text-white">{PriceFormatter.format(user.currentSalary)}</td>
                 <td className="p-[10px] text-black dark:text-white">
                   {calculateLeaves(user.email, "paidLeaves")}
                 </td>
@@ -356,12 +357,12 @@ const CreateSalary = () => {
                   )}
                 </td>
                 <td className="p-[10px] dark:text-white text-base font-semibold">
-                  {getFinalSalary(
+                  {PriceFormatter.format(getFinalSalary(
                     user.currentSalary,
                     textInput[`index_${i}`] || 0,
                     textInput[`index_SalaryDeducted_${i}`] ||
                       calculateLeavesHours(user.email, user.currentSalary)
-                  )}
+                  ))}
                 </td>
                 <td className="text-black dark:text-white relative">
                   <textarea
