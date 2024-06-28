@@ -4,7 +4,7 @@ import Wrapper from '../../Ui/Wrapper/Wrapper';
 import { LeaveSummaryCard } from './Leaves';
 import useAuth from '@/app/contexts/Auth/auth';
 
-const BalancedLeaves = () => {
+const BalancedLeaves = ({className}) => {
   const [user,setUser] = useState(false);
   const { userData } = useAuth();
   useEffect(()=>{
@@ -12,7 +12,7 @@ const BalancedLeaves = () => {
   },[userData])
   return (
     <Wrapper>
-    <Wrapper className="flex justify-between gap-[15px]">
+    <Wrapper className={'flex justify-between gap-[15px] ' + (className || "")}>
     <LeaveSummaryCard
       title="Balance Leaves"
       count={user?.balancedLeaves || 12}

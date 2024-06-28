@@ -14,6 +14,12 @@ const RecentNotifications = () => {
             heading="Recent Notification"
             userNotifications={userNotifications} />
           )}
+          {userPermissions &&
+          userPermissions?.includes("user-notifications") && !userPermissions?.includes("view-users-notifications") && (
+            <ItemRecentNotifications
+            heading="Recent Notification"
+            userNotifications={userIndividualNotifications} />
+          )}
 
       </Wrapper>
     </>

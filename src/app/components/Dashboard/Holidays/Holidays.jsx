@@ -30,7 +30,7 @@ const Holidays = () => {
   }, []);
   return (
     <Container heading="Holidays" className="relative">
-      {userPermissions && userPermissions?.includes("read-holidays") && (
+      {userPermissions && userPermissions?.includes("write-holidays") && (
         <FormButton
           type="button"
           label="Add Holiday"
