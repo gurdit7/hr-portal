@@ -42,56 +42,60 @@ const HomePage = () => {
     <>
       {userPermissions && userPermissions?.includes("write-employees") && (
         <Container heading={`Welcome, ${userData?.name?.split(" ")[0]}`}>
-          <Wrapper className="flex justify-between gap-4">
-            <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full items-center">
-              <H1 className="text-light-500 text-[64px] leading-none">
-                {total}
-              </H1>
-              <H3 className="text-center text-light-400 mt-[5px]">
-                Total Employees
-              </H3>
+          <Wrapper className="mt-4 flex gap-4">
+            <Wrapper className="flex-[2] ">
+              <Wrapper className="flex justify-between gap-4 mb-5">
+                <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full items-center">
+                  <H1 className="text-light-500 text-[64px] leading-none">
+                    {total}
+                  </H1>
+                  <H3 className="text-center text-light-400 mt-[5px]">
+                    Total Employees
+                  </H3>
+                </Wrapper>
+                <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full items-center">
+                  <H1 className="text-light-500 text-[64px] leading-none">
+                    {male}
+                  </H1>
+                  <H3 className="text-center text-light-400 mt-[5px]">
+                    Male Employees
+                  </H3>
+                </Wrapper>
+                <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full items-center">
+                  <H1 className="text-light-500 text-[64px] leading-none">
+                    {female}
+                  </H1>
+                  <H3 className="text-center text-light-400 mt-[5px]">
+                    Female Employees
+                  </H3>
+                </Wrapper>
+              </Wrapper>
+              <RecentNotifications />
             </Wrapper>
-            <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full items-center">
-              <H1 className="text-light-500 text-[64px] leading-none">
-                {male}
-              </H1>
-              <H3 className="text-center text-light-400 mt-[5px]">
-                Male Employees
-              </H3>
-            </Wrapper>
-            <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full items-center">
-              <H1 className="text-light-500 text-[64px] leading-none">
-                {female}
-              </H1>
-              <H3 className="text-center text-light-400 mt-[5px]">
-                Female Employees
-              </H3>
-            </Wrapper>
-          </Wrapper>
-          <Wrapper className='mt-4 flex gap-4'>
-          <Wrapper className='flex-[2]'>
-          <RecentNotifications />
-          </Wrapper>
-          <Wrapper className="flex-1 w-full bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] p-5">
-              <H2 className="mb-[5px]">Holidays</H2>
-              <AllHolidays />
-            </Wrapper>
-         
-          </Wrapper>
-        </Container>
-      )}
-      {userPermissions && userPermissions?.includes("balance-leaves") && !userPermissions?.includes("write-employees") && (
-        <Container heading={`Welcome, ${userData?.name}`}>
-         <BalancedLeaves user={userData} />
-          <Wrapper className="flex justify-between gap-[15px] mt-[15px] items-start">
-            <RecentNotifications />
-            <Wrapper className="max-w-[600px] w-full bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] p-5">
+            <Wrapper className="flex-1 w-full bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] p-5">
               <H2 className="mb-[5px]">Holidays</H2>
               <AllHolidays />
             </Wrapper>
           </Wrapper>
         </Container>
       )}
+      {userPermissions &&
+        userPermissions?.includes("balance-leaves") &&
+        !userPermissions?.includes("write-employees") && (
+          <Container heading={`Welcome, ${userData?.name}`}>
+
+            <Wrapper className="flex justify-between gap-[15px] mt-[15px] items-start">
+              <Wrapper className='flex flex-col gap-5 w-full'>
+            <BalancedLeaves className='!grid !grid-cols-3' user={userData} />
+              <RecentNotifications />
+              </Wrapper>
+              <Wrapper className="max-w-[600px] w-full bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] p-5">
+                <H2 className="mb-[5px]">Holidays</H2>
+                <AllHolidays />
+              </Wrapper>
+            </Wrapper>
+          </Container>
+        )}
       {!userPermissions && (
         <Container>
           <Wrapper className="flex justify-between gap-[15px]">

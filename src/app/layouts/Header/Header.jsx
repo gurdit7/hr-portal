@@ -98,11 +98,11 @@ const Header = () => {
             <Mode/>
             <Link
               href="/dashboard/notifications"
-              className="flex justify-center items-center relative"
+              className="flex justify-center items-center relative "
             >
               <IconNotification size="24px" color="fill-accent" />
               {notificationsCount > 0 && (
-                <Wrapper className="text-[8px] absolute top-[7px] -right-[3px] min-w-4 min-h-4 rounded-full bg-dark dark:bg-accent text-white font-medium text-nowrap items-center flex justify-center">
+                <Wrapper className="text-[8px] absolute  top-[7px]  -right-[3px] min-w-4 min-h-4 rounded-full bg-dark dark:bg-accent text-white font-medium text-nowrap items-center flex justify-center">
                   {notificationsCount}
                   {notificationsCount > 99 && "+"}
                 </Wrapper>
