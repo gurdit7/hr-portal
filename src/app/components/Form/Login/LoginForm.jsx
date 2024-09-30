@@ -26,7 +26,7 @@ const LoginForm = () => {
     animation: false,
     message: "",
   });
-  const { setUserData, setUserLoggedIn} = useAuth();
+  const { setUserData, setUserLoggedIn, getUser} = useAuth();
   const {  setPermissions  } = useDashboard();
   const setFormValues = (e) => {
     setFormData({
@@ -50,8 +50,8 @@ const LoginForm = () => {
             active: true,
             animation: true,
             message: "Login Successfully",
-          });          
-
+          });                   
+          getUser(data?.user?.userID)
           setTimeout(() => {
             setLoading(false)
             setUserLoggedIn(true);

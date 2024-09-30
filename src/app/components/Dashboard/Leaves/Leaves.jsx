@@ -446,10 +446,10 @@ const Leaves = () => {
             <BalancedLeaves />
           )}
 
-          <Wrapper className="flex justify-between gap-[15px] mt-[15px]">
+          <Wrapper className="flex justify-between gap-[15px] mt-[15px] max-tab:flex-wrap">
             <LeavesRecord loader={load} setLoader={setLoad} />
             {userPermissions && userPermissions?.includes("apply-leaves") && (
-              <Wrapper className="w-full  max-w-[600px]">
+              <Wrapper className="w-full  max-w-[600px] max-tab:max-w-full">
                 <Wrapper className="bg-white dark:bg-gray-700 dark:border-gray-600 sticky top-4 rounded-[10px] p-5 w-full ">
                   <H2>Request For Leave</H2>
                   <form
@@ -638,16 +638,16 @@ export const LeaveSummaryCard = ({ title, count, tooltip, className }) => (
   <Wrapper
     className={
       className +
-      " p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full items-center"
+      " p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col gap-[15px] w-full flex-1 items-center"
     }
   >
     <H1 className="text-light-500 text-[64px] leading-none">{count}</H1>
     <H3 className="text-center text-light-400 mt-[5px] flex gap-2 items-center text-sm">
-      {title}
+     <span className="max-3xl:whitespace-nowrap"> {title}</span>
       {tooltip && (
         <span className="relative cursor-pointer group">
           <IconInfo size="18px" color="fill-dark-blue dark:fill-gray-400" />
-          <Text className="absolute left-full top-1/2 translate-y-[-40%] bg-white dark:bg-gray-700 dark:border-gray-600 border border-blue rounded-lg !text-xs p-3 w-60 text-left opacity-0  invisible group-hover:opacity-100 group-hover:visible group-hover:translate-y-[-50%]">
+          <Text className="absolute max-3xl:right-0 max-3xl:left-auto left-full top-1/2 translate-y-[-40%] bg-white dark:bg-gray-700 dark:border-gray-600 border border-blue rounded-lg !text-xs p-3 w-60 text-left opacity-0  invisible group-hover:opacity-100 group-hover:visible group-hover:translate-y-[-50%]">
             {tooltip}
           </Text>
         </span>

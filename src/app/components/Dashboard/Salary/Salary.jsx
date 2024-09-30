@@ -20,9 +20,9 @@ const Salary = () => {
   return (
     <Container heading="Salary" className="relative">
       <CreateSalaryButton />
-      <Wrapper className="flex w-full gap-[15px] relative z-[1] ">
+      <Wrapper className="flex w-full gap-[15px] relative z-[1] max-3xl:flex-wrap">
         {userPermissions && (
-          <Wrapper className="max-w-[313px] w-full bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px]">
+          <Wrapper className="max-w-[313px] max-3xl:max-w-full min-3xl:w-full bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px]">
             <ProfileRight heading="Information" button={false} />
           </Wrapper>
         )}

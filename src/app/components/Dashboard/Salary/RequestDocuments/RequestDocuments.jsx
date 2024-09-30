@@ -100,8 +100,11 @@ const RequestDocuments = () => {
             }
           }
         })
-        .catch((error) => {
-          console.log(error);
+        .catch((error) => {          
+          setError({
+            status: true,
+            message: "Something went wrong! Try again later.",
+          });
         });
     } else {
       setLoading(false);
@@ -113,7 +116,7 @@ const RequestDocuments = () => {
   };
   const salarySlips = () => {};
   return (
-    <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col w-full">
+    <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col min-3xl:w-full max-3xl:flex-1">
       <H2>Request Documents</H2>
       <Wrapper className="mt-[15px]">
         <form onSubmit={submitForm}>

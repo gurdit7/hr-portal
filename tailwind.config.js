@@ -31,8 +31,18 @@ module.exports = {
         'poppins':['Poppins','sans-serif']
       },
       screens:{
+        "min-3xl":"1366px",
+        "max-5xl":{max:"1660px"},
+        "max-4xl":{max:"1440px"},
         "max-3xl":{max:"1366px"},
-        "max-2xl":{max:"1280px"}
+        "max-2xl":{max:"1280px"},
+        "max-xl":{max:"1166px"},
+        "max-lg":{max:"1024px"},
+        "max-tab":{max:"990px"},
+        "max-sm-tab":{max:"768px"},
+        "max-xs-tab":{max:"749px"},
+        "max-md-mb":{max:"600px"},
+        "max-sm-mb":{max:"414px"}
       }
     },
   },

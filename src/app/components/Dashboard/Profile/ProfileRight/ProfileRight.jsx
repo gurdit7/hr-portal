@@ -19,7 +19,7 @@ const ProfileRight = ({ heading, button }) => {
     <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col w-full">
       <H2>{heading}</H2>
       <Wrapper className="mt-[15px]">
-        <Wrapper className="py-[10px] border-t border-b dark:border-gray-600 border-light-500 flex justify-between">
+        <Wrapper className="py-[10px] border-t border-b dark:border-gray-600 border-light-500 flex justify-between gap-x-4">
           <Text className="!text-light-400 flex-1">Current Salary</Text>
 
           <Wrapper className="flex items-center gap-1 justify-end">

@@ -12,7 +12,7 @@ const BalancedLeaves = ({className}) => {
   },[userData])
   return (
     <Wrapper>
-    <Wrapper className={'flex justify-between gap-[15px] ' + (className || "")}>
+    <Wrapper className={'flex justify-between gap-[15px] max-3xl:flex-wrap ' + (className || "")}>
     <LeaveSummaryCard
       title="Balance Leaves"
       count={user?.balancedLeaves || 12}

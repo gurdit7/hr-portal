@@ -12,7 +12,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const Header = () => {
-  const { sidebarCollapse, setSidebarCollapse } = useThemeConfig();
+  const { sidebarCollapse, setSidebarCollapse, modalOpen } = useThemeConfig();
   const [loader, setLoader] = useState(false);
   const [notificationsCount, setNotificationsCount] = useState(0);
   const { userLoggedIn, setUserLoggedIn, setUserData } = useAuth();
@@ -66,9 +66,9 @@ const Header = () => {
     <>
       {userLoggedIn && (
         <header
-          className={` flex relative z-10 justify-between items-center bg-white dark:bg-gray-700 dark:border-gray-600 pr-6 border-b dark:border-gray-600 border-light-500 transition-all duration-200 ${
-            sidebarCollapse ? "ml-[100px]" : "ml-[300px]"
-          }`}
+          className={` flex relative  justify-between max-tab:m-0 items-center bg-white dark:bg-gray-700 pr-6 border-b dark:border-gray-600 border-light-500 transition-all duration-200 ${
+            sidebarCollapse ? "ml-[100px]" : "ml-[300px] max-4xl:ml-[200px]"
+          }  ${modalOpen ? 'z-0' : 'z-10'}`}
         >
           <Wrapper>
             <FormButton

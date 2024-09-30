@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
       .then(function (res) {
         return res.json();
       })
-      .then(async function (data) {
+      .then(async function (data) {        
         setData(data);
         setUserData(data?.user);
       });

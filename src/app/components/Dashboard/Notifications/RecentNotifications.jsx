@@ -2,6 +2,7 @@
 import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
 import Wrapper from "../../Ui/Wrapper/Wrapper";
 import ItemRecentNotifications from "./ItemRecentNotifications";
+import React from "react";
 const RecentNotifications = () => {
   const { userNotifications, userIndividualNotifications, userPermissions } =
     useDashboard();
@@ -26,4 +27,4 @@ const RecentNotifications = () => {
   );
 };
 
-export default RecentNotifications;
+export default React.memo(RecentNotifications);

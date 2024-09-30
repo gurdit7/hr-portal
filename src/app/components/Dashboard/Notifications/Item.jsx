@@ -93,7 +93,7 @@ const Item = ({ item }) => {
           className={`border rounded-lg  relative flex justify-between ${
             !item?.viewedStatus
               ? "border-l-4 border-green-600 dark:border-accent"
-              : " dark:border-gray-600 border-light-500 dark:border-gray-600"
+              : " border-light-500 dark:border-gray-600"
           }`}
         >
           <div
@@ -101,7 +101,7 @@ const Item = ({ item }) => {
             className="p-[10px] relative flex items-center gap-3 justify-between overflow-hidden group w-full"
           >
             <div className="flex justify-center items-center gap-2">
-              <Wrapper className="w-10 h-10 border rounded-full bg-accent flex justify-center items-center text-white font-semibold text-xl">
+              <Wrapper className="w-10 h-10 min-w-10 border rounded-full bg-accent flex justify-center items-center text-white font-semibold text-xl">
                 {item.name.slice(0, 1)}
               </Wrapper>
               <Wrapper className="flex flex-col gap-0">

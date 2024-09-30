@@ -139,14 +139,14 @@ const ProfileCenter = () => {
     <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col w-full">
       <H2>Personal Information</H2>
       <Wrapper className="mt-[15px]">
-        <Wrapper className="py-[10px] border-t border-b dark:border-gray-600 border-light-500 flex justify-between">
+        <Wrapper className="py-[10px] border-t border-b dark:border-gray-600 border-light-500 gap-x-4 flex justify-between">
           <Text className="!text-light-400 flex-1">Email</Text>
           {!userData && <SkeletonLoader className="!w-1/2 rounded-2xl !h-3" />}
           {userData && (
             <Text className="flex-1 text-right ">{userData?.email}</Text>
           )}
         </Wrapper>
-        <Wrapper className="py-[10px] border-b dark:border-gray-600 border-light-500 flex justify-between">
+        <Wrapper className="py-[10px] border-b dark:border-gray-600 border-light-500 gap-x-4 flex justify-between">
           <Text className="!text-light-400 flex-1">Personal Email</Text>
           {!userData && <SkeletonLoader className="!w-1/2 rounded-2xl !h-3" />}
           {userData && (
@@ -155,7 +155,7 @@ const ProfileCenter = () => {
             </Text>
           )}
         </Wrapper>
-        <Wrapper className="py-[10px]  border-b dark:border-gray-600 border-light-500 flex justify-between">
+        <Wrapper className="py-[10px]  border-b dark:border-gray-600 border-light-500 gap-x-4 flex justify-between">
           <Text className="!text-light-400 flex-1">Date of Birth</Text>
           {!userData && <SkeletonLoader className="!w-1/2 rounded-2xl !h-3" />}
           {userData && (
@@ -164,7 +164,7 @@ const ProfileCenter = () => {
             </Text>
           )}
         </Wrapper>
-        <Wrapper className="py-[10px]  border-b dark:border-gray-600 border-light-500 flex justify-between">
+        <Wrapper className="py-[10px]  border-b dark:border-gray-600 border-light-500 gap-x-4 flex justify-between">
           <Text className="!text-light-400 flex-1">Current Address</Text>
           {!userData && (
             <>
@@ -181,7 +181,7 @@ const ProfileCenter = () => {
             </Text>
           )}
         </Wrapper>
-        <Wrapper className="py-[10px] border-b dark:border-gray-600 border-light-500 flex justify-between">
+        <Wrapper className="py-[10px] border-b dark:border-gray-600 border-light-500 gap-x-4 flex justify-between">
           <Text className="!text-light-400 flex-1">Permanent Address</Text>
           {!userData && (
             <>
@@ -198,7 +198,7 @@ const ProfileCenter = () => {
             </Text>
           )}
         </Wrapper>
-        <Wrapper className="py-[10px] border-b dark:border-gray-600 border-light-500 flex justify-between">
+        <Wrapper className="py-[10px] border-b dark:border-gray-600 border-light-500 gap-x-4 flex justify-between">
           <Text className="!text-light-400 flex-1">Phone Number</Text>
           {!userData && <SkeletonLoader className="!w-1/2 rounded-2xl !h-3" />}
           {userData && (
@@ -211,7 +211,7 @@ const ProfileCenter = () => {
 
       <H2 className="mt-[15px]">Bank Account Details</H2>
       <Wrapper className="mt-[15px]">
-        <Wrapper className="py-[10px] border-t border-b dark:border-gray-600 border-light-500 flex justify-between">
+        <Wrapper className="py-[10px] border-t border-b dark:border-gray-600 border-light-500 gap-x-4 flex justify-between">
           <Text className="!text-light-400 flex-1">Account Number</Text>
           {!userData && <SkeletonLoader className="!w-1/2 rounded-2xl !h-3" />}
           {userData && (
@@ -220,7 +220,7 @@ const ProfileCenter = () => {
             </Text>
           )}
         </Wrapper>
-        <Wrapper className="py-[10px]  border-b dark:border-gray-600 border-light-500 flex justify-between">
+        <Wrapper className="py-[10px]  border-b dark:border-gray-600 border-light-500 gap-x-4 flex justify-between">
           <Text className="!text-light-400 flex-1">IFSC Code</Text>
           {!userData && <SkeletonLoader className="!w-1/2 rounded-2xl !h-3" />}
           {userData && (
@@ -382,7 +382,7 @@ const ProfileCenter = () => {
                       type="button"
                       event={setBankBack}
                       btnType="outlined"
-                      additionalCss="flex justify-between px-5 items-center group h-full"
+                      additionalCss="gap-x-4 flex justify-between px-5 items-center group h-full"
                     >
                       Back{" "}
                       <IconArrowBackword

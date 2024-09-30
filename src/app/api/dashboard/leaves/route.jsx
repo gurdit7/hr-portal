@@ -63,8 +63,10 @@ export const POST = async (request) => {
     );
     const hrAdminEmails = await getHrAndAdminEmails();
     const mails = [...new Set([...departmentEmails, ...hrAdminEmails])];
-    const mailsString = mails.toString();
-
+    const filterdMails = mails.filter((item)=>(item != payload?.email));
+    const mailsString = filterdMails.toString();
+    console.log(mailsString, filterdMails);
+    
     await sendEmail(
       mailsString,
       `HR Portal - ${user.name} has applied for leave.`,

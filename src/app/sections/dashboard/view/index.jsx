@@ -2,18 +2,19 @@
 
 import useAuth from "@/app/contexts/Auth/auth";
 import { useEffect, useState } from "react";
-import Container from "../../Ui/DashboardContainer/Container";
-import Wrapper from "../../Ui/Wrapper/Wrapper";
-import H1 from "../../Ui/H1/H1";
-import H3 from "../../Ui/H3/H3";
-import BalancedLeaves from "../Leaves/BalancedLeaves";
-import LeavesRecord from "../Leaves/LeavesRecord";
-import AllHolidays from "../Holidays/AllHolidays";
-import H2 from "../../Ui/H2/H2";
+
 import { useThemeConfig } from "@/app/contexts/theme/ThemeConfigure";
 import { useDashboard } from "@/app/contexts/Dashboard/dashboard";
-import RecentNotifications from "../Notifications/RecentNotifications";
-const HomePage = () => {
+import Container from "@/app/components/Ui/DashboardContainer/Container";
+import Wrapper from "@/app/components/Ui/Wrapper/Wrapper";
+import H1 from "@/app/components/Ui/H1/H1";
+import H3 from "@/app/components/Ui/H3/H3";
+import RecentNotifications from "@/app/components/Dashboard/Notifications/RecentNotifications";
+import AllHolidays from "@/app/components/Dashboard/Holidays/AllHolidays";
+import H2 from "@/app/components/Ui/H2/H2";
+import BalancedLeaves from "@/app/components/Dashboard/Leaves/BalancedLeaves";
+
+const Index = () => {
   const { userData } = useAuth();
   const { allEmployeesData, userPermissions } = useDashboard();
   const [total, setTotal] = useState(0);
@@ -130,4 +131,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default Index;

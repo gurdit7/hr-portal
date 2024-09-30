@@ -5,24 +5,28 @@ import IconCloseModal from '../../Icons/IconCloseModal';
 import Wrapper from '../Wrapper/Wrapper';
 import H1 from '../H1/H1';
 import Heading1 from '../Heading 1/Heading 1';
+import { useThemeConfig } from '@/app/contexts/theme/ThemeConfigure';
 
 const Modal = ({children, opened, hideModal, heading}) => {    
     const [open,setOpen] = useState(opened);
     const [openFinal,setOpenFinal] = useState(false);
+    const { setModalOpen } = useThemeConfig();
     const closeModal = ()=>{
         setOpenFinal(false)
         setTimeout(() => {
+            setModalOpen(false)
             hideModal(false)    
         }, 500);        
     }
     useEffect(()=>{
         setTimeout(() => {
+            setModalOpen(true)
             setOpenFinal(open)    
         }, 100);     
     },[open])
 
   return (
-<Wrapper className={`fixed top-0 z-[99999999]  left-0 w-full  h-full flex justify-center items-center  duration-500 ${openFinal ? 'opacity-1 scale-100' : 'opacity-0 scale-90'}`}>
+<Wrapper className={`fixed top-0 z-[99999999]  left-0 w-full px-4  h-full flex justify-center items-center  duration-500 ${openFinal ? 'opacity-1 scale-100' : 'opacity-0 scale-90'}`}>
     <FormButton additionalCss='!absolute top-3 right-3 z-30' event={closeModal}>
         <IconCloseModal size="56px" color="fill-white"/> 
         </FormButton>

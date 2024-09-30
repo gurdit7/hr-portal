@@ -70,7 +70,7 @@ const ProfileLeft = () => {
         setLoading(false);
       });
   };
-  const forgotPassword = (e) => {};
+
   const openModal = (e) => {
     setForgotPasswordHide(e);
   };
@@ -116,7 +116,7 @@ const ProfileLeft = () => {
               setSuccessAnimation(true);
               setLoading(false);
               setTimeout(() => {
-                setForgotPasswordHide(false)
+                setForgotPasswordHide(false);
                 setSuccess(false);
                 setSuccessAnimation(false);
               }, 3000);
@@ -129,7 +129,7 @@ const ProfileLeft = () => {
                 setError(false);
                 setErrorAnimation(false);
               }, 3000);
-            } 
+            }
           });
       }
     } else {
@@ -144,9 +144,13 @@ const ProfileLeft = () => {
     }
   };
   return (
-    <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col max-w-[360px] w-full">
+    <Wrapper className="p-5 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-[10px] flex flex-col max-w-[360px] w-full max-xl:max-w-full">
       <Wrapper className=" flex justify-center">
-        <Wrapper className={`relative ${loading ? "animate-pulse" : ""}`}>
+        <Wrapper
+          className={`relative ${
+            loading ? "animate-pulse" : ""
+          } max-w-[144px] mx-auto w-full`}
+        >
           <ProfileImage size={144} />
           <label
             htmlFor="profileImageInput"
@@ -182,33 +186,38 @@ const ProfileLeft = () => {
           onChange={changeCoverImage}
         />
       </Wrapper>
-     
-      {!userData && <SkeletonLoader className='!w-1/2 rounded-2xl !h-[27px] mx-auto mt-[5px]'/>}
-          {userData &&  <H3 className="text-center mt-[5px]">{userData?.name}</H3>
-}
+
+      {!userData && (
+        <SkeletonLoader className="!w-1/2 rounded-2xl !h-[27px] mx-auto mt-[5px]" />
+      )}
+      {userData && <H3 className="text-center mt-[5px]">{userData?.name}</H3>}
       <Wrapper className="mt-[15px]">
         <Wrapper className="py-[10px] border-t border-b dark:border-gray-600 border-light-500 flex justify-between items-center">
           <Text className="!text-light-400 flex-1">Designation</Text>
-          {!userData && <SkeletonLoader className='!w-1/2 rounded-2xl !h-3'/>}
-         {userData &&  <Text className="flex-1 text-right capitalize">
-            {userData?.designation}
-          </Text>}
+          {!userData && <SkeletonLoader className="!w-1/2 rounded-2xl !h-3" />}
+          {userData && (
+            <Text className="flex-1 text-right capitalize">
+              {userData?.designation}
+            </Text>
+          )}
         </Wrapper>
         <Wrapper className="py-[10px]  border-b dark:border-gray-600 border-light-500 flex justify-between  items-center">
           <Text className="!text-light-400 flex-1">Department</Text>
-          {!userData && <SkeletonLoader className='!w-1/2 rounded-2xl !h-3'/>}
-          {userData &&   <Text className="flex-1 text-right capitalize">
-            {userData?.department}
-          </Text> }
+          {!userData && <SkeletonLoader className="!w-1/2 rounded-2xl !h-3" />}
+          {userData && (
+            <Text className="flex-1 text-right capitalize">
+              {userData?.department}
+            </Text>
+          )}
         </Wrapper>
         <Wrapper className="py-[10px]  border-b dark:border-gray-600 border-light-500 flex justify-between  items-center">
           <Text className="!text-light-400 flex-1">Join Date</Text>
-          {!userData && <SkeletonLoader className='!w-1/2 rounded-2xl !h-3'/>}
-          {userData && 
-          <Text className="flex-1 text-right capitalize">
-            {formatDate(userData?.joinDate)}
-          </Text>
-}
+          {!userData && <SkeletonLoader className="!w-1/2 rounded-2xl !h-3" />}
+          {userData && (
+            <Text className="flex-1 text-right capitalize">
+              {formatDate(userData?.joinDate)}
+            </Text>
+          )}
         </Wrapper>
       </Wrapper>
       <Wrapper className="mt-[15px]">

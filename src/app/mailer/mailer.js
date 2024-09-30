@@ -1,5 +1,4 @@
 "use server";
-import { NextResponse, NextRequest } from "next/server";
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({

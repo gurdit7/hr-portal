@@ -16,7 +16,7 @@ const page = () => {
       <Wrapper className="flex justify-between gap-[15px]">
         <CoverImage/>
       </Wrapper>
-      <Wrapper className='flex w-full gap-[15px] -mt-[50px] relative z-[1] px-[15px] mb-5'>
+      <Wrapper className='flex w-full gap-[15px] -mt-[50px] max-xl:mt-2 max-xl:px-0 relative z-[1] px-[15px] mb-5 max-xl:flex-wrap'>
         <ProfileLeft/>
         <ProfileCenter/>
         <ProfileRight heading="Salary" button={true} />
